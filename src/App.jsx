@@ -1,23 +1,18 @@
-import { useState } from 'react'
-import './App.css'
+import Button from "./components/Button";
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <div className="flex h-screen items-center justify-center bg-gradient-to-br from-purple-900 to-black">
-      <div className="text-center">
-        <h1 className="mb-4 text-5xl font-bold text-white">RPO X Gucci</h1>
-        <p className="mb-8 text-xl text-gray-300">Ready Player One meets Gucci</p>
-        <button
-          onClick={() => setCount((count) => count + 1)}
-          className="rounded-lg bg-purple-600 px-6 py-3 font-semibold text-white transition-colors hover:bg-purple-700"
-        >
-          Count is {count}
-        </button>
+    <>
+      <div className="flex flex-col gap-4 bg-gray-900 text-white p-8">
+        <h1 className="text-4xl font-bold">RPO X Gucci</h1>
+        <p className="text-lg">Ready Player One x Gucci Experience</p>
+        <div className="flex gap-4">
+          <Button className="bg-blue-500 hover:bg-blue-600 px-4 py-2 rounded">Button</Button>
+          <Button className="bg-green-500 hover:bg-green-600 px-4 py-2 rounded">Submit</Button>
+        </div>
       </div>
-    </div>
-  )
+    </>
+  );
 }
 
-export default App
+export default App;
