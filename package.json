@@ -1,9 +1,31 @@
 {
+  "name": "ready-player-one-x-gucci",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@tailwindcss/vite": "^4.1.18",
+    "aframe": "^1.6.0",
+    "aframe-react": "^4.1.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "tailwindcss": "^4.1.18"
+  },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
+    "@vitejs/plugin-react": "^5.0.4",
+    "aframe-watcher": "^1.4.0",
     "eslint": "^9.39.2",
     "eslint-plugin-react-hooks": "^7.0.1",
     "eslint-plugin-react-refresh": "^0.4.26",
-    "globals": "^17.0.0"
+    "globals": "^17.0.0",
+    "prettier": "^3.8.0",
+    "prettier-plugin-tailwindcss": "^0.6.14",
+    "vite": "^6.0.5"
   }
 }
