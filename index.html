@@ -9,9 +9,166 @@
     <script src="https://cdn.jsdelivr.net/gh/c-frame/aframe-extras@7.2.0/dist/aframe-extras.min.js"></script>
 
     <script type="module" src="main.js"></script>
+    
+    <style>
+        /* ========== ÉCRAN DE CHARGEMENT OASIS ========== */
+        #oasis-loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: #000;
+            z-index: 99999;
+            display: none;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+        }
+        
+        #oasis-loading-screen.active {
+            display: flex;
+        }
+        
+        /* Animation éclipse (cercle qui se ferme au centre comme anciennes TV) */
+        #eclipse-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at center, transparent 0%, #000 0%);
+            pointer-events: none;
+            z-index: 100001;
+        }
+        
+        #eclipse-overlay.closing {
+            animation: eclipseClose 1.2s ease-in forwards;
+        }
+        
+        #eclipse-overlay.opening {
+            animation: eclipseOpen 1.5s ease-out forwards;
+        }
+        
+        @keyframes eclipseClose {
+            0% { background: radial-gradient(circle at center, transparent 100%, #000 100%); }
+            100% { background: radial-gradient(circle at center, transparent 0%, #000 0%); }
+        }
+        
+        @keyframes eclipseOpen {
+            0% { background: radial-gradient(circle at center, transparent 0%, #000 0%); }
+            100% { background: radial-gradient(circle at center, transparent 120%, #000 120%); }
+        }
+        
+        /* Contenu du chargement */
+        #loading-content {
+            text-align: center;
+            z-index: 100000;
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+        
+        #loading-content.visible {
+            opacity: 1;
+        }
+        
+        #oasis-title {
+            font-size: 3.5rem;
+            font-weight: 200;
+            letter-spacing: 1.5rem;
+            color: #d4af37;
+            text-transform: uppercase;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+        }
+        
+        #oasis-subtitle {
+            font-size: 1rem;
+            font-weight: 300;
+            letter-spacing: 0.8rem;
+            color: #888;
+            text-transform: uppercase;
+            margin-bottom: 3rem;
+        }
+        
+        /* Barre de progression luxe */
+        #progress-container {
+            width: 400px;
+            height: 2px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 1px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        #progress-bar {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(90deg, #d4af37, #f4e4bc, #d4af37);
+            border-radius: 1px;
+            transition: width 0.1s ease;
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.6);
+        }
+        
+        #progress-text {
+            margin-top: 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 300;
+            letter-spacing: 0.3rem;
+            color: #666;
+            text-transform: uppercase;
+        }
+        
+        /* Texte HUD pour retirer le casque */
+        #remove-headset-hud {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            padding: 12px 20px;
+            background: rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(212, 175, 55, 0.3);
+            border-radius: 4px;
+            font-family: 'Segoe UI', 'Helvetica Neue', Arial, sans-serif;
+            font-size: 0.85rem;
+            font-weight: 300;
+            letter-spacing: 0.1rem;
+            color: #d4af37;
+            z-index: 10000;
+            display: none;
+            backdrop-filter: blur(5px);
+        }
+        
+        #remove-headset-hud.visible {
+            display: block;
+            animation: fadeInHud 0.5s ease;
+        }
+        
+        @keyframes fadeInHud {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
 </head>
 
 <body>
+    <!-- Écran de chargement OASIS -->
+    <div id="oasis-loading-screen">
+        <div id="eclipse-overlay"></div>
+        <div id="loading-content">
+            <div id="oasis-title">OASIS</div>
+            <div id="oasis-subtitle">Ready Player One × Gucci</div>
+            <div id="progress-container">
+                <div id="progress-bar"></div>
+            </div>
+            <div id="progress-text">Initialisation du système...</div>
+        </div>
+    </div>
+    
+    <!-- HUD pour retirer le casque -->
+    <div id="remove-headset-hud">
+        🎮 Attrapez le casque pour quitter l'OASIS
+    </div>
 
     <a-scene vr-mode-ui="" fog="type: exponential; color: #8a9098; density: 0.012" background="color: #a8aeb5"
         inspector="" keyboard-shortcuts="" screenshot="" device-orientation-permission-ui="">
@@ -21,15 +178,37 @@
         <a-entity id="rig" movement-controls="speed: 0.25; fly: false" wasd-controls="acceleration: 20">
     <a-camera id="player-camera" position="0 1.6 0" look-controls="pointerLockEnabled: false"
         cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 8">
-        <!-- Effet bordure noire du casque VR (caché par défaut) -->
+        <!-- Effet bordure noire du casque VR (caché par défaut) - Contours réalistes -->
+        <!-- Bordure extérieure principale (vignette) -->
         <a-ring
             id="vr-headset-overlay"
-            position="0 0 -0.4"
-            radius-inner="0.4"
-            radius-outer="0.6"
+            position="0 0 -0.3"
+            radius-inner="0.32"
+            radius-outer="0.8"
             color="#000000"
-            scale="1.6 1 1"
-            material="transparent: true; opacity: 0.95; side: double"
+            scale="1.8 1.1 1"
+            material="transparent: true; opacity: 0.98; side: double; shader: flat"
+            visible="false">
+        </a-ring>
+        <!-- Bordure supérieure (nez du casque) -->
+        <a-plane
+            id="vr-headset-nose"
+            position="0 -0.18 -0.29"
+            width="0.15"
+            height="0.12"
+            color="#000000"
+            material="transparent: true; opacity: 0.95; side: double; shader: flat"
+            visible="false">
+        </a-plane>
+        <!-- Légère teinte sur les bords (effet lentilles) -->
+        <a-ring
+            id="vr-headset-lens-tint"
+            position="0 0 -0.31"
+            radius-inner="0.28"
+            radius-outer="0.35"
+            color="#1a1a2e"
+            scale="1.8 1.1 1"
+            material="transparent: true; opacity: 0.3; side: double; shader: flat"
             visible="false">
         </a-ring>
     </a-camera>
