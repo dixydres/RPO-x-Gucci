@@ -21,6 +21,17 @@
         <a-entity id="rig" movement-controls="speed: 0.25; fly: false" wasd-controls="acceleration: 20">
     <a-camera id="player-camera" position="0 1.6 0" look-controls="pointerLockEnabled: false"
         cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 8">
+        <!-- Effet bordure noire du casque VR (caché par défaut) -->
+        <a-ring
+            id="vr-headset-overlay"
+            position="0 0 -0.4"
+            radius-inner="0.4"
+            radius-outer="0.6"
+            color="#000000"
+            scale="1.6 1 1"
+            material="transparent: true; opacity: 0.95; side: double"
+            visible="false">
+        </a-ring>
     </a-camera>
     
     <!-- Main gauche (maintenant DANS le rig) -->
@@ -1971,9 +1982,19 @@
             </a-entity>
 
             <!-- ============================================ -->
-            <!-- LE CASQUE OASIS - Pièce maîtresse -->
+            <!-- LE CASQUE OASIS - Pièce maîtresse (CUBE TEMPORAIRE) -->
             <!-- ============================================ -->
-            <a-entity id="oasis-headset" position="0.7 0.82 -0.95">
+            <a-box 
+                id="oasis-headset" 
+                class="clickable" 
+                headset-toggle
+                position="0.7 0.82 -0.95"
+                width="0.3" 
+                height="0.2" 
+                depth="0.25"
+                color="#000000"
+                material="roughness: 0.8">
+            </a-box>
                 <!-- Casque VR principal -->
                 <a-entity rotation="0 -29.999999999999996 0">
                     <!-- Corps du casque -->
