@@ -23,21 +23,16 @@
         cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 8">
     </a-camera>
     
-    <!-- Main gauche (tracking automatique des contrôleurs/souris) -->
+    <!-- Main gauche (maintenant DANS le rig) -->
     <a-entity hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac" 
         raycaster="objects: .clickable; far: 8" line="color: #118A90">
     </a-entity>
     
-    <!-- Main droite (tracking automatique des contrôleurs/souris) -->
+    <!-- Main droite (maintenant DANS le rig) -->
     <a-entity hand-controls="hand: right; handModelStyle: lowPoly; color: #ffdbac" 
         raycaster="objects: .clickable; far: 8" line="color: #118A90">
     </a-entity>
 </a-entity>
-
-        <a-entity id="headset" class="clickable" headset-toggle=""
-            gltf-model="./models/vr_headset/scene.gltf" position="0.99748 0.99535 -1.03733"
-            rotation="0 -0.9167324722093172 0" scale="0.28382 0.28382 0.28382">
-        </a-entity>
 
         <!-- ============================================ -->
         <!-- MONDE VR - Caché au début, visible après clic casque -->
