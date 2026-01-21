@@ -46,21 +46,361 @@
 </a-entity>
 
         <!-- ============================================ -->
-        <!-- MONDE VR - Caché au début, visible après clic casque -->
+        <!-- MONDE VR - Jardin Céleste dans les Nuages -->
+        <!-- Inspiré Villa d'Este, colonnes romaines, jardins flottants -->
         <!-- ============================================ -->
         <a-entity id="vr-world" visible="false">
-            <!-- Sol vert infini -->
-            <a-plane position="0 0 0" rotation="-90 0 0" width="200" height="200" color="#2ecc71"
-                material="roughness: 0.8">
-            </a-plane>
-
-            <!-- Lumière du soleil -->
-            <a-entity id="vr-sun" light="type: directional; color: #FFF; intensity: 1.2" position="10 20 10">
+            
+            <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0">
+            <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
+            <!-- Soleil couchant - boule visible dans le ciel -->
+            <a-sphere id="sunset-sun" position="0 18 -85" radius="4" 
+                      color="#FFB347" 
+                      material="shader: flat; emissive: #FF8C42; emissiveIntensity: 2; opacity: 0.95"
+                      light="type: point; color: #FF8C42; intensity: 3.5; distance: 80; decay: 1.5"></a-sphere>
+            
+            <!-- Lumière directionnelle principale du coucher de soleil -->
+            <a-entity id="vr-sun" light="type: directional; color: #FF9D5C; intensity: 2.0; castShadow: true" 
+                      position="0 20 -85" rotation="-30 0 0"></a-entity>
+            
+            <!-- Lumière ambiante chaude du coucher de soleil -->
+            <a-entity id="vr-ambient" light="type: ambient; color: #FFB88C; intensity: 0.8"></a-entity>
+            
+            <!-- Lumière hémisphérique pour le ciel du coucher de soleil -->
+            <a-entity light="type: hemisphere; color: #FF9A6C; groundColor: #9C6B98; intensity: 0.7"></a-entity>
+            
+            <!-- Lumière d'appoint orangée pour le mansion -->
+            <a-entity light="type: point; color: #FFA500; intensity: 2.0; distance: 40; decay: 2" position="0 20 -75"></a-entity>
+            
+            <!-- Lumière spotlight dédiée éclairant le mansion de face -->
+            <a-entity light="type: spot; color: #FFE4B5; intensity: 3.0; angle: 45; penumbra: 0.3; distance: 50; decay: 1.5; castShadow: true" 
+                      position="0 25 -60" rotation="-45 0 0"></a-entity>
+            
+            <!-- ===== MER DE NUAGES - ILLUSION DE FLOTTER ===== -->
+            <!-- Couche principale de nuages en dessous -->
+            <a-entity id="cloud-sea" opacity="0.6" >
+                <!-- Sol nuageux principal -->
+                <a-plane position="0 -2 0" rotation="-90 0 0" width="500" height="500" color="#FFFFFF" material="opacity: 0.95; transparent: true; roughness: 1" geometry=""></a-plane>
+                
+                <!-- Nuages volumétriques autour (niveau bas) -->
+                <a-sphere position="-15 -1 -30" radius="8" color="#FFFFFF" material="opacity: 0.7; transparent: true; roughness: 1" geometry=""></a-sphere>
+                <a-sphere position="-20 -0.5 -25" radius="6" color="#F8F8FF" material="opacity: 0.6; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="20 -1.5 -35" radius="10" color="#FFFAFA" material="opacity: 0.75; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="25 -0.8 -28" radius="5" color="#F5F5F5" material="opacity: 0.5; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="-30 -1 10" radius="9" color="#FFFFFF" material="opacity: 0.65; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="35 -1.2 5" radius="7" color="#FFF8F0" material="opacity: 0.6; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="-10 -1.8 40" radius="12" color="#FFFAF0" material="opacity: 0.7; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="15 -1.5 45" radius="8" color="#FFFFFF" material="opacity: 0.55; transparent: true" geometry=""></a-sphere>
+                
+                <!-- Nuages dérivants autour du joueur -->
+                <a-sphere position="-8 0.5 -15" radius="4" color="#FFFFFF" material="opacity: 0.4; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="12 1 -20" radius="3" color="#F8F8FF" material="opacity: 0.35; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="-25 2 -10" radius="6" color="#FFFAFA" material="opacity: 0.5; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="30 1.5 -8" radius="5" color="#FFFFFF" material="opacity: 0.45; transparent: true" geometry=""></a-sphere>
+                
+                <!-- Nuages lointains (horizon) -->
+                <a-sphere position="-60 -3 -80" radius="25" color="#F0F8FF" material="opacity: 0.8; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="70 -4 -90" radius="30" color="#FFFFFF" material="opacity: 0.75; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="0 -5 -100" radius="35" color="#FFF8F8" material="opacity: 0.7; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="-80 -4 50" radius="28" color="#F5FFFA" material="opacity: 0.65; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="85 -3.5 40" radius="22" color="#FFFFF0" material="opacity: 0.6; transparent: true" geometry=""></a-sphere>
             </a-entity>
-
-            <!-- Lumière ambiante douce -->
-            <a-entity id="vr-ambient" light="type: ambient; color: #87CEEB; intensity: 0.6">
+            
+            <!-- ===== ÎLE FLOTTANTE PRINCIPALE - JARDIN RENAISSANCE ===== -->
+            <a-entity id="floating-garden" position="0 0 -10">
+                <!-- Base de l'île flottante -->
+                <a-cylinder position="0 -0.5 0" radius="25" height="1" color="#8B7355" material="roughness: 0.9" geometry=""></a-cylinder>
+                <a-cylinder position="0 -1.2 0" radius="22" height="1" color="#6B5344" material="roughness: 0.95" geometry=""></a-cylinder>
+                <a-cylinder position="0 -2 0" radius="18" height="1" color="#5D4037" material="roughness: 1" geometry=""></a-cylinder>
+                <!-- Rochers sous l'île -->
+                <a-sphere position="-8 -2.5 5" radius="3" color="#696969" material="" geometry=""></a-sphere>
+                <a-sphere position="10 -3 -3" radius="4" color="#808080" material="" geometry=""></a-sphere>
+                <a-sphere position="3 -2.8 8" radius="2.5" color="#778899" material="" geometry=""></a-sphere>
+                
+                <!-- Sol du jardin - Gazon luxuriant -->
+                <a-cylinder position="-0.00219 0.01 0.59514" rotation="" radius="24" height="0.02" color="#228B22" material="roughness: 0.9" geometry=""></a-cylinder>
+                    
+                <!-- Allées en pierre (style Villa d'Este) -->
+                <a-box position="0 0.03 0" width="3" height="0.02" depth="35" color="#D2B48C" material="roughness: 0.8" geometry=""></a-box>
+                <a-box position="0 0.03 0" width="35" height="0.02" depth="3" color="#D2B48C" material="roughness: 0.8" geometry=""></a-box>
+                <!-- Allée diagonale -->
+                <a-box position="8 0.03 -8" width="3" height="0.02" depth="20" rotation="0 45 0" color="#C4A67C" material="roughness: 0.8" geometry=""></a-box>
+                <a-box position="-8 0.03 -8" width="3" height="0.02" depth="20" rotation="0 -45 0" color="#C4A67C" material="roughness: 0.8" geometry=""></a-box>
             </a-entity>
+            
+            <!-- ===== COLONNES ROMAINES / GRECQUES ===== -->
+            <!-- Colonnade principale (Temple dans les nuages) -->
+            <a-entity id="roman-colonnade" position="0 0 -30">
+                <!-- Colonne 1 avec lierre -->
+                <a-entity position="-8 0 0">
+                    <a-cylinder position="0 3 0" radius="0.6" height="6" color="#F5F5DC" material="roughness: 0.6" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.2 0" radius="0.8" height="0.4" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <!-- Chapiteau corinthien simplifié -->
+                    <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#FAF0E6" material="" geometry=""></a-box>
+                    <!-- Lierre grimpant -->
+                    <a-cylinder position="0.5 2 0.3" radius="0.08" height="4" rotation="5 0 8" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0.6 3.5 0.4" radius="0.3" color="#32CD32" material="" geometry=""></a-sphere>
+                    <a-sphere position="0.4 2 0.35" radius="0.25" color="#228B22" material="" geometry=""></a-sphere>
+                    <a-sphere position="0.55 4.5 0.3" radius="0.35" color="#2E8B57" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Colonne 2 -->
+                <a-entity position="-4 0 0">
+                    <a-cylinder position="0 3 0" radius="0.6" height="6" color="#F5F5DC" material="roughness: 0.6" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.2 0" radius="0.8" height="0.4" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#FAF0E6" material="" geometry=""></a-box>
+                </a-entity>
+                
+                <!-- Colonne 3 (centrale) -->
+                <a-entity position="">
+                    <a-cylinder position="0 3.5 0" radius="0.7" height="7" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.25 0" radius="0.9" height="0.5" color="#FFF8DC" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 7.2 0" radius="0.95" height="0.5" color="#FFF8DC" material="" geometry=""></a-cylinder>
+                    <a-box position="0 7.6 0" width="1.6" height="0.4" depth="1.6" color="#FAF0E6" material="" geometry=""></a-box>
+                    <!-- Lierre -->
+                    <a-cylinder position="-0.4 2.5 0.5" radius="0.06" height="5" rotation="-3.0000000000000004 0 -6.000000000000001" color="#2E8B57" material="" geometry=""></a-cylinder>
+                    <a-sphere position="-0.5 4 0.55" radius="0.3" color="#32CD32" material="" geometry=""></a-sphere>
+                    <a-sphere position="-0.35 5.5 0.5" radius="0.25" color="#228B22" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Colonne 4 -->
+                <a-entity position="4 0 0">
+                    <a-cylinder position="0 3 0" radius="0.6" height="6" color="#F5F5DC" material="roughness: 0.6" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.2 0" radius="0.8" height="0.4" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#FAF0E6" material="" geometry=""></a-box>
+                </a-entity>
+                
+                <!-- Colonne 5 avec lierre -->
+                <a-entity position="8 0 0">
+                    <a-cylinder position="0 3 0" radius="0.6" height="6" color="#F5F5DC" material="roughness: 0.6" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.2 0" radius="0.8" height="0.4" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#FFFAF0" material="" geometry=""></a-cylinder>
+                    <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#FAF0E6" material="" geometry=""></a-box>
+                    <!-- Lierre grimpant -->
+                    <a-cylinder position="-0.5 2 -0.3" radius="0.07" height="4.5" rotation="-4 0 -7" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-sphere position="-0.55 3 -0.35" radius="0.28" color="#32CD32" material="" geometry=""></a-sphere>
+                    <a-sphere position="-0.45 4.8 -0.25" radius="0.32" color="#2E8B57" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Entablement (poutre horizontale sur les colonnes) -->
+                <a-box position="0 7 0" width="20" height="0.8" depth="2" color="#FAF0E6" material="" geometry=""></a-box>
+                <!-- Fronton triangulaire -->
+                <a-entity position="0 8 0">
+                    <a-box position="0 0.5 0" width="16" height="0.4" depth="1.8" color="#FFFAF0" material="" geometry=""></a-box>
+                    <a-cone position="0 1.5 0" radius-bottom="8" radius-top="0" height="2" rotation="90 0 0" segments-radial="3" color="#FFF8DC" material="roughness: 0.6; side: double" geometry=""></a-cone>
+                </a-entity>
+            </a-entity>
+            
+            <!-- ===== BASSIN CENTRAL (Style Villa d'Este) ===== -->
+            <a-entity id="fountain-basin" position="0 0 -10">
+                <!-- Bassin ovale -->
+                <a-cylinder position="0 0.1 0" rotation="" radius="6" height="0.6" color="#87CEEB" material="opacity: 0.85; transparent: true; metalness: 0.4; roughness: 0.1" geometry=""></a-cylinder>
+                <!-- Bordure du bassin -->
+                <a-torus position="0 0.35 0" rotation="-90 0 0" radius="6.3" radius-tubular="0.4" color="#D2B48C" material="roughness: 0.7" geometry=""></a-torus>
+                <!-- Fontaine centrale -->
+                <a-cylinder position="0 1.5 0" radius="0.3" height="3" color="#F5F5DC" material="" geometry=""></a-cylinder>
+                <a-cylinder position="0 3.2 0" radius="0.8" height="0.4" color="#FAF0E6" material="" geometry=""></a-cylinder>
+                <!-- Jets d'eau (statiques mais suggérant le mouvement) -->
+                <a-cylinder position="0 4 0" radius="0.1" height="1.5" color="#ADD8E6" material="opacity: 0.6; transparent: true" geometry=""></a-cylinder>
+                <a-cylinder position="0.3 3.8 0" radius="0.08" height="1.2" rotation="0 0 14.999999999999998" color="#B0E0E6" material="opacity: 0.5; transparent: true" geometry=""></a-cylinder>
+                <a-cylinder position="-0.3 3.8 0" radius="0.08" height="1.2" rotation="0 0 -14.999999999999998" color="#B0E0E6" material="opacity: 0.5; transparent: true" geometry=""></a-cylinder>
+                <a-cylinder position="0 3.8 0.3" radius="0.08" height="1.2" rotation="14.999999999999998 0 0" color="#87CEEB" material="opacity: 0.5; transparent: true" geometry=""></a-cylinder>
+                <a-cylinder position="0 3.8 -0.3" radius="0.08" height="1.2" rotation="-14.999999999999998 0 0" color="#87CEEB" material="opacity: 0.5; transparent: true" geometry=""></a-cylinder>
+                <!-- Eau qui retombe -->
+                <a-sphere position="0 3.5 0" radius="0.6" color="#E0FFFF" material="opacity: 0.3; transparent: true" geometry=""></a-sphere>
+            </a-entity>
+            
+            <!-- ===== PINS MÉDITERRANÉENS (Style Amalfi/Ravello) ===== -->
+            <!-- Pin parasol 1 -->
+            <a-entity position="-12 0 -5">
+                <a-cylinder position="0 4 0" radius="0.4" height="8" color="#8B4513" material="" geometry=""></a-cylinder>
+                <!-- Couronne du pin parasol (forme caractéristique) -->
+                <a-sphere position="0 9 0" radius="4" scale="1.8 0.6 1.8" color="#2E8B57" material="" geometry=""></a-sphere>
+                <a-sphere position="1.5 9.2 1" radius="2" scale="1.5 0.5 1.5" color="#228B22" material="" geometry=""></a-sphere>
+                <a-sphere position="-1.5 9.1 -0.5" radius="2.5" scale="1.6 0.5 1.6" color="#2E8B57" material="" geometry=""></a-sphere>
+            </a-entity>
+            
+            <!-- Pin parasol 2 -->
+            <a-entity position="15 0 -15">
+                <a-cylinder position="0 5 0" radius="0.5" height="10" color="#A0522D" material="" geometry=""></a-cylinder>
+                <a-sphere position="0 11 0" radius="5" scale="2 0.7 2" color="#228B22" material="" geometry=""></a-sphere>
+                <a-sphere position="2 11.2 1.5" radius="2.5" scale="1.5 0.5 1.5" color="#32CD32" material="" geometry=""></a-sphere>
+                <a-sphere position="-2 11.1 -1" radius="3" scale="1.4 0.6 1.4" color="#2E8B57" material="" geometry=""></a-sphere>
+            </a-entity>
+            
+            <!-- ===== CYPRÈS ITALIENS ===== -->
+            <a-entity position="-18 0 -20">
+                <a-cylinder position="0 4 0" radius="0.3" height="8" color="#654321" material="" geometry=""></a-cylinder>
+                <a-cone position="0 9 0" radius-bottom="1.5" radius-top="0.2" height="6" color="#006400" material="" geometry=""></a-cone>
+            </a-entity>
+            <a-entity position="-20 0 -18">
+                <a-cylinder position="0 3.5 0" radius="0.25" height="7" color="#654321" material="" geometry=""></a-cylinder>
+                <a-cone position="0 8 0" radius-bottom="1.3" radius-top="0.15" height="5" color="#228B22" material="" geometry=""></a-cone>
+            </a-entity>
+            <a-entity position="18 0 -22">
+                <a-cylinder position="0 4.5 0" radius="0.35" height="9" color="#8B4513" material="" geometry=""></a-cylinder>
+                <a-cone position="0 10 0" radius-bottom="1.6" radius-top="0.2" height="7" color="#006400" material="" geometry=""></a-cone>
+            </a-entity>
+            
+            <!-- ===== HAIES SCULPTÉES (Topiaire Renaissance) ===== -->
+            <a-entity id="topiary" position="0 0 -10">
+                <!-- Haie gauche -->
+                <a-box position="-15 1 5" width="1.5" height="2" depth="12" color="#228B22" material="roughness: 0.9" geometry=""></a-box>
+                <!-- Haie droite -->
+                <a-box position="15 1 5" width="1.5" height="2" depth="12" color="#228B22" material="roughness: 0.9" geometry=""></a-box>
+                
+                <!-- Sphères de buis taillé -->
+                <a-sphere position="-10 1.2 8" radius="1.5" color="#2E8B57" material="" geometry=""></a-sphere>
+                <a-sphere position="10 1.2 8" radius="1.5" color="#2E8B57" material="" geometry=""></a-sphere>
+                <a-sphere position="-10 1 -5" radius="1.3" color="#228B22" material="" geometry=""></a-sphere>
+                <a-sphere position="10 1 -5" radius="1.3" color="#228B22" material="" geometry=""></a-sphere>
+                
+                <!-- Cônes de topiaire -->
+                <a-cone position="-6 1.5 12" radius-bottom="1" radius-top="0.1" height="3" color="#2E8B57" material="" geometry=""></a-cone>
+                <a-cone position="6 1.5 12" radius-bottom="1" radius-top="0.1" height="3" color="#2E8B57" material="" geometry=""></a-cone>
+            </a-entity>
+            
+            <!-- ===== FLEURS MÉDITERRANÉENNES ===== -->
+            <a-entity id="mediterranean-flowers">
+                <!-- Bougainvilliers roses -->
+                <a-entity position="-8 0 5">
+                    <a-cylinder position="0 1 0" radius="0.08" height="2" color="#8B4513" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 2.2 0" radius="1.2" color="#FF1493" material="" geometry=""></a-sphere>
+                    <a-sphere position="0.5 2 0.3" radius="0.8" color="#FF69B4" material="" geometry=""></a-sphere>
+                    <a-sphere position="-0.4 2.3 -0.2" radius="0.9" color="#DB7093" material="" geometry=""></a-sphere>
+                </a-entity>
+                <a-entity position="8 0 5">
+                    <a-cylinder position="0 1 0" radius="0.08" height="2" color="#8B4513" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 2.2 0" radius="1.2" color="#FF1493" material="" geometry=""></a-sphere>
+                    <a-sphere position="0.5 2 0.3" radius="0.8" color="#FF69B4" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Lavande -->
+                <a-entity position="-5 0 3">
+                    <a-cylinder position="0 0.4 0" radius="0.03" height="0.8" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-cone position="0 0.9 0" radius-bottom="0.15" radius-top="0.05" height="0.4" color="#9370DB" material="" geometry=""></a-cone>
+                </a-entity>
+                <a-entity position="-4.7 0 3.2">
+                    <a-cylinder position="0 0.35 0" radius="0.03" height="0.7" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-cone position="0 0.8 0" radius-bottom="0.12" radius-top="0.04" height="0.35" color="#8A2BE2" material="" geometry=""></a-cone>
+                </a-entity>
+                <a-entity position="-5.3 0 2.8">
+                    <a-cylinder position="0 0.38 0" radius="0.03" height="0.75" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-cone position="0 0.85 0" radius-bottom="0.13" radius-top="0.04" height="0.38" color="#9932CC" material="" geometry=""></a-cone>
+                </a-entity>
+                
+                <!-- Roses -->
+                <a-entity position="5 0 2">
+                    <a-cylinder position="0 0.5 0" radius="0.04" height="1" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 1.1 0" radius="0.25" color="#FF0000" material="" geometry=""></a-sphere>
+                </a-entity>
+                <a-entity position="5.4 0 2.3">
+                    <a-cylinder position="0 0.45 0" radius="0.04" height="0.9" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 1 0" radius="0.22" color="#DC143C" material="" geometry=""></a-sphere>
+                </a-entity>
+                <a-entity position="4.8 0 2.5">
+                    <a-cylinder position="0 0.55 0" radius="0.04" height="1.1" color="#228B22" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 1.2 0" radius="0.28" color="#FFB6C1" material="" geometry=""></a-sphere>
+                </a-entity>
+            </a-entity>
+            
+            <!-- ===== STATUES CLASSIQUES ===== -->
+            <a-entity id="statues">
+                <!-- Statue sur piédestal gauche -->
+                <a-entity position="-6 0 -18">
+                    <a-box position="0 0.5 0" width="1.2" height="1" depth="1.2" color="#D3D3D3" material="" geometry=""></a-box>
+                    <a-box position="0 1.2 0" width="1" height="0.4" depth="1" color="#E8E8E8" material="" geometry=""></a-box>
+                    <a-cylinder position="0 2 0" radius="0.25" height="1.2" color="#F5F5F5" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 2.9 0" radius="0.2" color="#F5F5F5" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Statue sur piédestal droite -->
+                <a-entity position="6 0 -18">
+                    <a-box position="0 0.5 0" width="1.2" height="1" depth="1.2" color="#D3D3D3" material="" geometry=""></a-box>
+                    <a-box position="0 1.2 0" width="1" height="0.4" depth="1" color="#E8E8E8" material="" geometry=""></a-box>
+                    <a-cylinder position="0 2 0" radius="0.25" height="1.2" color="#F5F5F5" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 2.9 0" radius="0.2" color="#F5F5F5" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Vases décoratifs -->
+                <a-entity position="-3 0 -5">
+                    <a-cylinder position="0 0.3 0" radius="0.4" height="0.6" color="#CD853F" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.7 0" radius="0.25" height="0.3" color="#D2691E" material="" geometry=""></a-cylinder>
+                    <!-- Plante dans le vase -->
+                    <a-sphere position="0 1 0" radius="0.5" color="#228B22" material="" geometry=""></a-sphere>
+                    <a-sphere position="0.2 1.3 0.1" radius="0.3" color="#32CD32" material="" geometry=""></a-sphere>
+                </a-entity>
+                <a-entity position="3 0 -5">
+                    <a-cylinder position="0 0.3 0" radius="0.4" height="0.6" color="#CD853F" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="0 0.7 0" radius="0.25" height="0.3" color="#D2691E" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 1 0" radius="0.5" color="#228B22" material="" geometry=""></a-sphere>
+                    <a-sphere position="-0.15 1.25 0.1" radius="0.35" color="#2E8B57" material="" geometry=""></a-sphere>
+                </a-entity>
+            </a-entity>
+            
+            <!-- ===== PETITS OISEAUX / PARTICULES CÉLESTES ===== -->
+            <a-entity id="celestial-particles">
+                <!-- Lueurs dorées flottantes -->
+                <a-sphere position="3 3 -15" radius="0.1" color="#FFD700" material="emissive: #FFD700; emissiveIntensity: 0.8" geometry=""></a-sphere>
+                <a-sphere position="-5 4 -20" radius="0.08" color="#FFA500" material="emissive: #FFA500; emissiveIntensity: 0.7" geometry=""></a-sphere>
+                <a-sphere position="8 2.5 -12" radius="0.12" color="#FFFF00" material="emissive: #FFFF00; emissiveIntensity: 0.6" geometry=""></a-sphere>
+                <a-sphere position="-2 5 -25" radius="0.15" color="#FFD700" material="emissive: #FFD700; emissiveIntensity: 0.9" geometry=""></a-sphere>
+                <a-sphere position="10 3.5 -18" radius="0.1" color="#FFF8DC" material="emissive: #FFF8DC; emissiveIntensity: 0.7" geometry=""></a-sphere>
+                <a-sphere position="-8 6 -30" radius="0.2" color="#FFD700" material="emissive: #FFD700" geometry=""></a-sphere>
+                
+                <!-- Pétales flottants (simulés par petites sphères roses) -->
+                <a-sphere position="2 1.5 -8" radius="0.06" color="#FFB6C1" material="opacity: 0.8; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="-1 2 -10" radius="0.05" color="#FFC0CB" material="opacity: 0.7; transparent: true" geometry=""></a-sphere>
+                <a-sphere position="4 1.8 -6" radius="0.07" color="#FF69B4" material="opacity: 0.6; transparent: true" geometry=""></a-sphere>
+            </a-entity>
+            </a-entity>
+            
+            <!-- ===== ÎLOTS FLOTTANTS DISTANTS ===== -->
+            <a-entity id="distant-islands">
+                <!-- Îlot avec ruine à gauche -->
+                <a-entity position="-50 5 -60">
+                    <a-cylinder position="" radius="8" height="2" color="#6B5344" material="opacity: 0.9; transparent: true" geometry=""></a-cylinder>
+                    <a-cylinder position="0 1.2 0" radius="7" height="0.5" color="#228B22" material="" geometry=""></a-cylinder>
+                    <!-- Colonne en ruine -->
+                    <a-cylinder position="0 3 0" radius="0.5" height="4" color="#D3D3D3" material="" geometry=""></a-cylinder>
+                    <a-cylinder position="2 2 -1" radius="0.4" height="2.5" color="#C0C0C0" material="" geometry=""></a-cylinder>
+                </a-entity>
+                
+                <!-- Îlot avec arbre à droite -->
+                <a-entity position="55 8 -70">
+                    <a-cylinder position="" radius="6" height="1.5" color="#5D4037" material="opacity: 0.85; transparent: true" geometry=""></a-cylinder>
+                    <a-cylinder position="0 1 0" radius="5.5" height="0.3" color="#32CD32" material="" geometry=""></a-cylinder>
+                    <!-- Pin -->
+                    <a-cylinder position="0 3 0" radius="0.3" height="5" color="#8B4513" material="" geometry=""></a-cylinder>
+                    <a-sphere position="0 6 0" radius="3" scale="1.5 0.5 1.5" color="#228B22" material="" geometry=""></a-sphere>
+                </a-entity>
+                
+                <!-- Îlot lointain avec mansion -->
+                <a-entity position="0 12 -67.08432" visible="" id="skyhouse">
+                    
+                    
+                    <!-- Low Poly Mansion -->
+                    <a-entity gltf-model="#mansionModel" fix-mansion-textures position="0.297 1.989 -6.570" scale="0.5 0.5 0.5" rotation="" shadow="cast: true; receive: true"></a-entity>
+                </a-entity>
+            </a-entity>
+            
+            <!-- ===== NUAGES EN HAUTEUR ===== -->
+            <a-entity id="sky-clouds">
+                <a-sphere position="-20 20 -40" radius="8" color="#FFFFFF" 
+                    material="opacity: 0.5; transparent: true"></a-sphere>
+                <a-sphere position="25 25 -50" radius="10" color="#FFF8F8" 
+                    material="opacity: 0.4; transparent: true"></a-sphere>
+                <a-sphere position="-35 18 -30" radius="6" color="#F8F8FF" 
+                    material="opacity: 0.45; transparent: true"></a-sphere>
+                <a-sphere position="40 22 -35" radius="7" color="#FFFAFA" 
+                    material="opacity: 0.5; transparent: true"></a-sphere>
+                
+                
+            </a-entity>
+            
         </a-entity>
 
         <!-- ============================================ -->
@@ -84,7 +424,7 @@
             <!-- Texture écran terminal -->
             <canvas id="terminalScreen" width="256" height="256"></canvas>
             <a-asset-item id="headsetModel" src="./models/vr_headset/scene.gltf"></a-asset-item>
-
+            <a-asset-item id="mansionModel" src="./models/low_poly_mansion/low_poly_mansion.glb"></a-asset-item>
         </a-assets>
 
         <!-- ============================================ -->

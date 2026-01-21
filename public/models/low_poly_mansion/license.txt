@@ -1,0 +1,11 @@
+Model Information:
+* title:	Low Poly Mansion
+* source:	https://sketchfab.com/3d-models/low-poly-mansion-5aed0887ead74f0ba2988a3de7d61bd7
+* author:	EdwinRC (https://sketchfab.com/Edwin3D)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "Low Poly Mansion" (https://sketchfab.com/3d-models/low-poly-mansion-5aed0887ead74f0ba2988a3de7d61bd7) by EdwinRC (https://sketchfab.com/Edwin3D) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
