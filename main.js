@@ -59,10 +59,16 @@ AFRAME.registerComponent('headset-toggle', {
         // Setup hands
         this.setupHandGrab();
         
-        // Event click classique (pour souris/fallback)
+        // Event click classique (pour souris PC uniquement)
         this.el.addEventListener('click', () => {
             console.log('Click sur le casque détecté!');
-            if (!window.oasisState.isInOasis) {
+            // Vérifier qu'on n'est pas en mode VR
+            const scene = this.el.sceneEl;
+            const isInVR = scene.is('vr-mode');
+            console.log('Is in VR mode?', isInVR);
+            
+            if (!window.oasisState.isInOasis && !isInVR) {
+                console.log('Click PC mode - lancement transition');
                 this.startOasisTransition();
             }
         });
@@ -84,26 +90,20 @@ AFRAME.registerComponent('headset-toggle', {
         hands.forEach((hand, idx) => {
             console.log(`Hand ${idx}:`, hand.getAttribute('hand-controls'));
             
-            // Événement grip pour attraper (deux approches)
-            hand.addEventListener('grip', () => {
-                console.log('Grip event détecté sur hand', idx);
-                if (self.isNearHeadset(hand) && !window.oasisState.isInOasis) {
-                    console.log('Grab déclenché!');
+            // A-Frame hand-controls utilise des événements spécifiques
+            // On utilise 'triggerdown' pour attraper
+            hand.addEventListener('triggerdown', (evt) => {
+                console.log(`Triggerdown sur hand ${idx}`);
+                const headsetPos = self.el.object3D.getWorldPosition(new THREE.Vector3());
+                const handPos = hand.object3D.getWorldPosition(new THREE.Vector3());
+                const distance = headsetPos.distanceTo(handPos);
+                console.log(`Distance main-casque: ${distance.toFixed(2)}m`);
+                
+                if (distance < self.grabDistance && !window.oasisState.isInOasis) {
+                    console.log('✅ Grab déclenché!');
                     self.grabHeadset(hand);
                 } else if (window.oasisState.isInOasis && self.isNearHead(hand)) {
-                    console.log('Remove casque déclenché!');
-                    self.removeHeadset();
-                }
-            });
-            
-            // Aussi sur triggerdown
-            hand.addEventListener('triggerdown', () => {
-                console.log('Trigger event détecté sur hand', idx);
-                if (self.isNearHeadset(hand) && !window.oasisState.isInOasis) {
-                    console.log('Grab via trigger déclenché!');
-                    self.grabHeadset(hand);
-                } else if (window.oasisState.isInOasis && self.isNearHead(hand)) {
-                    console.log('Remove casque via trigger!');
+                    console.log('✅ Remove casque déclenché!');
                     self.removeHeadset();
                 }
             });
@@ -112,6 +112,30 @@ AFRAME.registerComponent('headset-toggle', {
             hand.addEventListener('triggerup', () => {
                 if (self.isBeingGrabbed && window.oasisState.grabbedHand === hand) {
                     console.log('Release casque!');
+                    self.releaseHeadset();
+                }
+            });
+            
+            // Ajout aussi sur 'gripdown' pour les contrôleurs qui l'utilisent
+            hand.addEventListener('gripdown', (evt) => {
+                console.log(`Gripdown sur hand ${idx}`);
+                const headsetPos = self.el.object3D.getWorldPosition(new THREE.Vector3());
+                const handPos = hand.object3D.getWorldPosition(new THREE.Vector3());
+                const distance = headsetPos.distanceTo(handPos);
+                console.log(`Distance main-casque (grip): ${distance.toFixed(2)}m`);
+                
+                if (distance < self.grabDistance && !window.oasisState.isInOasis) {
+                    console.log('✅ Grab via grip déclenché!');
+                    self.grabHeadset(hand);
+                } else if (window.oasisState.isInOasis && self.isNearHead(hand)) {
+                    console.log('✅ Remove casque via grip!');
+                    self.removeHeadset();
+                }
+            });
+            
+            hand.addEventListener('gripup', () => {
+                if (self.isBeingGrabbed && window.oasisState.grabbedHand === hand) {
+                    console.log('Release casque (grip)!');
                     self.releaseHeadset();
                 }
             });
@@ -136,23 +160,22 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isGrabbing = true;
         window.oasisState.grabbedHand = hand;
         
-        // Attache le casque à la main
-        this.el.setAttribute('visible', true);
+        console.log('grabHeadset called, hand:', hand);
         
-        // Suivi de la main
+        // Attache le casque à la main
+        thisuivi de la main
         this.followHand = () => {
             if (this.isBeingGrabbed && window.oasisState.grabbedHand) {
-                const handPos = window.oasisState.grabbedHand.object3D.position;
-                this.el.setAttribute('position', {
-                    x: handPos.x,
-                    y: handPos.y,
-                    z: handPos.z
-                });
+                const handPos = window.oasisState.grabbedHand.object3D.getWorldPosition(new THREE.Vector3());
+                this.el.object3D.position.copy(handPos);
                 
                 // Vérifie si proche de la tête pour porter
                 const camera = document.getElementById('player-camera');
                 const cameraWorldPos = camera.object3D.getWorldPosition(new THREE.Vector3());
                 const headsetWorldPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
+                
+                if (cameraWorldPos.distanceTo(headsetWorldPos) < this.wearDistance) {
+                    console.log('Casque proche de la tête - wear!');ector3());
                 
                 if (cameraWorldPos.distanceTo(headsetWorldPos) < this.wearDistance) {
                     this.wearHeadset();
@@ -167,7 +190,11 @@ AFRAME.registerComponent('headset-toggle', {
         if (this.followHand) {
             this.el.sceneEl.removeEventListener('tick', this.followHand);
         }
-        
+        // remove mouse move
+        if (this._mouseFallback) {
+            window.removeEventListener('mousemove', this._mouseMoveHandler);
+            this._mouseFallback = false;
+        }
         this.isBeingGrabbed = false;
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
@@ -178,17 +205,13 @@ AFRAME.registerComponent('headset-toggle', {
         }
     },
     
-    wearHeadset: function() {
-        if (this.followHand) {
-            this.el.sceneEl.removeEventListener('tick', this.followHand);
-        }
         this.isBeingGrabbed = false;
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
         
-        // Cache le casque physique
-        this.el.setAttribute('visible', false);
-        
+        // Remet le casque à sa position originale
+        if (!window.oasisState.isInOasis) {
+            this.el.setAttribute('position', window.oasisState.originalHeadsetPos
         // Lance la transition vers l'Oasis
         this.startOasisTransition();
     },
@@ -218,10 +241,15 @@ AFRAME.registerComponent('headset-toggle', {
         }
         
         loadingScreen.classList.add('active');
+        // Fallback: forcer l'affichage inline si la classe ne suffit pas (desktop)
+        loadingScreen.style.display = 'flex';
         
         // Animation éclipse qui se ferme
         eclipseOverlay.classList.remove('opening');
         eclipseOverlay.classList.add('closing');
+        
+        // Vérifier visuellement que l'overlay est visible
+        console.log('Computed loading screen display:', window.getComputedStyle(loadingScreen).display);
         
         // Après la fermeture de l'éclipse, affiche le contenu
         setTimeout(() => {
