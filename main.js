@@ -1,8 +1,8 @@
 // ============================================
-// SYSTÈME DE CASQUE VR OASIS - Ready Player One x Gucci
+// OASIS VR HEADSET SYSTEM - Ready Player One x Gucci
 // ============================================
 
-// État global du casque
+// Global headset state
 window.oasisState = {
     isInOasis: false,
     isGrabbing: false,
@@ -11,7 +11,7 @@ window.oasisState = {
     originalRigPos: null
 };
 
-// Gestion des clics VR avec les manettes
+// Handle VR clicks with controllers
 function setupVRClickHandling() {
     const hands = document.querySelectorAll('[hand-controls]');
     
@@ -33,7 +33,7 @@ if (document.querySelector('a-scene').hasLoaded) {
 }
 
 // ============================================
-// COMPOSANT PRINCIPAL - HEADSET TOGGLE (GRAB + WEAR)
+// MAIN COMPONENT - HEADSET TOGGLE (GRAB + WEAR)
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
@@ -42,32 +42,24 @@ AFRAME.registerComponent('headset-toggle', {
         const camera = document.getElementById('player-camera');
         const rig = document.getElementById('rig');
         
-        console.log('=== HEADSET-TOGGLE INIT ===');
-        console.log('Headset element:', this.el);
-        console.log('Headset position:', this.el.getAttribute('position'));
-        
-        // Sauvegarde position initiale du casque et du rig
+        // Save initial positions
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
         window.oasisState.originalRigPos = rig ? rig.getAttribute('position') : {x: 0, y: 0, z: 0};
         
-        // État du grab
+        // Grab state
         this.isBeingGrabbed = false;
-        this.grabDistance = 0.50; // Distance max pour grab (50cm - plus tolérant)
-        this.wearDistance = 0.25; // Distance de la tête pour porter le casque (25cm)
+        this.grabDistance = 0.50;
+        this.wearDistance = 0.25;
         
-        // Setup hands
+        // Setup hand grab
         this.setupHandGrab();
         
-        // Event click classique (pour souris PC uniquement)
+        // Classic click event (PC mouse only)
         this.el.addEventListener('click', () => {
-            console.log('Click sur le casque détecté!');
-            // Vérifier qu'on n'est pas en mode VR
             const scene = this.el.sceneEl;
             const isInVR = scene.is('vr-mode');
-            console.log('Is in VR mode?', isInVR);
             
             if (!window.oasisState.isInOasis && !isInVR) {
-                console.log('Click PC mode - lancement transition');
                 this.startOasisTransition();
             }
         });
@@ -77,64 +69,46 @@ AFRAME.registerComponent('headset-toggle', {
         const self = this;
         const scene = this.el.sceneEl;
         
-        // Attendre que la scène soit chargée avant de setup les hands
         if (!scene.hasLoaded) {
             scene.addEventListener('loaded', () => this.setupHandGrab());
             return;
         }
         
         const hands = document.querySelectorAll('[hand-controls]');
-        console.log(`Setup grab: ${hands.length} hands trouvées`);
         
         hands.forEach((hand, idx) => {
-            console.log(`Hand ${idx}:`, hand.getAttribute('hand-controls'));
-            
-            // A-Frame hand-controls utilise des événements spécifiques
-            // On utilise 'triggerdown' pour attraper
             hand.addEventListener('triggerdown', (evt) => {
-                console.log(`Triggerdown sur hand ${idx}`);
                 const headsetPos = self.el.object3D.getWorldPosition(new THREE.Vector3());
                 const handPos = hand.object3D.getWorldPosition(new THREE.Vector3());
                 const distance = headsetPos.distanceTo(handPos);
-                console.log(`Distance main-casque: ${distance.toFixed(2)}m`);
                 
                 if (distance < self.grabDistance && !window.oasisState.isInOasis) {
-                    console.log('✅ Grab déclenché!');
                     self.grabHeadset(hand);
                 } else if (window.oasisState.isInOasis && self.isNearHead(hand)) {
-                    console.log('✅ Remove casque déclenché!');
                     self.removeHeadset();
                 }
             });
             
-            // Sur triggerup pour relâcher
             hand.addEventListener('triggerup', () => {
                 if (self.isBeingGrabbed && window.oasisState.grabbedHand === hand) {
-                    console.log('Release casque!');
                     self.releaseHeadset();
                 }
             });
             
-            // Ajout aussi sur 'gripdown' pour les contrôleurs qui l'utilisent
             hand.addEventListener('gripdown', (evt) => {
-                console.log(`Gripdown sur hand ${idx}`);
                 const headsetPos = self.el.object3D.getWorldPosition(new THREE.Vector3());
                 const handPos = hand.object3D.getWorldPosition(new THREE.Vector3());
                 const distance = headsetPos.distanceTo(handPos);
-                console.log(`Distance main-casque (grip): ${distance.toFixed(2)}m`);
                 
                 if (distance < self.grabDistance && !window.oasisState.isInOasis) {
-                    console.log('✅ Grab via grip déclenché!');
                     self.grabHeadset(hand);
                 } else if (window.oasisState.isInOasis && self.isNearHead(hand)) {
-                    console.log('✅ Remove casque via grip!');
                     self.removeHeadset();
                 }
             });
             
             hand.addEventListener('gripup', () => {
                 if (self.isBeingGrabbed && window.oasisState.grabbedHand === hand) {
-                    console.log('Release casque (grip)!');
                     self.releaseHeadset();
                 }
             });
@@ -159,46 +133,37 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isGrabbing = true;
         window.oasisState.grabbedHand = hand;
         
-        console.log('✅ Casque grabbé! Le casque va suivre ta main...');
-        
-        // Rendre le casque visible
+        // Make headset visible
         this.el.setAttribute('visible', true);
+        this.el.setAttribute('color', '#FFD700');
         
-        // Suivi de la main en temps réel
+        // Follow hand in real-time
         this.followHand = () => {
             if (this.isBeingGrabbed && window.oasisState.grabbedHand) {
-                // Obtenir la position mondiale de la main
+                // Get hand world position
                 const handWorldPos = window.oasisState.grabbedHand.object3D.getWorldPosition(new THREE.Vector3());
                 
-                // Mettre à jour la position du casque pour qu'il suive la main
+                // Update headset position
                 this.el.object3D.position.copy(handWorldPos);
                 
-                // Vérifier continuellement si le casque est proche de la tête
+                // Check if headset is near head
                 const camera = document.getElementById('player-camera');
                 const cameraWorldPos = camera.object3D.getWorldPosition(new THREE.Vector3());
                 const headsetWorldPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
                 const distanceToHead = cameraWorldPos.distanceTo(headsetWorldPos);
                 
-                // Debug distance
-                if (Math.random() < 0.1) { // Log tous les ~10 frames
-                    console.log(`Distance casque-tête: ${distanceToHead.toFixed(2)}m (seuil: ${this.wearDistance}m)`);
-                }
-                
-                // Si proche de la tête, porter le casque
+                // If close to head, wear headset
                 if (distanceToHead < this.wearDistance) {
-                    console.log('🎯 Casque proche de la tête - activation!');
                     this.wearHeadset();
                 }
             }
         };
         
-        // Activer le suivi à chaque frame
+        // Enable tracking on each frame
         this.el.sceneEl.addEventListener('tick', this.followHand);
     },
     
     releaseHeadset: function() {
-        console.log('Release casque - arrêt du suivi');
-        
         if (this.followHand) {
             this.el.sceneEl.removeEventListener('tick', this.followHand);
             this.followHand = null;
@@ -208,17 +173,15 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
         
-        // Remet le casque à sa position originale (si pas dans l'Oasis)
+        // Reset headset to original position (if not in Oasis)
         if (!window.oasisState.isInOasis) {
-            console.log('Remise du casque à sa position initiale');
             this.el.setAttribute('position', window.oasisState.originalHeadsetPos);
+            this.el.setAttribute('color', '#000000');
         }
     },
     
     wearHeadset: function() {
-        console.log('🎮 Port du casque - lancement de l\'OASIS!');
-        
-        // Arrêter le suivi
+        // Stop tracking
         if (this.followHand) {
             this.el.sceneEl.removeEventListener('tick', this.followHand);
             this.followHand = null;
@@ -228,10 +191,11 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
         
-        // Cache le casque physique
+        // Hide headset
         this.el.setAttribute('visible', false);
+        this.el.setAttribute('color', '#000000');
         
-        // Lance la transition vers l'Oasis
+        // Launch transition to Oasis
         this.startOasisTransition();
     },
     
@@ -239,49 +203,39 @@ AFRAME.registerComponent('headset-toggle', {
         const self = this;
         const scene = document.querySelector('a-scene');
         
-        console.log('=== OASIS TRANSITION START ===');
+        // Hide headset before showing loading screen
+        this.el.setAttribute('visible', false);
         
-        // Affiche l'écran de chargement
+        // Get loading screen elements
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         const loadingContent = document.getElementById('loading-content');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
         
-        console.log('Loading screen:', loadingScreen);
-        console.log('Eclipse overlay:', eclipseOverlay);
-        console.log('Loading content:', loadingContent);
-        
         if (!loadingScreen || !eclipseOverlay || !loadingContent) {
-            console.error('Éléments DOM manquants! Utilisation du fallback...');
-            // Fallback - passe directement à l'Oasis
+            // Fallback - go directly to Oasis
             setTimeout(() => this.enterOasis(), 500);
             return;
         }
         
+        // Show loading screen
         loadingScreen.classList.add('active');
-        // Fallback: forcer l'affichage inline si la classe ne suffit pas (desktop)
         loadingScreen.style.display = 'flex';
-        
-        // Animation éclipse qui se ferme
         eclipseOverlay.classList.remove('opening');
         eclipseOverlay.classList.add('closing');
         
-        // Vérifier visuellement que l'overlay est visible
-        console.log('Computed loading screen display:', window.getComputedStyle(loadingScreen).display);
-        
-        // Après la fermeture de l'éclipse, affiche le contenu
         setTimeout(() => {
             loadingContent.classList.add('visible');
             
-            // Messages de chargement luxe
+            // Loading messages
             const messages = [
-                "Initialisation du système...",
-                "Connexion aux serveurs OASIS...",
-                "Chargement de l'environnement...",
-                "Synchronisation neurale...",
-                "Calibration sensorielle...",
-                "Bienvenue dans l'OASIS"
+                "System initialization...",
+                "Connecting to OASIS servers...",
+                "Loading environment...",
+                "Neural synchronization...",
+                "Sensor calibration...",
+                "Welcome to the OASIS"
             ];
             
             let progress = 0;
@@ -293,7 +247,7 @@ AFRAME.registerComponent('headset-toggle', {
                 
                 progressBar.style.width = progress + '%';
                 
-                // Change le message
+                // Update message
                 const newIndex = Math.min(Math.floor(progress / 20), messages.length - 1);
                 if (newIndex !== messageIndex) {
                     messageIndex = newIndex;
@@ -303,23 +257,18 @@ AFRAME.registerComponent('headset-toggle', {
                 if (progress >= 100) {
                     clearInterval(progressInterval);
                     
-                    // Transition vers l'Oasis après un court délai
+                    // Transition to Oasis after delay
                     setTimeout(() => {
                         self.enterOasis();
-                        
-                        // Animation éclipse qui s'ouvre
                         eclipseOverlay.classList.remove('closing');
                         eclipseOverlay.classList.add('opening');
-                        
-                        // Cache le contenu
                         loadingContent.classList.remove('visible');
                         
-                        // Cache l'écran de chargement après l'animation
                         setTimeout(() => {
                             loadingScreen.classList.remove('active');
                             eclipseOverlay.classList.remove('opening');
                             progressBar.style.width = '0%';
-                            progressText.textContent = 'Initialisation du système...';
+                            progressText.textContent = 'System initialization...';
                         }, 1500);
                     }, 800);
                 }
@@ -332,10 +281,10 @@ AFRAME.registerComponent('headset-toggle', {
         
         window.oasisState.isInOasis = true;
         
-        // Cache le casque
+        // Hide headset
         this.el.setAttribute('visible', false);
         
-        // Cache TOUS les éléments de l'ancienne scène (sauf rig et vr-world)
+        // Hide all old scene elements
         const allEntities = scene.querySelectorAll('a-entity, a-plane, a-box, a-cylinder, a-sphere');
         allEntities.forEach(entity => {
             const id = entity.getAttribute('id');
@@ -344,7 +293,7 @@ AFRAME.registerComponent('headset-toggle', {
             }
         });
         
-        // Cache tous les anciens lights
+        // Hide old lights
         const oldLights = document.querySelectorAll('[light]:not(#vr-sun):not(#vr-ambient):not(#vr-sunset-lights):not([id^="mansion"])');
         oldLights.forEach(light => {
             if (!light.closest('#vr-world') && !light.closest('#vr-sunset-lights')) {
@@ -352,23 +301,23 @@ AFRAME.registerComponent('headset-toggle', {
             }
         });
         
-        // Change le background en ciel de coucher de soleil
+        // Set background to sunset sky
         scene.setAttribute('background', 'color: #FFB88C');
         scene.setAttribute('fog', 'type: exponential; color: #FFD4B8; density: 0.008');
         
-        // Affiche le nouveau monde VR
+        // Show new VR world
         const vrWorld = document.getElementById('vr-world');
         if (vrWorld) {
             vrWorld.setAttribute('visible', true);
         }
         
-        // Téléporte le joueur
+        // Teleport player to Oasis
         const rig = document.getElementById('rig');
         if (rig) {
             rig.setAttribute('position', '0 16 -56.69');
         }
         
-        // Affiche l'effet de bordure noire du casque VR
+        // Show VR headset overlay effect
         const vrOverlay = document.getElementById('vr-headset-overlay');
         const vrNose = document.getElementById('vr-headset-nose');
         const vrLensTint = document.getElementById('vr-headset-lens-tint');
@@ -376,7 +325,7 @@ AFRAME.registerComponent('headset-toggle', {
         if (vrNose) vrNose.setAttribute('visible', true);
         if (vrLensTint) vrLensTint.setAttribute('visible', true);
         
-        // Affiche le HUD pour retirer le casque
+        // Show HUD to remove headset
         const removeHud = document.getElementById('remove-headset-hud');
         if (removeHud) {
             removeHud.classList.add('visible');
@@ -390,28 +339,28 @@ AFRAME.registerComponent('headset-toggle', {
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         const loadingContent = document.getElementById('loading-content');
         
-        // Cache le HUD
+        // Hide HUD
         const removeHud = document.getElementById('remove-headset-hud');
         if (removeHud) {
             removeHud.classList.remove('visible');
         }
         
-        // Animation éclipse de fermeture
+        // Eclipse closing animation
         loadingScreen.classList.add('active');
         eclipseOverlay.classList.remove('opening');
         eclipseOverlay.classList.add('closing');
         
         setTimeout(() => {
-            // Retour au monde réel
+            // Return to real world
             window.oasisState.isInOasis = false;
             
-            // Cache le monde VR
+            // Hide VR world
             const vrWorld = document.getElementById('vr-world');
             if (vrWorld) {
                 vrWorld.setAttribute('visible', false);
             }
             
-            // Cache l'overlay du casque
+            // Hide headset overlay
             const vrOverlay = document.getElementById('vr-headset-overlay');
             const vrNose = document.getElementById('vr-headset-nose');
             const vrLensTint = document.getElementById('vr-headset-lens-tint');
@@ -419,7 +368,7 @@ AFRAME.registerComponent('headset-toggle', {
             if (vrNose) vrNose.setAttribute('visible', false);
             if (vrLensTint) vrLensTint.setAttribute('visible', false);
             
-            // Restaure la scène originale
+            // Restore original scene
             const allEntities = scene.querySelectorAll('a-entity, a-plane, a-box, a-cylinder, a-sphere');
             allEntities.forEach(entity => {
                 const id = entity.getAttribute('id');
@@ -428,21 +377,21 @@ AFRAME.registerComponent('headset-toggle', {
                 }
             });
             
-            // Restaure le background original
+            // Restore original background
             scene.setAttribute('background', 'color: #a8aeb5');
             scene.setAttribute('fog', 'type: exponential; color: #8a9098; density: 0.012');
             
-            // Remet le rig à sa position originale
+            // Reset rig to original position
             const rig = document.getElementById('rig');
             if (rig && window.oasisState.originalRigPos) {
                 rig.setAttribute('position', window.oasisState.originalRigPos);
             }
             
-            // Remet le casque visible à sa position
+            // Reset headset to original position
             self.el.setAttribute('visible', true);
             self.el.setAttribute('position', window.oasisState.originalHeadsetPos);
             
-            // Animation éclipse qui s'ouvre
+            // Eclipse opening animation
             eclipseOverlay.classList.remove('closing');
             eclipseOverlay.classList.add('opening');
             
@@ -455,7 +404,7 @@ AFRAME.registerComponent('headset-toggle', {
 });
 
 // ============================================
-// COMPOSANT POUR TEXTURES DU MANSION
+// COMPONENT FOR MANSION TEXTURES
 // ============================================
 AFRAME.registerComponent('fix-mansion-textures', {
     init: function() {

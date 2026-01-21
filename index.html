@@ -161,13 +161,13 @@
             <div id="progress-container">
                 <div id="progress-bar"></div>
             </div>
-            <div id="progress-text">Initialisation du système...</div>
+            <div id="progress-text">System initialization...</div>
         </div>
     </div>
     
-    <!-- HUD pour retirer le casque -->
+    <!-- HUD to remove headset -->
     <div id="remove-headset-hud">
-        🎮 Attrapez le casque pour quitter l'OASIS
+        Grab the headset to leave the OASIS
     </div>
 
     <a-scene vr-mode-ui="" fog="type: exponential; color: #8a9098; density: 0.012" background="color: #a8aeb5"
@@ -2513,6 +2513,8 @@
                 depth="0.25"
                 color="#000000"
                 material="roughness: 0.8">
+                <!-- VR Indication: grab the headset -->
+                <a-entity position="0 0.25 0" text="value: Grab the headset to enter the OASIS; align: center; color: #FFD700; width: 2.5;" visible="true"></a-entity>
             </a-box>
                 <!-- Casque VR principal -->
                 <a-entity rotation="0 -29.999999999999996 0">
