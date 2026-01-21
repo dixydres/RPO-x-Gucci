@@ -1,4 +1,3 @@
-
 // ============================================
 // SYSTÈME DE CASQUE VR OASIS - Ready Player One x Gucci
 // ============================================
@@ -53,8 +52,8 @@ AFRAME.registerComponent('headset-toggle', {
         
         // État du grab
         this.isBeingGrabbed = false;
-        this.grabDistance = 0.35; // Distance max pour grab (35cm)
-        this.wearDistance = 0.30; // Distance de la tête pour porter le casque (30cm)
+        this.grabDistance = 0.50; // Distance max pour grab (50cm - plus tolérant)
+        this.wearDistance = 0.25; // Distance de la tête pour porter le casque (25cm)
         
         // Setup hands
         this.setupHandGrab();
@@ -160,58 +159,78 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isGrabbing = true;
         window.oasisState.grabbedHand = hand;
         
-        console.log('grabHeadset called, hand:', hand);
+        console.log('✅ Casque grabbé! Le casque va suivre ta main...');
         
-        // Attache le casque à la main
-        thisuivi de la main
+        // Rendre le casque visible
+        this.el.setAttribute('visible', true);
+        
+        // Suivi de la main en temps réel
         this.followHand = () => {
             if (this.isBeingGrabbed && window.oasisState.grabbedHand) {
-                const handPos = window.oasisState.grabbedHand.object3D.getWorldPosition(new THREE.Vector3());
-                this.el.object3D.position.copy(handPos);
+                // Obtenir la position mondiale de la main
+                const handWorldPos = window.oasisState.grabbedHand.object3D.getWorldPosition(new THREE.Vector3());
                 
-                // Vérifie si proche de la tête pour porter
+                // Mettre à jour la position du casque pour qu'il suive la main
+                this.el.object3D.position.copy(handWorldPos);
+                
+                // Vérifier continuellement si le casque est proche de la tête
                 const camera = document.getElementById('player-camera');
                 const cameraWorldPos = camera.object3D.getWorldPosition(new THREE.Vector3());
                 const headsetWorldPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
+                const distanceToHead = cameraWorldPos.distanceTo(headsetWorldPos);
                 
-                if (cameraWorldPos.distanceTo(headsetWorldPos) < this.wearDistance) {
-                    console.log('Casque proche de la tête - wear!');ector3());
+                // Debug distance
+                if (Math.random() < 0.1) { // Log tous les ~10 frames
+                    console.log(`Distance casque-tête: ${distanceToHead.toFixed(2)}m (seuil: ${this.wearDistance}m)`);
+                }
                 
-                if (cameraWorldPos.distanceTo(headsetWorldPos) < this.wearDistance) {
+                // Si proche de la tête, porter le casque
+                if (distanceToHead < this.wearDistance) {
+                    console.log('🎯 Casque proche de la tête - activation!');
                     this.wearHeadset();
                 }
             }
         };
         
+        // Activer le suivi à chaque frame
         this.el.sceneEl.addEventListener('tick', this.followHand);
     },
     
     releaseHeadset: function() {
+        console.log('Release casque - arrêt du suivi');
+        
         if (this.followHand) {
             this.el.sceneEl.removeEventListener('tick', this.followHand);
+            this.followHand = null;
         }
-        // remove mouse move
-        if (this._mouseFallback) {
-            window.removeEventListener('mousemove', this._mouseMoveHandler);
-            this._mouseFallback = false;
-        }
+        
         this.isBeingGrabbed = false;
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
         
-        // Remet le casque à sa position originale
+        // Remet le casque à sa position originale (si pas dans l'Oasis)
         if (!window.oasisState.isInOasis) {
+            console.log('Remise du casque à sa position initiale');
             this.el.setAttribute('position', window.oasisState.originalHeadsetPos);
         }
     },
     
+    wearHeadset: function() {
+        console.log('🎮 Port du casque - lancement de l\'OASIS!');
+        
+        // Arrêter le suivi
+        if (this.followHand) {
+            this.el.sceneEl.removeEventListener('tick', this.followHand);
+            this.followHand = null;
+        }
+        
         this.isBeingGrabbed = false;
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
         
-        // Remet le casque à sa position originale
-        if (!window.oasisState.isInOasis) {
-            this.el.setAttribute('position', window.oasisState.originalHeadsetPos
+        // Cache le casque physique
+        this.el.setAttribute('visible', false);
+        
         // Lance la transition vers l'Oasis
         this.startOasisTransition();
     },
