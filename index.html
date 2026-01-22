@@ -196,6 +196,23 @@
                     position="0 0 -0.31" radius-inner="0.28" radius-outer="0.35" color="#1a1a2e" scale="1.8 1.1 1"
                     material="transparent: true; opacity: 0.3; side: double; shader: flat" visible="false">
                 </a-ring>
+                <a-entity id="vr-loading-screen" position="0 0 -0.6" visible="false">
+    
+    <a-sphere radius="2" color="black" material="shader: flat; side: back" position="0 0 0"></a-sphere>
+
+    <a-text value="OASIS" position="0 0.15 0" align="center" width="2" 
+            font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" color="#d4af37"></a-text>
+    
+    <a-text value="READY PLAYER ONE x GUCCI" position="0 0.08 0" align="center" width="0.8" color="#888"></a-text>
+
+    <a-plane position="0 -0.05 0" width="0.6" height="0.02" color="#333"></a-plane>
+    
+    <a-plane id="vr-loading-bar" position="-0.3 -0.05 0.001" width="0.6" height="0.015" 
+             color="#d4af37" pivot="0.3 0 0" scale="0 1 1" shader="flat"></a-plane>
+
+    <a-text id="vr-loading-text" value="INITIALIZATION..." position="0 -0.15 0" align="center" width="0.8" color="#aaa"></a-text>
+
+</a-entity>
             </a-camera>
 
             <a-entity 
@@ -218,7 +235,7 @@
         <!-- MONDE VR - Jardin Céleste dans les Nuages -->
         <!-- Inspiré Villa d'Este, colonnes romaines, jardins flottants -->
         <!-- ============================================ -->
-        <a-entity id="vr-world" visible="false">
+        <a-entity id="vr-world" visible="false" position="0 -15.649 58.457">
             
             <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0">
             <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->

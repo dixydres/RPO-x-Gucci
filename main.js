@@ -256,27 +256,36 @@ AFRAME.registerComponent('headset-toggle', {
         }
     },
 
-    startOasisTransition: function() {
+   startOasisTransition: function() {
         console.log("CHARGEMENT OASIS...");
         this.isLoading = true;
-        this.el.setAttribute('visible', false);
+        this.el.setAttribute('visible', false); // Cache le casque physique
         
-        // Récupérer les éléments HTML de l'écran de chargement
+        // 1. GESTION ÉCRAN HTML (Pour mode PC sans VR)
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         const loadingContent = document.getElementById('loading-content');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
         
-        // Activer l'écran
-        loadingScreen.classList.add('active'); // CSS display:flex
-        loadingScreen.style.display = 'flex'; // Sécurité
+        if(loadingScreen) {
+            loadingScreen.classList.add('active');
+            loadingScreen.style.display = 'flex';
+            if(eclipseOverlay) {
+                eclipseOverlay.classList.remove('opening');
+                eclipseOverlay.classList.add('closing');
+            }
+        }
+
+        // 2. GESTION ÉCRAN VR (Pour le casque) - NOUVEAU
+        const vrLoadingScreen = document.getElementById('vr-loading-screen');
+        const vrLoadingBar = document.getElementById('vr-loading-bar');
+        const vrLoadingText = document.getElementById('vr-loading-text');
+
+        if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', true);
+
         
-        // Animation iris qui se ferme
-        eclipseOverlay.classList.remove('opening');
-        eclipseOverlay.classList.add('closing');
-        
-        // Déroulement du chargement
+        // DÉROULEMENT DU CHARGEMENT
         setTimeout(() => {
             if(loadingContent) loadingContent.classList.add('visible');
             
@@ -293,29 +302,49 @@ AFRAME.registerComponent('headset-toggle', {
             let messageIndex = 0;
             
             const progressInterval = setInterval(() => {
-                progress += Math.random() * 4 + 1; // Vitesse variable
+                progress += Math.random() * 4 + 1;
                 if (progress > 100) progress = 100;
                 
+                // Mise à jour HTML (PC)
                 if(progressBar) progressBar.style.width = progress + '%';
                 
+                // Mise à jour VR (Casque) - On change l'échelle de la barre
+                // scale="X 1 1" où X va de 0 à 1
+                if(vrLoadingBar) {
+                    const scaleFactor = progress / 100;
+                    vrLoadingBar.setAttribute('scale', `${scaleFactor} 1 1`);
+                    // On compense la position pour que la barre grandisse de gauche à droite
+                    // Note: Le pivot dans le HTML simplifie ça, mais voici un hack positionnel si besoin
+                    vrLoadingBar.setAttribute('position', `${-0.3 + (0.3 * scaleFactor)} -0.05 0.001`);
+                }
+
+                // Mise à jour du texte
                 const newIndex = Math.min(Math.floor(progress / 18), messages.length - 1);
-                if (newIndex !== messageIndex && progressText) {
+                if (newIndex !== messageIndex) {
                     messageIndex = newIndex;
-                    progressText.textContent = messages[messageIndex];
+                    const txt = messages[messageIndex];
+                    if(progressText) progressText.textContent = txt;
+                    if(vrLoadingText) vrLoadingText.setAttribute('value', txt); // Mise à jour texte VR
                 }
                 
                 if (progress >= 100) {
                     clearInterval(progressInterval);
                     this.enterOasis();
                 }
-            }, 80); // Vitesse de mise à jour
+            }, 80);
         }, 1000);
     },
 
     enterOasis: function() {
+        console.log('[OASIS] Entering OASIS...');
         window.oasisState.isInOasis = true;
         this.isLoading = false;
         
+        
+        const vrLoadingScreen = document.getElementById('vr-loading-screen');
+        if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
+
+        // ... le reste de ta fonction enterOasis ne change pas ...
         const scene = document.querySelector('a-scene');
         
         // 1. Cacher le monde réel (Caravane)
