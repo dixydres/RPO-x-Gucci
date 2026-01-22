@@ -2508,21 +2508,21 @@
             </a-entity>
 
             <!-- ============================================ -->
-            <!-- LE CASQUE OASIS - Pièce maîtresse (CUBE TEMPORAIRE) -->
+            <!-- LE CASQUE OASIS - Pièce maîtresse (modèle texturé) -->
             <!-- ============================================ -->
-            <a-box 
-                id="oasis-headset" 
-                class="clickable" 
+            <a-entity
+                id="oasis-headset"
+                class="clickable"
                 headset-toggle
+                gltf-model="#headsetModel"
                 position="0.7 0.82 -0.95"
-                width="0.3" 
-                height="0.2" 
-                depth="0.25"
-                color="#000000"
-                material="roughness: 0.8">
+                rotation="0 156 0"
+                scale="0.2 0.2 0.2"
+                fix-headset-textures
+                shadow="cast: true; receive: true">
                 <!-- VR Indication: grab the headset -->
                 <a-entity position="0 0.25 0" text="value: Grab the headset to enter the OASIS; align: center; color: #FFD700; width: 2.5;" visible="true"></a-entity>
-            </a-box>
+            </a-entity>
                 <!-- Casque VR principal -->
                 <a-entity rotation="0 -29.999999999999996 0">
                     <!-- Corps du casque -->

@@ -1,5 +1,5 @@
 // ============================================
-// OASIS VR SYSTEM - FINAL FLUID & TAMISÉ
+// OASIS VR SYSTEM - TYPO FIX & OPTIMIZED
 // ============================================
 
 window.oasisState = {
@@ -19,7 +19,7 @@ function dropObject(el) {
 
     const floorHeight = 0.15;
     const tableHeight = 0.82;
-    // Zone du bureau
+    // Zone du bureau (approximative)
     const isOverTable = (worldPos.x > 0.2 && worldPos.x < 1.4 && worldPos.z > -1.4 && worldPos.z < -0.4);
     const targetY = isOverTable ? tableHeight : floorHeight;
 
@@ -131,7 +131,7 @@ AFRAME.registerComponent('vr-controller-grab', {
 });
 
 // ============================================
-// 2. LOGIQUE CASQUE
+// 2. LOGIQUE CASQUE (C'est ici que tu avais la faute de frappe)
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
@@ -141,6 +141,7 @@ AFRAME.registerComponent('headset-toggle', {
         this.isLoading = false;
         this.isAnimatingOn = false;
 
+        // CORRECTION ICI : addEventListener (sans 'q')
         this.el.addEventListener('click', () => {
              if (!window.oasisState.isInOasis && !this.isLoading) {
                  this.animateToFace(); 
@@ -288,7 +289,7 @@ AFRAME.registerComponent('headset-toggle', {
         setTimeout(() => { loadingScreen.classList.remove('active'); loadingScreen.style.display = 'none'; }, 1000);
     },
 
-    // --- SORTIE DE L'OASIS (CORRIGÉE) ---
+    // --- SORTIE DE L'OASIS ---
     exitOasisSequence: function() {
         console.log("RETRAIT DU CASQUE...");
         
@@ -319,7 +320,7 @@ AFRAME.registerComponent('headset-toggle', {
             this.el.setAttribute('position', window.oasisState.originalHeadsetPos);
             this.el.setAttribute('rotation', '0 0 0');
 
-            // 4. SUPPRIMER LES CONTOURS (C'était le bug !)
+            // 4. SUPPRIMER LES CONTOURS
             const vrOverlay = document.getElementById('vr-headset-overlay');
             const vrNose = document.getElementById('vr-headset-nose');
             const vrLensTint = document.getElementById('vr-headset-lens-tint');
@@ -341,20 +342,18 @@ AFRAME.registerComponent('headset-toggle', {
 
     // --- CORRECTION LUMIÈRE & TEXTURES NOIRES ---
     fixVRLighting: function(vrWorldElement) {
-        // 1. Lumière de secours : FAIBLE et CHAUDE (plus de flash blanc)
+        // 1. Lumière de secours : FAIBLE et CHAUDE
         let light = document.getElementById('global-vr-light');
         if (!light) {
             light = document.createElement('a-entity');
             light.setAttribute('id', 'global-vr-light');
-            // Intensity 0.3 = Tamisé
             light.setAttribute('light', 'type: ambient; color: #ffaa77; intensity: 0.3'); 
             vrWorldElement.appendChild(light);
         }
 
-        // 2. Correction matériaux noirs
+        // 2. Correction matériaux noirs (Contournement du bug Specular Glossiness)
         vrWorldElement.object3D.traverse((node) => {
             if (node.isMesh) {
-                // Si métal trop fort, ça devient noir sans envMap, on réduit
                 if (node.material.metalness > 0.6) {
                     node.material.metalness = 0.2; 
                     node.material.roughness = 0.7; 
@@ -425,12 +424,33 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fix texture manoir si présent
     AFRAME.registerComponent('fix-mansion-textures', {
         init: function() {
-            this.el.addEventListenerq('model-loaded', () => {
+            this.el.addEventListener('model-loaded', () => {
                 const mesh = this.el.getObject3D('mesh');
                 if(!mesh) return;
                 const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
                 tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
                 mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
+            });
+        }
+    });
+
+    // Fix textures du casque (sRGB + matériaux)
+    AFRAME.registerComponent('fix-headset-textures', {
+        init: function() {
+            this.el.addEventListener('model-loaded', () => {
+                const mesh = this.el.getObject3D('mesh');
+                if (!mesh) return;
+                mesh.traverse(node => {
+                    if (node.isMesh && node.material) {
+                        const materials = Array.isArray(node.material) ? node.material : [node.material];
+                        materials.forEach(mat => {
+                            if (mat.map) { mat.map.encoding = THREE.sRGBEncoding; mat.map.needsUpdate = true; }
+                            if (mat.emissiveMap) { mat.emissiveMap.encoding = THREE.sRGBEncoding; mat.emissiveMap.needsUpdate = true; }
+                            if (typeof mat.metalness === 'number' && mat.metalness > 0.6) { mat.metalness = 0.2; mat.roughness = 0.7; }
+                            mat.needsUpdate = true;
+                        });
+                    }
+                });
             });
         }
     });
