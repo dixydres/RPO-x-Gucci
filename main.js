@@ -1,30 +1,133 @@
 // ============================================
-// OASIS VR HEADSET SYSTEM - FIXED VERSION
+// OASIS VR SYSTEM - GRAVITY & LOADING EDITION
 // ============================================
 
 window.oasisState = {
     isInOasis: false,
     isGrabbing: false,
     grabbedObject: null,
-    // Sauvegarde pour restaurer si on lâche l'objet
-    originalParent: null, 
-    originalPosition: null,
-    originalHeadsetPos: null
+    grabbedHand: null,
+    originalHeadsetPos: null,
+    originalParent: null,
+    originalPosition: null
 };
 
+// --- FONCTION UTILITAIRE : SIMULATION DE GRAVITÉ ---
+function dropObject(el) {
+    // Récupérer la position mondiale actuelle de l'objet
+    const worldPos = new THREE.Vector3();
+    el.object3D.getWorldPosition(worldPos);
+
+    // Définir la hauteur du sol et de la table
+    const floorHeight = 0.15; // Un peu au-dessus du vrai sol
+    const tableHeight = 0.82; // Hauteur de ton bureau
+    
+    // Définir la zone de la table (coordonnées approximatives basées sur ta scène)
+    // Le bureau est environ à x=0.8, z=-1
+    const isOverTable = (worldPos.x > 0.2 && worldPos.x < 1.4 && worldPos.z > -1.4 && worldPos.z < -0.4);
+
+    // Quelle est la cible de chute ?
+    const targetY = isOverTable ? tableHeight : floorHeight;
+
+    // Si l'objet est déjà plus bas que la cible, on ne fait rien
+    if (worldPos.y <= targetY) return;
+
+    // Calculer la durée de la chute (plus c'est haut, plus c'est long)
+    const distance = worldPos.y - targetY;
+    const duration = Math.sqrt(distance / 9.8) * 1000 * 2; // Formule physique simplifiée (t = sqrt(2d/g))
+
+    // Animation de chute avec rebond (easeOutBounce)
+    el.removeAttribute('animation__drop'); // Nettoyer ancienne anim
+    el.setAttribute('animation__drop', {
+        property: 'position',
+        to: `${worldPos.x} ${targetY} ${worldPos.z}`,
+        dur: duration,
+        easing: 'easeOutBounce' // Effet de rebond réaliste
+    });
+    
+    // Reset de la rotation pour qu'il retombe "à plat" (optionnel, plus propre)
+    el.setAttribute('animation__rotate', {
+        property: 'rotation',
+        to: '0 0 0',
+        dur: duration,
+        easing: 'linear'
+    });
+}
+
 // ============================================
-// 1. GESTION DE LA MAIN VIRTUELLE (CLAVIER 'C' - DESKTOP)
+// 1. GESTION DES MANETTES VR
+// ============================================
+AFRAME.registerComponent('vr-controller-grab', {
+    init: function () {
+        this.el.addEventListener('triggerdown', this.onGrab.bind(this));
+        this.el.addEventListener('gripdown', this.onGrab.bind(this));
+        this.el.addEventListener('triggerup', this.onRelease.bind(this));
+        this.el.addEventListener('gripup', this.onRelease.bind(this));
+    },
+
+    onGrab: function () {
+        const intersectedEls = this.el.components.raycaster.intersectedEls;
+        if (intersectedEls.length > 0) {
+            const hitEl = intersectedEls[0];
+            if (hitEl.classList.contains('clickable')) {
+                this.grabObject(hitEl);
+            }
+        }
+    },
+
+    grabObject: function (el) {
+        if (window.oasisState.grabbedObject === el) return;
+
+        // Arrêter toute animation de chute en cours si on l'attrape au vol
+        el.removeAttribute('animation__drop');
+        el.removeAttribute('animation__rotate');
+
+        window.oasisState.grabbedObject = el;
+        window.oasisState.isGrabbing = true;
+        
+        // Sauvegarde état
+        window.oasisState.originalParent = el.object3D.parent;
+        window.oasisState.originalPosition = el.object3D.position.clone();
+
+        // ATTACHEMENT PHYSIQUE (Parenting)
+        this.el.object3D.attach(el.object3D);
+        
+        el.setAttribute('opacity', 0.8);
+        el.emit('grab-start');
+    },
+
+    onRelease: function () {
+        if (window.oasisState.grabbedObject) {
+            const el = window.oasisState.grabbedObject;
+            
+            // Détachement : on remet l'objet dans la scène
+            this.el.sceneEl.object3D.attach(el.object3D);
+            
+            el.setAttribute('opacity', 1.0);
+            window.oasisState.grabbedObject = null;
+            window.oasisState.isGrabbing = false;
+            
+            // MODIFICATION ICI : Au lieu de le remettre à sa place, on le fait tomber
+            if (!window.oasisState.isInOasis) {
+                dropObject(el);
+            }
+            
+            el.emit('grab-end');
+        }
+    }
+});
+
+// ============================================
+// 2. GESTION CLAVIER (DESKTOP)
 // ============================================
 AFRAME.registerComponent('virtual-hand', {
     schema: {
         grabKey: { type: 'string', default: 'c' },
-        holdDistance: { type: 'number', default: 0.6 } // Distance proche pour simuler le port
+        holdDistance: { type: 'number', default: 0.5 } 
     },
 
     init: function() {
         this.camera = document.getElementById('player-camera');
-        this.isGrabbing = false;
-        
         this.onKeyDown = this.onKeyDown.bind(this);
         this.onKeyUp = this.onKeyUp.bind(this);
         window.addEventListener('keydown', this.onKeyDown);
@@ -32,23 +135,21 @@ AFRAME.registerComponent('virtual-hand', {
     },
 
     onKeyDown: function(event) {
-        if (event.key.toLowerCase() === this.data.grabKey && !this.isGrabbing) {
+        if (event.key.toLowerCase() === this.data.grabKey && !window.oasisState.isGrabbing) {
             this.tryGrab();
         }
     },
 
     onKeyUp: function(event) {
-        if (event.key.toLowerCase() === this.data.grabKey && this.isGrabbing) {
+        if (event.key.toLowerCase() === this.data.grabKey && window.oasisState.isGrabbing) {
             this.releaseGrab();
         }
     },
 
     tryGrab: function() {
-        // Chercher les objets interactifs devant la caméra
         const clickables = document.querySelectorAll('.clickable');
         const cameraPos = new THREE.Vector3();
         const cameraDir = new THREE.Vector3();
-        
         this.camera.object3D.getWorldPosition(cameraPos);
         this.camera.object3D.getWorldDirection(cameraDir);
         
@@ -62,8 +163,7 @@ AFRAME.registerComponent('virtual-hand', {
             const dirToObject = elPos.clone().sub(cameraPos).normalize();
             const angle = cameraDir.angleTo(dirToObject);
 
-            // Si l'objet est proche et devant nous
-            if (dist < minDist && angle < 0.5) { 
+            if (dist < minDist && angle < 0.6) { 
                 closestEl = el;
                 minDist = dist;
             }
@@ -75,11 +175,13 @@ AFRAME.registerComponent('virtual-hand', {
     },
 
     startGrab: function(el) {
-        this.isGrabbing = true;
+        // Stop drop animation
+        el.removeAttribute('animation__drop');
+        el.removeAttribute('animation__rotate');
+
         window.oasisState.isGrabbing = true;
         window.oasisState.grabbedObject = el;
         el.setAttribute('opacity', 0.8);
-        el.emit('grab-start'); 
     },
 
     releaseGrab: function() {
@@ -87,31 +189,23 @@ AFRAME.registerComponent('virtual-hand', {
         const el = window.oasisState.grabbedObject;
         el.setAttribute('opacity', 1.0);
         
-        // Si on n'est pas entré dans l'Oasis, on remet le casque à sa place
-        if (!window.oasisState.isInOasis && el.id === 'oasis-headset') {
-             setTimeout(() => {
-                if(window.oasisState.originalHeadsetPos) {
-                    el.setAttribute('position', window.oasisState.originalHeadsetPos);
-                }
-             }, 100);
-        }
-
-        this.isGrabbing = false;
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedObject = null;
-        el.emit('grab-end');
+
+        // MODIFICATION ICI : Gravité
+        if (!window.oasisState.isInOasis) {
+            dropObject(el);
+        }
     },
 
     tick: function() {
-        // Met à jour la position de l'objet devant la caméra
-        if (this.isGrabbing && window.oasisState.grabbedObject) {
+        if (window.oasisState.isGrabbing && window.oasisState.grabbedObject && !this.el.sceneEl.is('vr-mode')) {
             const el = window.oasisState.grabbedObject;
             const cameraPos = new THREE.Vector3();
             const cameraDir = new THREE.Vector3();
             this.camera.object3D.getWorldPosition(cameraPos);
             this.camera.object3D.getWorldDirection(cameraDir);
 
-            // On place l'objet à 60cm devant les yeux (assez près pour déclencher le port)
             const targetPos = cameraPos.add(cameraDir.multiplyScalar(this.data.holdDistance));
             el.object3D.position.lerp(targetPos, 0.2);
         }
@@ -119,84 +213,20 @@ AFRAME.registerComponent('virtual-hand', {
 });
 
 // ============================================
-// 2. GESTION DU GRAB MANETTES (VR HANDS)
-// ============================================
-AFRAME.registerComponent('vr-controller-grab', {
-    init: function () {
-        // Écoute les boutons Grip et Trigger
-        this.el.addEventListener('triggerdown', this.onGrab.bind(this));
-        this.el.addEventListener('gripdown', this.onGrab.bind(this));
-        
-        this.el.addEventListener('triggerup', this.onRelease.bind(this));
-        this.el.addEventListener('gripup', this.onRelease.bind(this));
-    },
-
-    onGrab: function () {
-        // Vérifie si le raycaster de la main touche quelque chose
-        const intersectedEls = this.el.components.raycaster.intersectedEls;
-        
-        if (intersectedEls.length > 0) {
-            const hitEl = intersectedEls[0];
-            if (hitEl.classList.contains('clickable')) {
-                this.grabObject(hitEl);
-            }
-        }
-    },
-
-    grabObject: function (el) {
-        if (window.oasisState.grabbedObject === el) return;
-
-        console.log("VR GRAB: Object grabbed");
-        window.oasisState.grabbedObject = el;
-        
-        // Sauvegarde état initial
-        window.oasisState.originalParent = el.object3D.parent;
-        window.oasisState.originalPosition = el.object3D.position.clone();
-
-        // **MAGIE : On attache l'objet à la main (Parenting)**
-        // L'objet devient un "enfant" de la main et suit tous ses mouvements
-        this.el.object3D.attach(el.object3D);
-        
-        el.setAttribute('opacity', 0.8);
-    },
-
-    onRelease: function () {
-        if (window.oasisState.grabbedObject) {
-            console.log("VR GRAB: Object released");
-            const el = window.oasisState.grabbedObject;
-            
-            // On rattache l'objet à la scène
-            this.el.sceneEl.object3D.attach(el.object3D);
-            
-            el.setAttribute('opacity', 1.0);
-            window.oasisState.grabbedObject = null;
-            
-            // Si on lache le casque et qu'on est pas dans l'Oasis, il retourne à sa place
-            // (Optionnel, tu peux aussi laisser la physique faire si tu en as)
-             if (!window.oasisState.isInOasis && el.id === 'oasis-headset') {
-                 if(window.oasisState.originalHeadsetPos) {
-                    el.setAttribute('position', window.oasisState.originalHeadsetPos);
-                 }
-            }
-        }
-    }
-});
-
-
-// ============================================
-// 3. LOGIQUE DU CASQUE (HEADSET TOGGLE & LOAD)
+// 3. LOGIQUE DU CASQUE (HEADSET TOGGLE)
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
-        this.wearThreshold = 0.5; // 50cm du visage = on met le casque
+        // J'ai augmenté la distance à 0.6 pour que ce soit plus facile à déclencher
+        this.wearThreshold = 0.6; 
         this.camera = document.getElementById('player-camera');
         this.isLoading = false;
 
-        // Clic souris direct pour debug ou desktop rapide
+        // Clic direct (PC souris)
         this.el.addEventListener('click', () => {
              if (!window.oasisState.isInOasis && !this.isLoading) {
-                 this.triggerLoadingSequence();
+                 this.startOasisTransition();
              }
         });
     },
@@ -204,9 +234,8 @@ AFRAME.registerComponent('headset-toggle', {
     tick: function() {
         if (window.oasisState.isInOasis || this.isLoading) return;
 
-        // On vérifie la distance SEULEMENT si l'objet est attrapé
+        // Si l'objet est tenu
         if (window.oasisState.grabbedObject === this.el) {
-            
             const headsetPos = new THREE.Vector3();
             const cameraPos = new THREE.Vector3();
             this.el.object3D.getWorldPosition(headsetPos);
@@ -216,71 +245,103 @@ AFRAME.registerComponent('headset-toggle', {
 
             // Si le casque est proche de la tête
             if (distance < this.wearThreshold) {
-                this.triggerLoadingSequence();
+                // On lâche l'objet virtuellement pour qu'il disparaisse
+                if(window.oasisState.grabbedObject) {
+                    window.oasisState.grabbedObject.setAttribute('visible', false);
+                    window.oasisState.grabbedObject = null;
+                    window.oasisState.isGrabbing = false;
+                }
+                this.startOasisTransition();
             }
         }
     },
 
-    triggerLoadingSequence: function() {
-        console.log("HEADSET DETECTED ON HEAD -> LOADING");
+    startOasisTransition: function() {
+        console.log("CHARGEMENT OASIS...");
         this.isLoading = true;
-        
-        // Cacher le casque 3D physique
         this.el.setAttribute('visible', false);
         
-        // Lancer l'UI de chargement
+        // Récupérer les éléments HTML de l'écran de chargement
         const loadingScreen = document.getElementById('oasis-loading-screen');
-        const overlay = document.getElementById('eclipse-overlay');
+        const eclipseOverlay = document.getElementById('eclipse-overlay');
+        const loadingContent = document.getElementById('loading-content');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
-
-        loadingScreen.classList.add('active'); 
-        overlay.classList.remove('opening');
-        overlay.classList.add('closing'); // Effet fermeture iris
-
-        // Simulation progression
-        let progress = 0;
-        const interval = setInterval(() => {
-            progress += 2;
-            if(progressBar) progressBar.style.width = progress + '%';
+        
+        // Activer l'écran
+        loadingScreen.classList.add('active'); // CSS display:flex
+        loadingScreen.style.display = 'flex'; // Sécurité
+        
+        // Animation iris qui se ferme
+        eclipseOverlay.classList.remove('opening');
+        eclipseOverlay.classList.add('closing');
+        
+        // Déroulement du chargement
+        setTimeout(() => {
+            if(loadingContent) loadingContent.classList.add('visible');
             
-            if(progressText) {
-                if(progress < 30) progressText.innerText = "RETINAL SCAN...";
-                else if(progress < 60) progressText.innerText = "LOGGING INTO OASIS SERVERS...";
-                else if(progress < 90) progressText.innerText = "LOADING AVATAR...";
-                else progressText.innerText = "WELCOME, PARZIVAL";
-            }
-
-            if (progress >= 100) {
-                clearInterval(interval);
-                this.enterOasis();
-            }
-        }, 50);
+            const messages = [
+                "RETINAL SCAN...",
+                "AUTHENTICATION: WADE WATTS",
+                "CONNECTING TO OASIS...",
+                "LOADING: SECTOR 7G",
+                "SYNCING HAPTICS...",
+                "WELCOME PARZIVAL"
+            ];
+            
+            let progress = 0;
+            let messageIndex = 0;
+            
+            const progressInterval = setInterval(() => {
+                progress += Math.random() * 4 + 1; // Vitesse variable
+                if (progress > 100) progress = 100;
+                
+                if(progressBar) progressBar.style.width = progress + '%';
+                
+                const newIndex = Math.min(Math.floor(progress / 18), messages.length - 1);
+                if (newIndex !== messageIndex && progressText) {
+                    messageIndex = newIndex;
+                    progressText.textContent = messages[messageIndex];
+                }
+                
+                if (progress >= 100) {
+                    clearInterval(progressInterval);
+                    this.enterOasis();
+                }
+            }, 80); // Vitesse de mise à jour
+        }, 1000);
     },
 
     enterOasis: function() {
         window.oasisState.isInOasis = true;
         this.isLoading = false;
-
-        // 1. Cacher le monde réel (tout sauf le Rig et le monde VR)
-        const scene = document.querySelector('a-scene');
-        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera), a-box:not(#oasis-headset), a-plane, a-cylinder');
         
+        const scene = document.querySelector('a-scene');
+        
+        // 1. Cacher le monde réel (Caravane)
+        // On cache tout sauf ce qui est nécessaire pour l'Oasis
+        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera), a-box:not(#oasis-headset), a-plane, a-cylinder');
         objects.forEach(obj => {
             if (!obj.closest('#vr-world') && obj.id !== 'vr-world') {
                obj.setAttribute('visible', false);
             }
         });
         
-        // 2. Afficher le monde VR
+        // 2. Afficher le monde VR (Jardin)
         const vrWorld = document.getElementById('vr-world');
-        if(vrWorld) vrWorld.setAttribute('visible', true);
+        if (vrWorld) {
+            vrWorld.setAttribute('visible', true);
+            // Force la visibilité des enfants
+            vrWorld.querySelectorAll('*').forEach(child => {
+                if (child.setAttribute) child.setAttribute('visible', true);
+            });
+        }
 
-        // 3. Ambiance
-        scene.setAttribute('background', 'color: #FFB88C'); 
+        // 3. Changer l'ambiance (Ciel, Brouillard)
+        scene.setAttribute('background', 'color: #FFB88C');
         scene.setAttribute('fog', 'type: exponential; color: #FFD4B8; density: 0.005');
 
-        // 4. Activer le HUD du casque (Vignette)
+        // 4. Activer le masque VR (HUD)
         const vrOverlay = document.getElementById('vr-headset-overlay');
         const vrNose = document.getElementById('vr-headset-nose');
         const vrLensTint = document.getElementById('vr-headset-lens-tint');
@@ -288,24 +349,73 @@ AFRAME.registerComponent('headset-toggle', {
         if (vrNose) vrNose.setAttribute('visible', true);
         if (vrLensTint) vrLensTint.setAttribute('visible', true);
 
-        // 5. Fin chargement
-        const overlay = document.getElementById('eclipse-overlay');
+        // 5. Retirer l'écran de chargement
         const loadingScreen = document.getElementById('oasis-loading-screen');
+        const eclipseOverlay = document.getElementById('eclipse-overlay');
         
-        overlay.classList.remove('closing');
-        overlay.classList.add('opening'); 
-
+        eclipseOverlay.classList.remove('closing');
+        eclipseOverlay.classList.add('opening'); // Iris s'ouvre
+        
         setTimeout(() => {
             loadingScreen.classList.remove('active');
+            loadingScreen.style.display = 'none';
+            // Afficher l'aide pour sortir
             const hud = document.getElementById('remove-headset-hud');
             if(hud) hud.classList.add('visible');
-        }, 1000);
+        }, 1500);
 
-        // Touche R pour sortir
+        // Gérer la sortie (Touche R ou futur geste)
         window.addEventListener('keydown', (e) => {
-            if(e.key.toLowerCase() === 'r' && window.oasisState.isInOasis) {
-                location.reload(); 
+            if (e.key.toLowerCase() === 'r' && window.oasisState.isInOasis) {
+                location.reload(); // Pour l'instant, recharger est le moyen le plus propre de sortir
             }
         });
+    }
+});
+
+// ============================================
+// 4. FIX TEXTURES MANOIR (Pour que ce soit joli)
+// ============================================
+AFRAME.registerComponent('fix-mansion-textures', {
+    init: function() {
+        this.el.addEventListener('model-loaded', () => {
+            const mesh = this.el.getObject3D('mesh');
+            if (mesh) {
+                const textureLoader = new THREE.TextureLoader();
+                const texture = textureLoader.load('./models/low_poly_mansion/textures/Main_diffuse.png');
+                texture.encoding = THREE.sRGBEncoding;
+                texture.flipY = false;
+                
+                mesh.traverse((node) => {
+                    if (node.isMesh && node.material) {
+                        const materials = Array.isArray(node.material) ? node.material : [node.material];
+                        materials.forEach(mat => {
+                            if (mat.name === 'Main') {
+                                mat.map = texture;
+                                mat.needsUpdate = true;
+                            }
+                            if (mat.map) mat.map.needsUpdate = true;
+                            if (node.geometry && node.geometry.attributes.color) {
+                                mat.vertexColors = true;
+                            }
+                            mat.needsUpdate = true;
+                        });
+                    }
+                });
+            }
+        });
+    }
+});
+
+// ============================================
+// INITIALIZATION
+// ============================================
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('[OASIS] System Ready. Gravity Enabled.');
+    
+    // Auto-setup du rig
+    const rig = document.getElementById('rig');
+    if (rig && !rig.hasAttribute('virtual-hand')) {
+        rig.setAttribute('virtual-hand', '');
     }
 });
