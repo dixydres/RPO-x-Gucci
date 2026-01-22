@@ -1,12 +1,12 @@
 // ============================================
-// OASIS VR SYSTEM - FINAL FLUID & LIGHTING FIX
+// OASIS VR SYSTEM - FINAL FLUID & TAMISÉ
 // ============================================
 
 window.oasisState = {
     isInOasis: false,
     isGrabbing: false,
     grabbedObject: null,
-    grabbedHand: null, // 'left' ou 'right' ou null
+    grabbedHand: null, 
     originalHeadsetPos: null,
     originalParent: null,
     originalPosition: null
@@ -19,14 +19,14 @@ function dropObject(el) {
 
     const floorHeight = 0.15;
     const tableHeight = 0.82;
-    // Zone approximative du bureau
+    // Zone du bureau
     const isOverTable = (worldPos.x > 0.2 && worldPos.x < 1.4 && worldPos.z > -1.4 && worldPos.z < -0.4);
     const targetY = isOverTable ? tableHeight : floorHeight;
 
     if (worldPos.y <= targetY) return;
 
     const distance = worldPos.y - targetY;
-    const duration = Math.sqrt(distance / 9.8) * 1000 * 1.5; // Vitesse ajustée
+    const duration = Math.sqrt(distance / 9.8) * 1000 * 1.5;
 
     el.removeAttribute('animation__drop');
     el.setAttribute('animation__drop', {
@@ -45,7 +45,7 @@ function dropObject(el) {
 }
 
 // ============================================
-// 1. MANETTES VR (GRAB + REMOVE GESTURE)
+// 1. MANETTES VR
 // ============================================
 AFRAME.registerComponent('vr-controller-grab', {
     init: function () {
@@ -53,19 +53,16 @@ AFRAME.registerComponent('vr-controller-grab', {
         this.el.addEventListener('gripdown', this.onGrab.bind(this));
         this.el.addEventListener('triggerup', this.onRelease.bind(this));
         this.el.addEventListener('gripup', this.onRelease.bind(this));
-        
-        // Pour savoir quelle main c'est (left/right)
-        this.handSide = this.el.getAttribute('hand-controls') ? this.el.getAttribute('hand-controls').hand : 'unknown';
     },
 
     onGrab: function () {
-        // SCÉNARIO 1 : Je suis dans l'OASIS et je veux l'enlever
+        // GESTE DE RETRAIT DU CASQUE
         if (window.oasisState.isInOasis) {
             this.checkRemoveGesture();
             return;
         }
 
-        // SCÉNARIO 2 : Je veux attraper le casque (Monde réel)
+        // GRAB CLASSIQUE
         const intersectedEls = this.el.components.raycaster.intersectedEls;
         if (intersectedEls.length > 0) {
             const hitEl = intersectedEls[0];
@@ -76,7 +73,6 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     checkRemoveGesture: function() {
-        // Si la main est proche de la tête (< 30cm) et qu'on appuie sur le bouton
         const camera = document.getElementById('player-camera');
         const handPos = new THREE.Vector3();
         const headPos = new THREE.Vector3();
@@ -84,8 +80,8 @@ AFRAME.registerComponent('vr-controller-grab', {
         this.el.object3D.getWorldPosition(handPos);
         camera.object3D.getWorldPosition(headPos);
         
+        // Si la main est à moins de 35cm de la tête
         if (handPos.distanceTo(headPos) < 0.35) {
-            // On déclenche la sortie !
             const headset = document.getElementById('oasis-headset');
             if (headset && headset.components['headset-toggle']) {
                 headset.components['headset-toggle'].exitOasisSequence();
@@ -96,20 +92,18 @@ AFRAME.registerComponent('vr-controller-grab', {
     grabObject: function (el) {
         if (window.oasisState.grabbedObject === el) return;
 
-        // Stop animations
+        // Nettoyage des animations
         el.removeAttribute('animation__drop');
         el.removeAttribute('animation__rotate');
-        // Stop animation de mise en place si elle était en cours
         el.removeAttribute('animation__puton'); 
 
         window.oasisState.grabbedObject = el;
         window.oasisState.isGrabbing = true;
-        window.oasisState.grabbedHand = this.el; // On sauvegarde quelle main tient l'objet
+        window.oasisState.grabbedHand = this.el; 
         
-        window.oasisState.originalParent = el.object3D.parent;
-        window.oasisState.originalPosition = el.object3D.position.clone();
-
+        // Attacher l'objet à la main
         this.el.object3D.attach(el.object3D);
+        
         el.setAttribute('opacity', 0.8);
         el.emit('grab-start');
     },
@@ -118,7 +112,7 @@ AFRAME.registerComponent('vr-controller-grab', {
         if (window.oasisState.grabbedObject) {
             const el = window.oasisState.grabbedObject;
             
-            // Si on est en train de le mettre (animation en cours), on ne le lâche pas vraiment
+            // Si l'animation de mise en place est en cours, on ne lâche pas
             if (el.classList.contains('putting-on')) return;
 
             this.el.sceneEl.object3D.attach(el.object3D);
@@ -137,20 +131,19 @@ AFRAME.registerComponent('vr-controller-grab', {
 });
 
 // ============================================
-// 2. LOGIQUE CASQUE (ANIMATION & CHARGEMENT)
+// 2. LOGIQUE CASQUE
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
-        this.wearThreshold = 0.5; // Distance activation
+        this.wearThreshold = 0.5; 
         this.camera = document.getElementById('player-camera');
         this.isLoading = false;
         this.isAnimatingOn = false;
 
-        // PC Click
         this.el.addEventListener('click', () => {
              if (!window.oasisState.isInOasis && !this.isLoading) {
-                 this.animateToFace(); // On lance l'animation même sur PC
+                 this.animateToFace(); 
              }
         });
     },
@@ -166,42 +159,33 @@ AFRAME.registerComponent('headset-toggle', {
 
             const distance = headsetPos.distanceTo(cameraPos);
 
-            // Si proche, on lance l'animation d'aspiration (Snap)
             if (distance < this.wearThreshold) {
                 this.animateToFace();
             }
         }
     },
 
-    // --- ANIMATION FLUIDE DE MISE EN PLACE ---
     animateToFace: function() {
         this.isAnimatingOn = true;
-        this.el.classList.add('putting-on'); // Empêche de le lâcher accidentellement
-        console.log("SNAP! Headset attracting to face...");
+        this.el.classList.add('putting-on');
+        console.log("Mise en place du casque...");
 
-        // Détacher de la main pour le lisser vers la caméra
+        // On détache de la main pour lisser le mouvement vers la tête
         this.el.sceneEl.object3D.attach(this.el.object3D);
-        window.oasisState.grabbedObject = null; // On libère la logique de grab
+        window.oasisState.grabbedObject = null; 
 
-        // Calculer position cible (exactement sur les yeux)
         const camera = document.getElementById('player-camera');
         const targetPos = new THREE.Vector3();
-        const targetRot = new THREE.Quaternion();
         
-        // On veut qu'il finisse un peu devant les yeux (0, 0, -0.1) relative à la caméra
-        // Mais pour l'animation world, on vise la caméra
         camera.object3D.getWorldPosition(targetPos);
-        camera.object3D.getWorldQuaternion(targetRot);
 
-        // Animation A-Frame
         this.el.setAttribute('animation__puton', {
             property: 'position',
             to: `${targetPos.x} ${targetPos.y} ${targetPos.z}`,
-            dur: 400, // 400ms d'animation rapide
+            dur: 400, 
             easing: 'easeInQuad'
         });
 
-        // À la fin de l'animation
         setTimeout(() => {
             this.startOasisTransition();
             this.el.classList.remove('putting-on');
@@ -211,16 +195,14 @@ AFRAME.registerComponent('headset-toggle', {
 
     startOasisTransition: function() {
         this.isLoading = true;
-        this.el.setAttribute('visible', false); // POUF disparu (il est sur la tête)
+        this.el.setAttribute('visible', false); // Cache le cube physique
         
-        // Gérer les écrans
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         const loadingContent = document.getElementById('loading-content');
         const progressBar = document.getElementById('progress-bar');
         const progressText = document.getElementById('progress-text');
         
-        // Mode VR (Écran 3D)
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         const vrLoadingBar = document.getElementById('vr-loading-bar');
         const vrLoadingText = document.getElementById('vr-loading-text');
@@ -229,7 +211,6 @@ AFRAME.registerComponent('headset-toggle', {
         if(eclipseOverlay) { eclipseOverlay.classList.remove('opening'); eclipseOverlay.classList.add('closing'); }
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', true);
 
-        // Déroulement chargement
         setTimeout(() => {
             if(loadingContent) loadingContent.classList.add('visible');
             
@@ -260,7 +241,7 @@ AFRAME.registerComponent('headset-toggle', {
     },
 
     enterOasis: function() {
-        console.log('[OASIS] Entering...');
+        console.log('[OASIS] Entrée dans le monde VR...');
         window.oasisState.isInOasis = true;
         this.isLoading = false;
         
@@ -268,7 +249,7 @@ AFRAME.registerComponent('headset-toggle', {
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
 
-        // 1. Cacher le monde réel
+        // Cacher monde réel
         const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera), a-box:not(#oasis-headset), a-plane, a-cylinder');
         objects.forEach(obj => {
             if (!obj.closest('#vr-world') && obj.id !== 'vr-world') {
@@ -276,37 +257,41 @@ AFRAME.registerComponent('headset-toggle', {
             }
         });
         
-        // 2. Afficher et FIXER le monde VR (Lumières)
+        // Afficher monde VR et corriger lumières
         const vrWorld = document.getElementById('vr-world');
         if (vrWorld) {
             vrWorld.setAttribute('visible', true);
-            this.fixVRLighting(vrWorld); // <--- LE SAUVETEUR DE LUMIÈRE
+            this.fixVRLighting(vrWorld);
             
-            // Force visibilité enfants
             vrWorld.querySelectorAll('*').forEach(child => {
                 if(child.setAttribute) child.setAttribute('visible', true);
             });
         }
 
-        // 3. Ambiance
-        scene.setAttribute('background', 'color: #87CEEB'); // Ciel bleu clair (plus lumineux que le coucher de soleil)
-        scene.setAttribute('fog', 'type: exponential; color: #FFFFFF; density: 0.002'); // Brouillard blanc léger
+        // Ciel de fond (couleur sombre pour la nuit/soirée)
+        scene.setAttribute('background', 'color: #2c1b18'); 
+        scene.setAttribute('fog', 'type: exponential; color: #4a3b3b; density: 0.005');
 
-        // 4. Masque VR
+        // Afficher les contours (Vignette)
         const vrOverlay = document.getElementById('vr-headset-overlay');
+        const vrNose = document.getElementById('vr-headset-nose');
+        const vrLensTint = document.getElementById('vr-headset-lens-tint');
+        
         if (vrOverlay) vrOverlay.setAttribute('visible', true);
+        if (vrNose) vrNose.setAttribute('visible', true);
+        if (vrLensTint) vrLensTint.setAttribute('visible', true);
 
-        // 5. Nettoyer UI
+        // Fin UI
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
         setTimeout(() => { loadingScreen.classList.remove('active'); loadingScreen.style.display = 'none'; }, 1000);
     },
 
-    // --- NOUVELLE FONCTION POUR SORTIR ---
+    // --- SORTIE DE L'OASIS (CORRIGÉE) ---
     exitOasisSequence: function() {
-        console.log("REMOVING HEADSET...");
-        // Même logique inverse : Écran noir -> Retour caravane
+        console.log("RETRAIT DU CASQUE...");
+        
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
         
@@ -315,29 +300,35 @@ AFRAME.registerComponent('headset-toggle', {
 
         setTimeout(() => {
             window.oasisState.isInOasis = false;
-            // 1. Cacher VR, Montrer Réel
+            
+            // 1. Cacher VR
             const vrWorld = document.getElementById('vr-world');
             if(vrWorld) vrWorld.setAttribute('visible', false);
             
+            // 2. Montrer Réel
             const scene = document.querySelector('a-scene');
             const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder');
             objects.forEach(obj => {
-                // Réafficher tout ce qui n'est pas VR
                 if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && obj.id !== 'vr-loading-screen') {
                     obj.setAttribute('visible', true);
                 }
             });
 
-            // 2. Remettre le casque sur la table (ou par terre)
+            // 3. Remettre le casque physique
             this.el.setAttribute('visible', true);
             this.el.setAttribute('position', window.oasisState.originalHeadsetPos);
             this.el.setAttribute('rotation', '0 0 0');
 
-            // 3. Masque VR off
+            // 4. SUPPRIMER LES CONTOURS (C'était le bug !)
             const vrOverlay = document.getElementById('vr-headset-overlay');
+            const vrNose = document.getElementById('vr-headset-nose');
+            const vrLensTint = document.getElementById('vr-headset-lens-tint');
+            
             if(vrOverlay) vrOverlay.setAttribute('visible', false);
+            if(vrNose) vrNose.setAttribute('visible', false);
+            if(vrLensTint) vrLensTint.setAttribute('visible', false);
 
-            // 4. Reset Ambiance
+            // 5. Reset Ambiance
             scene.setAttribute('background', 'color: #a8aeb5');
             scene.setAttribute('fog', 'type: exponential; color: #8a9098; density: 0.012');
 
@@ -348,30 +339,25 @@ AFRAME.registerComponent('headset-toggle', {
         }, 1500);
     },
 
-    // --- LE SAUVETEUR DE LUMIÈRE ---
+    // --- CORRECTION LUMIÈRE & TEXTURES NOIRES ---
     fixVRLighting: function(vrWorldElement) {
-        // 1. Ajouter une lumière ambiante globale FORTE si elle n'existe pas
+        // 1. Lumière de secours : FAIBLE et CHAUDE (plus de flash blanc)
         let light = document.getElementById('global-vr-light');
         if (!light) {
             light = document.createElement('a-entity');
             light.setAttribute('id', 'global-vr-light');
-            light.setAttribute('light', 'type: ambient; color: #ffffff; intensity: 1.2'); // Lumière blanche forte
+            // Intensity 0.3 = Tamisé
+            light.setAttribute('light', 'type: ambient; color: #ffaa77; intensity: 0.3'); 
             vrWorldElement.appendChild(light);
-            console.log("Lumière de secours ajoutée !");
         }
 
-        // 2. Parcourir tous les objets 3D pour corriger les matériaux noirs
+        // 2. Correction matériaux noirs
         vrWorldElement.object3D.traverse((node) => {
             if (node.isMesh) {
-                // Si le matériau est métallique mais sans envMap, il apparaît noir
-                if (node.material.metalness > 0.5) {
-                    node.material.metalness = 0.1; // On réduit le métal pour qu'il prenne la lumière
-                    node.material.roughness = 0.8; // On augmente la rugosité
-                }
-                // S'assurer que la texture n'est pas trop sombre
-                if (node.material.emissive) {
-                    // Optionnel : ajouter une petite émission pour qu'il brille un peu dans le noir
-                    // node.material.emissive.setHex(0x222222); 
+                // Si métal trop fort, ça devient noir sans envMap, on réduit
+                if (node.material.metalness > 0.6) {
+                    node.material.metalness = 0.2; 
+                    node.material.roughness = 0.7; 
                 }
                 node.material.needsUpdate = true;
             }
@@ -410,7 +396,7 @@ AFRAME.registerComponent('virtual-hand', {
         if(target) {
             window.oasisState.isGrabbing = true; window.oasisState.grabbedObject = target;
             target.setAttribute('opacity', 0.8);
-            target.removeAttribute('animation__drop'); target.removeAttribute('animation__rotate'); // Stop drop
+            target.removeAttribute('animation__drop'); target.removeAttribute('animation__rotate'); 
         }
     },
     releaseGrab: function() {
@@ -418,7 +404,7 @@ AFRAME.registerComponent('virtual-hand', {
         const el = window.oasisState.grabbedObject;
         el.setAttribute('opacity', 1.0);
         window.oasisState.isGrabbing = false; window.oasisState.grabbedObject = null;
-        if(!window.oasisState.isInOasis) dropObject(el); // Chute
+        if(!window.oasisState.isInOasis) dropObject(el); 
     },
     tick: function() {
         if(window.oasisState.isGrabbing && window.oasisState.grabbedObject && !this.el.sceneEl.is('vr-mode')) {
@@ -439,7 +425,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Fix texture manoir si présent
     AFRAME.registerComponent('fix-mansion-textures', {
         init: function() {
-            this.el.addEventListener('model-loaded', () => {
+            this.el.addEventListenerq('model-loaded', () => {
                 const mesh = this.el.getObject3D('mesh');
                 if(!mesh) return;
                 const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
