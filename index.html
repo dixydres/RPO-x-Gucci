@@ -175,54 +175,44 @@
 
         <a-entity geometry="primitive: plane; height: 5; width: 100" rotation="-90 0 0" id="floor"></a-entity>
 
-        <a-entity id="rig" movement-controls="speed: 0.25; fly: false" wasd-controls="acceleration: 20">
-    <a-camera id="player-camera" position="0 1.6 0" look-controls="pointerLockEnabled: false"
-        cursor="rayOrigin: mouse" raycaster="objects: .clickable; far: 8">
-        <!-- Effet bordure noire du casque VR (caché par défaut) - Contours réalistes -->
-        <!-- Bordure extérieure principale (vignette) -->
-        <a-ring
-            id="vr-headset-overlay"
-            position="0 0 -0.3"
-            radius-inner="0.32"
-            radius-outer="0.8"
-            color="#000000"
-            scale="1.8 1.1 1"
-            material="transparent: true; opacity: 0.98; side: double; shader: flat"
-            visible="false">
-        </a-ring>
-        <!-- Bordure supérieure (nez du casque) -->
-        <a-plane
-            id="vr-headset-nose"
-            position="0 -0.18 -0.29"
-            width="0.15"
-            height="0.12"
-            color="#000000"
-            material="transparent: true; opacity: 0.95; side: double; shader: flat"
-            visible="false">
-        </a-plane>
-        <!-- Légère teinte sur les bords (effet lentilles) -->
-        <a-ring
-            id="vr-headset-lens-tint"
-            position="0 0 -0.31"
-            radius-inner="0.28"
-            radius-outer="0.35"
-            color="#1a1a2e"
-            scale="1.8 1.1 1"
-            material="transparent: true; opacity: 0.3; side: double; shader: flat"
-            visible="false">
-        </a-ring>
-    </a-camera>
-    
-    <!-- Main gauche (maintenant DANS le rig) -->
-    <a-entity hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac" 
-        raycaster="objects: .clickable; far: 8" line="color: #118A90">
-    </a-entity>
-    
-    <!-- Main droite (maintenant DANS le rig) -->
-    <a-entity hand-controls="hand: right; handModelStyle: lowPoly; color: #ffdbac" 
-        raycaster="objects: .clickable; far: 8" line="color: #118A90">
-    </a-entity>
-</a-entity>
+       <a-entity id="rig" movement-controls="speed: 0.15" wasd-controls position="0 0 0" virtual-hand>
+            
+            <a-camera id="player-camera" position="0 1.6 0" look-controls>
+                <a-cursor color="white" scale="0.5 0.5 0.5" raycaster="objects: .clickable"></a-cursor>
+
+                <a-ring
+                    id="vr-headset-overlay"
+                    position="0 0 -0.3"
+                    radius-inner="0.32" radius-outer="0.8" color="#000000" scale="1.8 1.1 1"
+                    material="transparent: true; opacity: 0.98; side: double; shader: flat" visible="false">
+                </a-ring>
+                <a-plane
+                    id="vr-headset-nose"
+                    position="0 -0.18 -0.29" width="0.15" height="0.12" color="#000000"
+                    material="transparent: true; opacity: 0.95; side: double; shader: flat" visible="false">
+                </a-plane>
+                <a-ring
+                    id="vr-headset-lens-tint"
+                    position="0 0 -0.31" radius-inner="0.28" radius-outer="0.35" color="#1a1a2e" scale="1.8 1.1 1"
+                    material="transparent: true; opacity: 0.3; side: double; shader: flat" visible="false">
+                </a-ring>
+            </a-camera>
+
+            <a-entity 
+                id="left-hand"
+                hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac"
+                vr-controller-grab
+                raycaster="objects: .clickable; far: 0.1; showLine: false">
+            </a-entity>
+
+            <a-entity 
+                id="right-hand"
+                hand-controls="hand: right; handModelStyle: lowPoly; color: #ffdbac"
+                vr-controller-grab
+                raycaster="objects: .clickable; far: 0.1; showLine: false">
+            </a-entity>
+
+        </a-entity>
 
         <!-- ============================================ -->
         <!-- MONDE VR - Jardin Céleste dans les Nuages -->
