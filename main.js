@@ -249,9 +249,9 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
         window.oasisState.originalRigPos = rig ? rig.getAttribute('position') : {x: 0, y: 0, z: 0};
         
-        // Distances pour le grab VR
-        this.grabDistance = 0.50;
-        this.wearDistance = 0.30;
+        // Distances pour le grab VR (en mètres)
+        this.grabDistance = 1.0;  // 1 mètre pour attraper
+        this.wearDistance = 0.40; // 40cm pour enfiler
         
         // Timer pour le wear automatique
         this.wearTimer = null;
@@ -259,6 +259,8 @@ AFRAME.registerComponent('headset-toggle', {
         
         // Setup VR hand grab
         this.setupHandGrab();
+        
+        console.log('[OASIS] Headset-toggle component initialized');
         
         // Écouter les événements de grab de la main virtuelle
         this.el.addEventListener('grab-start', (e) => {
@@ -324,33 +326,69 @@ AFRAME.registerComponent('headset-toggle', {
             return;
         }
         
-        const hands = document.querySelectorAll('[hand-controls]');
-        
-        hands.forEach((hand, idx) => {
-            // Trigger VR controller
-            hand.addEventListener('triggerdown', () => {
-                this.handleVRGrab(hand);
-            });
+        // Attendre un peu que les mains soient initialisées
+        setTimeout(() => {
+            const hands = document.querySelectorAll('[hand-controls]');
+            console.log('[OASIS VR] Found', hands.length, 'hand controllers');
             
-            hand.addEventListener('triggerup', () => {
-                this.handleVRRelease(hand);
+            hands.forEach((hand, idx) => {
+                const handSide = hand.getAttribute('hand-controls').hand || (idx === 0 ? 'left' : 'right');
+                console.log('[OASIS VR] Setting up', handSide, 'hand');
+                
+                // Trigger VR controller (index finger)
+                hand.addEventListener('triggerdown', (evt) => {
+                    console.log('[OASIS VR] Trigger down on', handSide, 'hand');
+                    self.handleVRGrab(hand);
+                });
+                
+                hand.addEventListener('triggerup', (evt) => {
+                    console.log('[OASIS VR] Trigger up on', handSide, 'hand');
+                    self.handleVRRelease(hand);
+                });
+                
+                // Grip VR controller (squeeze)
+                hand.addEventListener('gripdown', (evt) => {
+                    console.log('[OASIS VR] Grip down on', handSide, 'hand');
+                    self.handleVRGrab(hand);
+                });
+                
+                hand.addEventListener('gripup', (evt) => {
+                    console.log('[OASIS VR] Grip up on', handSide, 'hand');
+                    self.handleVRRelease(hand);
+                });
+                
+                // Alternative events for different controller types
+                hand.addEventListener('gripchanged', (evt) => {
+                    if (evt.detail && evt.detail.value > 0.5) {
+                        console.log('[OASIS VR] Grip changed (pressed) on', handSide, 'hand');
+                        self.handleVRGrab(hand);
+                    } else if (evt.detail && evt.detail.value < 0.5 && window.oasisState.grabbedHand === hand) {
+                        console.log('[OASIS VR] Grip changed (released) on', handSide, 'hand');
+                        self.handleVRRelease(hand);
+                    }
+                });
+                
+                hand.addEventListener('triggerchanged', (evt) => {
+                    if (evt.detail && evt.detail.value > 0.5) {
+                        console.log('[OASIS VR] Trigger changed (pressed) on', handSide, 'hand');
+                        self.handleVRGrab(hand);
+                    } else if (evt.detail && evt.detail.value < 0.5 && window.oasisState.grabbedHand === hand) {
+                        console.log('[OASIS VR] Trigger changed (released) on', handSide, 'hand');
+                        self.handleVRRelease(hand);
+                    }
+                });
             });
-            
-            // Grip VR controller
-            hand.addEventListener('gripdown', () => {
-                this.handleVRGrab(hand);
-            });
-            
-            hand.addEventListener('gripup', () => {
-                this.handleVRRelease(hand);
-            });
-        });
+        }, 1000);
     },
     
     handleVRGrab: function(hand) {
+        if (window.oasisState.isGrabbing) return; // Déjà en train de grab
+        
         const headsetPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
         const handPos = hand.object3D.getWorldPosition(new THREE.Vector3());
         const distance = headsetPos.distanceTo(handPos);
+        
+        console.log('[OASIS VR] Distance to headset:', distance, '(max:', this.grabDistance, ')');
         
         if (distance < this.grabDistance && !window.oasisState.isInOasis) {
             this.grabHeadsetVR(hand);
@@ -373,26 +411,47 @@ AFRAME.registerComponent('headset-toggle', {
     },
     
     grabHeadsetVR: function(hand) {
+        console.log('[OASIS VR] Grabbing headset with VR hand');
+        
         window.oasisState.isGrabbing = true;
         window.oasisState.grabbedHand = hand;
+        window.oasisState.grabbedObject = this.el;
         
         this.el.setAttribute('visible', true);
         this.el.setAttribute('color', '#FFD700');
         
+        // Émettre l'événement grab-start pour le timer
+        this.el.emit('grab-start', { hand: 'vr' });
+        
         // Suivre la main VR en temps réel
+        const self = this;
         this.followHand = () => {
             if (window.oasisState.isGrabbing && window.oasisState.grabbedHand) {
                 const handWorldPos = window.oasisState.grabbedHand.object3D.getWorldPosition(new THREE.Vector3());
-                this.el.object3D.position.copy(handWorldPos);
+                
+                // Convertir les coordonnées monde en coordonnées locales
+                const targetPos = handWorldPos.clone();
+                const parent = self.el.object3D.parent;
+                
+                if (parent && parent.type !== 'Scene') {
+                    // Obtenir la matrice monde inverse du parent
+                    const parentInverse = new THREE.Matrix4();
+                    parent.updateWorldMatrix(true, false);
+                    parentInverse.copy(parent.matrixWorld).invert();
+                    targetPos.applyMatrix4(parentInverse);
+                }
+                
+                // Appliquer avec smoothing
+                self.el.object3D.position.lerp(targetPos, 0.5);
                 
                 // Vérifier si proche de la tête
                 const camera = document.getElementById('player-camera');
                 const cameraWorldPos = camera.object3D.getWorldPosition(new THREE.Vector3());
-                const headsetWorldPos = this.el.object3D.getWorldPosition(new THREE.Vector3());
+                const headsetWorldPos = self.el.object3D.getWorldPosition(new THREE.Vector3());
                 const distanceToHead = cameraWorldPos.distanceTo(headsetWorldPos);
                 
-                if (distanceToHead < this.wearDistance) {
-                    this.wearHeadset();
+                if (distanceToHead < self.wearDistance) {
+                    self.wearHeadset();
                 }
             }
         };
@@ -401,13 +460,19 @@ AFRAME.registerComponent('headset-toggle', {
     },
     
     releaseHeadsetVR: function() {
+        console.log('[OASIS VR] Releasing headset');
+        
         if (this.followHand) {
             this.el.sceneEl.removeEventListener('tick', this.followHand);
             this.followHand = null;
         }
         
+        // Émettre l'événement grab-end
+        this.el.emit('grab-end', { hand: 'vr' });
+        
         window.oasisState.isGrabbing = false;
         window.oasisState.grabbedHand = null;
+        window.oasisState.grabbedObject = null;
         
         if (!window.oasisState.isInOasis) {
             this.el.setAttribute('position', window.oasisState.originalHeadsetPos);
