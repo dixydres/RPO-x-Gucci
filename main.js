@@ -269,18 +269,23 @@ AFRAME.registerComponent('headset-toggle', {
             });
         }
 
-        // Ciel de fond (couleur sombre pour la nuit/soirée)
-        scene.setAttribute('background', 'color: #2c1b18'); 
-        scene.setAttribute('fog', 'type: exponential; color: #4a3b3b; density: 0.005');
+        // Ciel de fond - Magnifique coucher de soleil OASIS
+        scene.setAttribute('background', 'color: #1a0a1e'); 
+        scene.setAttribute('fog', 'type: exponential; color: #FF6B35; density: 0.008');
+        
+        // Créer un dégradé de coucher de soleil dynamique
+        this.createSunsetSky();
 
         // Afficher les contours (Vignette)
         const vrOverlay = document.getElementById('vr-headset-overlay');
         const vrNose = document.getElementById('vr-headset-nose');
         const vrLensTint = document.getElementById('vr-headset-lens-tint');
+        const playerHud = document.getElementById('player-hud');
         
         if (vrOverlay) vrOverlay.setAttribute('visible', true);
         if (vrNose) vrNose.setAttribute('visible', true);
         if (vrLensTint) vrLensTint.setAttribute('visible', true);
+        if (playerHud) playerHud.setAttribute('visible', true);
 
         // Fin UI
         const loadingScreen = document.getElementById('oasis-loading-screen');
@@ -324,10 +329,15 @@ AFRAME.registerComponent('headset-toggle', {
             const vrOverlay = document.getElementById('vr-headset-overlay');
             const vrNose = document.getElementById('vr-headset-nose');
             const vrLensTint = document.getElementById('vr-headset-lens-tint');
+            const playerHud = document.getElementById('player-hud');
             
             if(vrOverlay) vrOverlay.setAttribute('visible', false);
             if(vrNose) vrNose.setAttribute('visible', false);
             if(vrLensTint) vrLensTint.setAttribute('visible', false);
+            if(playerHud) playerHud.setAttribute('visible', false);
+            
+            // 4b. Supprimer le ciel sunset
+            this.removeSunsetSky();
 
             // 5. Reset Ambiance - NUIT dans les Stacks
             scene.setAttribute('background', 'color: #050510');
@@ -342,12 +352,12 @@ AFRAME.registerComponent('headset-toggle', {
 
     // --- CORRECTION LUMIÈRE & TEXTURES NOIRES ---
     fixVRLighting: function(vrWorldElement) {
-        // 1. Lumière de secours : FAIBLE et CHAUDE
+        // 1. Lumière de secours : FAIBLE et CHAUDE (coucher de soleil)
         let light = document.getElementById('global-vr-light');
         if (!light) {
             light = document.createElement('a-entity');
             light.setAttribute('id', 'global-vr-light');
-            light.setAttribute('light', 'type: ambient; color: #ffaa77; intensity: 0.3'); 
+            light.setAttribute('light', 'type: ambient; color: #FF8C42; intensity: 0.4'); 
             vrWorldElement.appendChild(light);
         }
 
@@ -361,11 +371,100 @@ AFRAME.registerComponent('headset-toggle', {
                 node.material.needsUpdate = true;
             }
         });
+    },
+
+    // --- CRÉATION DU CIEL COUCHER DE SOLEIL OASIS ---
+    createSunsetSky: function() {
+        const scene = document.querySelector('a-scene');
+        const vrWorld = document.getElementById('vr-world');
+        if (!vrWorld || !scene) return;
+        
+        // Supprimer l'ancien ciel s'il existe
+        const oldSky = document.getElementById('oasis-sunset-sky');
+        if (oldSky) oldSky.remove();
+        
+        // Créer un magnifique ciel de coucher de soleil
+        const sunsetSky = document.createElement('a-entity');
+        sunsetSky.setAttribute('id', 'oasis-sunset-sky');
+        sunsetSky.setAttribute('position', '0 0 0');
+        
+        // Dôme du ciel avec dégradé de coucher de soleil
+        sunsetSky.innerHTML = `
+            <!-- Couche horizon orange/rose -->
+            <a-cylinder position="0 -50 0" radius="300" height="100" open-ended="true" 
+                material="color: #FF6B35; opacity: 0.6; transparent: true; shader: flat; side: back">
+            </a-cylinder>
+            
+            <!-- Couche intermédiaire rose/violet -->
+            <a-cylinder position="0 0 0" radius="295" height="150" open-ended="true" 
+                material="color: #C73E6D; opacity: 0.4; transparent: true; shader: flat; side: back">
+            </a-cylinder>
+            
+            <!-- Couche haute violet/bleu -->
+            <a-cylinder position="0 60 0" radius="290" height="120" open-ended="true" 
+                material="color: #6B2D5C; opacity: 0.5; transparent: true; shader: flat; side: back">
+            </a-cylinder>
+            
+            <!-- Soleil couchant amélioré -->
+            <a-entity id="sunset-sun-enhanced" position="0 15 -150">
+                <!-- Halo externe -->
+                <a-sphere radius="25" 
+                    material="color: #FF4500; opacity: 0.2; transparent: true; shader: flat"></a-sphere>
+                <!-- Halo moyen -->
+                <a-sphere radius="15" 
+                    material="color: #FF6347; opacity: 0.4; transparent: true; shader: flat"></a-sphere>
+                <!-- Soleil principal -->
+                <a-sphere radius="8" 
+                    material="color: #FFD700; emissive: #FF8C00; emissiveIntensity: 2; shader: flat"></a-sphere>
+                <!-- Lumière du soleil -->
+                <a-entity light="type: point; color: #FF8C42; intensity: 4; distance: 200; decay: 1"></a-entity>
+            </a-entity>
+            
+            <!-- Nuages de coucher de soleil -->
+            <a-entity id="sunset-clouds">
+                <!-- Nuages orangés près de l'horizon -->
+                <a-sphere position="-80 10 -120" radius="15" scale="3 0.5 1.5"
+                    material="color: #FF7F50; opacity: 0.7; transparent: true"></a-sphere>
+                <a-sphere position="60 12 -130" radius="18" scale="3.5 0.6 1.8"
+                    material="color: #FF6347; opacity: 0.65; transparent: true"></a-sphere>
+                <a-sphere position="-40 8 -140" radius="12" scale="2.5 0.4 1.2"
+                    material="color: #FFB347; opacity: 0.75; transparent: true"></a-sphere>
+                <a-sphere position="100 15 -110" radius="20" scale="4 0.7 2"
+                    material="color: #E9967A; opacity: 0.6; transparent: true"></a-sphere>
+                <a-sphere position="-120 18 -100" radius="22" scale="3.8 0.5 1.6"
+                    material="color: #CD5C5C; opacity: 0.55; transparent: true"></a-sphere>
+                
+                <!-- Nuages violets plus hauts -->
+                <a-sphere position="30 45 -90" radius="25" scale="4 0.8 2"
+                    material="color: #9370DB; opacity: 0.4; transparent: true"></a-sphere>
+                <a-sphere position="-60 50 -85" radius="20" scale="3.5 0.6 1.5"
+                    material="color: #8A2BE2; opacity: 0.35; transparent: true"></a-sphere>
+            </a-entity>
+            
+            <!-- Premières étoiles visibles -->
+            <a-entity id="early-stars">
+                <a-sphere position="50 80 -60" radius="0.3" material="color: #FFFFFF; emissive: #FFFFFF; shader: flat"></a-sphere>
+                <a-sphere position="-70 90 -50" radius="0.25" material="color: #FFFACD; emissive: #FFFACD; shader: flat"></a-sphere>
+                <a-sphere position="80 100 -40" radius="0.35" material="color: #FFFFFF; emissive: #FFFFFF; shader: flat"></a-sphere>
+                <a-sphere position="-30 95 -70" radius="0.2" material="color: #F0E68C; emissive: #F0E68C; shader: flat"></a-sphere>
+                <a-sphere position="20 110 -55" radius="0.28" material="color: #FFFFFF; emissive: #FFFFFF; shader: flat"></a-sphere>
+                <a-sphere position="-90 85 -45" radius="0.32" material="color: #FFE4B5; emissive: #FFE4B5; shader: flat"></a-sphere>
+            </a-entity>
+        `;
+        
+        vrWorld.appendChild(sunsetSky);
+    },
+    
+    // --- SUPPRESSION DU CIEL COUCHER DE SOLEIL ---
+    removeSunsetSky: function() {
+        const sunsetSky = document.getElementById('oasis-sunset-sky');
+        if (sunsetSky) sunsetSky.remove();
     }
 });
 
 // ============================================
-// 3. DESKTOP SIMULATION (CLAVIER 'C')
+// 3. DESKTOP SIMULATION (CLAVIER 'C' pour grab)
+// Pour sortir de l'OASIS: utilisez le geste de retrait en VR (main près de la tête)
 // ============================================
 AFRAME.registerComponent('virtual-hand', {
     schema: { grabKey: {default: 'c'}, holdDistance: {default: 0.5} },

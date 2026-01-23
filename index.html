@@ -58,6 +58,35 @@
                         width="0.8" color="#aaa"></a-text>
 
                 </a-entity>
+
+                <!-- ============================================ -->
+                <!-- HUD - Affichage Tête Haute (visible dans l'OASIS) -->
+                <!-- ============================================ -->
+                <a-entity id="player-hud" visible="false" position="0 -0.25 -0.5">
+                    <!-- Fond semi-transparent du HUD -->
+                    <a-plane position="0 0 0" width="0.6" height="0.12" 
+                        material="color: #000000; opacity: 0.5; transparent: true; shader: flat"></a-plane>
+                    
+                    <!-- LEVEL -->
+                    <a-text value="LEVEL: 99" position="-0.25 0.015 0.001" align="left" 
+                        width="0.4" color="#FFFFFF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"></a-text>
+                    
+                    <!-- Barre de vie (conteneur) -->
+                    <a-plane position="0 0.015 0.001" width="0.15" height="0.025" 
+                        material="color: #333333; shader: flat"></a-plane>
+                    <!-- Barre de vie (remplissage vert) -->
+                    <a-plane id="health-bar" position="0 0.015 0.002" width="0.14" height="0.02" 
+                        material="color: #00FF00; shader: flat"></a-plane>
+                    
+                    <!-- CREDITS -->
+                    <a-text value="CREDITS: 0" position="0.25 0.015 0.001" align="right" 
+                        width="0.4" color="#FFD700" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"></a-text>
+                    
+                    <!-- Icône de santé (petit coeur) -->
+                    <a-text value="♥" position="-0.08 0.015 0.001" align="center" 
+                        width="0.3" color="#FF0000"></a-text>
+                </a-entity>
+
             </a-camera>
 
             <a-entity id="left-hand" hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac"
@@ -104,8 +133,8 @@
         <!-- ============================================ -->
         <!-- MONDE RÉEL - Les Stacks de nuit -->
         <!-- ============================================ -->
-       <a-entity id="real-world">
-
+       <a-entity id="real-world" position="">
+ 
             <!-- ============================================ -->
             <!-- ÉCLAIRAGE NOCTURNE - Nuit dans les Stacks -->
             <!-- ============================================ -->
@@ -128,18 +157,18 @@
             <!-- SOURCES DE LUMIÈRE NOCTURNES -->
             <!-- ============================================ -->
             <!-- Lampadaire 1 -->
-            <a-entity id="streetlight-1" position="-8 -10.81194 8.85303">
+            <a-entity id="streetlight-1" position="-7.84821 -10.81194 4.44824">
                 <a-cylinder radius="0.08" height="8" position="0 4 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-cylinder>
                 <a-box width="1.5" height="0.1" depth="0.1" position="0.75 7.8 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-box>
                 <a-sphere radius="0.2" position="1.4 7.6 0" material="color: #ffcc66; emissive: #ffaa33" geometry=""></a-sphere>
                 <a-entity light="type: point; color: #ffffff; intensity: 0.11; distance: 15; decay: 0; shadowMapWidth: 511.91; shadowRadius: 0.76; castShadow: true" position="2.84 29.119 -8.702" id="sky-light"></a-entity>   </a-entity>
 
             <!-- Lampadaire 2 -->
-            <a-entity id="streetlight-2" position="-15 0 5">
+            <a-entity id="streetlight-2" position="-1.17662 -12.17708 -1.06868">
                 <a-cylinder radius="0.08" height="8" position="0 4 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-cylinder>
                 <a-box width="1.5" height="0.1" depth="0.1" position="0.75 7.8 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-box>
                 <a-sphere radius="0.2" position="1.4 7.6 0" material="color: #ffcc66; emissive: #ffaa33" geometry=""></a-sphere>
-                <a-entity light="type: point; color: #ffaa44; intensity: 1.2; distance: 12; decay: 2" position="1.4 7.6 0"></a-entity>
+                <a-entity light="type: point; color: #31585e; intensity: 0.62; distance: 12; decay: 2" position="1.4 7.6 0"></a-entity>
             </a-entity>
 
             <!-- Lumières néon lointaines (ambiance cyberpunk) -->
@@ -182,10 +211,10 @@
             </a-entity>
 
             <!-- Deuxième feu de baril plus loin -->
-            <a-entity id="barrel-fire-2" position="-18 0 -8">
-                <a-cylinder radius="0.35" height="0.9" position="0 0.45 0" material="color: #3a2a1a; roughness: 0.95; metalness: 0.2" geometry=""></a-cylinder>
-                <a-entity light="type: point; color: #ff5511; intensity: 1.3841388627076079; distance: 6; decay: 2" position="0 1.1 0" animation="property: light.intensity; from: 0.9; to: 1.4; dur: 180; easing: easeInOutSine; loop: true; dir: alternate"></a-entity>
-                <a-sphere radius="0.2" position="0 1.1 0" material="color: #ff3300; emissive: #ff5500; emissiveIntensity: 2; transparent: true; opacity: 0.7" geometry=""></a-sphere>
+            <a-entity id="barrel-fire-2" position="-11.12755 0.16796 -7.92911">
+                
+                <a-entity light="type: point; color: #ffffff; intensity: 0.666; distance: 18.85; decay: 1.25; castShadow: true; shadowCameraVisible: true" position="11.942 12.983 10.886"></a-entity>
+                
             </a-entity>
 
 
@@ -195,7 +224,7 @@
         <!-- LA CARAVANE - Structure principale -->
         <!-- ============================================ -->
 
-        <a-entity id="caravan" position="">
+        <a-entity id="caravan" position="0 0 0.02422">
 
             <!-- SOL -->
             <a-plane id="floor" position="0 0.01983 0" rotation="-90 0 0" width="3" height="3" material="color: #2a2522; roughness: 0.9; metalness: 0.1" geometry="">
@@ -210,7 +239,7 @@
             </a-plane>
 
             <!-- MUR AVANT (avec porte simulée) -->
-            <a-plane position="0 1.25 1.5" rotation="0 180 0" width="3" height="2.5" material="color: #3a3530; roughness: 0.85" geometry="">
+            <a-plane position="0 1.25 1.5" rotation="0 180 0" width="3" height="2.5" material="color: #3f3d3b; roughness: 0.85" geometry="">
             </a-plane>
             <!-- Porte condamnée -->
             <a-box position="-0.87627 1 1.48" width="0.8" height="1.9" depth="0.05" material="color: #2a2220; roughness: 0.9" geometry="">
@@ -222,10 +251,10 @@
 
             <!-- MUR GAUCHE - AVEC FENÊTRE (remontée) -->
             <!-- Partie haute (plus petite car fenêtre remontée) -->
-            <a-plane position="-1.5 2.25112 0" rotation="0 90 0" width="3" height="0.5" material="color: #3a3530; roughness: 0.85" geometry="">
+            <a-plane position="-1.5 2.251 0" rotation="0 90 0" width="3" height="0.5" material="color: #3a3530; roughness: 0.85" geometry="" id="wall-top" scale="1 1.131 1">
             </a-plane>
             <!-- Partie basse (plus grande car fenêtre remontée) -->
-            <a-plane position="-1.5 0.50706 0" rotation="0 90 0" width="3" height="1.0" material="color: #3a3530; roughness: 0.85" geometry="">
+            <a-plane position="-1.5 0.50706 0" rotation="0 90 0" width="3" height="1.0" material="color: #3a3530; roughness: 0.85" geometry="" id="wall-bot" scale=" 1 1.14 1">
             </a-plane>
             <!-- Côté gauche fenêtre -->
             <a-plane position="-1.5 1.5 -1.1" rotation="0 90 0" width="0.8" height="1.5" material="color: #3a3530; roughness: 0.85" geometry="">
@@ -239,14 +268,14 @@
             <!-- ============================================ -->
             <a-entity id="window-frame" position="-1.48 1.5 0">
                 <!-- Cadre extérieur -->
-                <a-box position="0 0.4418 0" width="0.08" height="0.1" depth="1.4" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
+                <a-box id="1" scale="1 1 1" position="0 0.4418 0" width="0.08" height="0.1" depth="1.4" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
 
-                <a-box position="-0.02049 0.016 0.64529" width="0.08" height="1.5" depth="0.1" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
-                <a-box position="-0.01382 0 -0.64596" width="0.08" height="1.5" depth="0.1" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
+                <a-box id="2" scale="1 0.58 1" position="-0.02 0.016 0.645" width="0.08" height="1.5" depth="0.1" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
+                <a-box id="3" scale="1 0.58 1" position ="-0.01382 0 -0.64596" width="0.08" height="1.5" depth="0.1" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
                 <!-- Barre centrale horizontale -->
-                <a-box position="0 -0.40299 0" width="0.06" height="0.06" depth="1.4" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
+                <a-box id="4" scale="1 1 1" position="0 -0.40299 0" width="0.06" height="0.06" depth="1.4" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
                 <!-- Barre centrale verticale -->
-                <a-box position="-0.01334 0.00509 0" width="0.06" height="1.5" depth="0.06" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
+                <a-box id="5" scale="1 0.58 1" position="-0.01334 0.00509 0" width="0.06" height="1.5" depth="0.06" material="color: #1a1512; roughness: 0.7" geometry=""></a-box>
             </a-entity>
 
             <!-- ============================================ -->
@@ -282,7 +311,7 @@
                 <!-- Barre transversale -->
                 <a-box position="0 0.1 0" width="0.04" height="0.04" depth="1.8" material="color: #3a2a1a; roughness: 0.85; metalness: 0.3" geometry=""></a-box>
                 <!-- Planche de passage -->
-                <a-box position="0.75438 -0.56461 0" width="0.4" height="0.03" depth="0.8" material="color: #5a4a35; roughness: 0.9" geometry=""></a-box>
+                <a-box position="0.885 -0.415 0" width="0.4" height="0.03" depth="0.8" material="color: #5a4a35; roughness: 0.9" geometry="" id="oak-plank" scale="0.5 1 1"></a-box>
 
                 <!-- Grillage proche avec rouille -->
                 <a-entity position="0.97317 0.45326 0.18767" rotation="0 0.725937526430753 0">
@@ -307,9 +336,9 @@
                 <!-- === POTEAUX ÉLECTRIQUES === -->
                 <a-entity id="power-poles">
                     <!-- Poteau 1 -->
-                    <a-cylinder position="0 8 -12" radius="0.08" height="16" material="color: #4a4a4a; roughness: 0.9; metalness: 0.3" geometry=""></a-cylinder>
-                    <a-box position="0 14 -12" width="3" height="0.1" depth="0.1" material="color: #3a3a3a; metalness: 0.4" geometry=""></a-box>
-                    <a-box position="0 13 -12" width="2" height="0.1" depth="0.1" material="color: #3a3a3a; metalness: 0.4" geometry=""></a-box>
+                    
+                    
+                    
                     <!-- Poteau 2 -->
                     
                     <a-box position="0 12.5 12" width="2.5" height="0.1" depth="0.1" material="color: #3a3a3a; metalness: 0.4" geometry=""></a-box>
@@ -788,7 +817,7 @@
                 </a-entity><a-entity id="stack-9" position="0 -5.43364 4.77175">
                     <!-- Caravane 1 base - Grande blanche -->
                     <a-entity position="0 1.5 0">
-                        <a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
+                        <a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
                         
                         <a-plane position="-1.4 0.4 1.21" width="0.6" height="0.4" material="color: #88ffaa; emissive: #44ff66; emissiveIntensity: 0.5" geometry=""></a-plane>
                         <a-plane position="0 0.4 1.21" width="0.5" height="0.4" material="color: #3a4a5a; roughness: 0.2" geometry=""></a-plane>
@@ -850,8 +879,20 @@
                         <!-- Grande antenne -->
                         <a-cylinder position="0 1.4 0" radius="0.03" height="1.5" material="color: #5a5a5a" geometry=""></a-cylinder>
                         <a-sphere position="0 2.1 0" radius="0.08" material="color: #ff0000; emissive: #ff0000" class="blink-light" geometry=""></a-sphere>
+                    </a-entity><a-entity position="0.27981 9.21888 0.01053" rotation="-1.2398806686631014 105.93015603717198 1.0874738951583025">
+                        <a-box width="3" height="2.3" depth="1.8" material="color: #b8b4b0; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
+                        <a-plane position="-0.2 0.3 0.91" width="0.4" height="0.3" material="color: #ffdd88; emissive: #ffaa44; emissiveIntensity: 0.5" geometry=""></a-plane>
+                        <!-- Grande antenne -->
+                        <a-cylinder position="0 1.4 0" radius="0.03" height="1.5" material="color: #5a5a5a" geometry=""></a-cylinder>
+                        <a-sphere position="0 2.1 0" radius="0.08" material="color: #ff0000; emissive: #ff0000" class="blink-light" geometry=""></a-sphere>
                     </a-entity>
-
+<a-entity position="0.27981 4.20351 0.01053" rotation="-1.2398806686631014 105.93015603717198 1.0874738951583025">
+                        <a-box width="3" height="2.3" depth="1.8" material="color: #b8b4b0; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
+                        <a-plane position="-0.2 0.3 0.91" width="0.4" height="0.3" material="color: #ffdd88; emissive: #ffaa44; emissiveIntensity: 0.5" geometry=""></a-plane>
+                        <!-- Grande antenne -->
+                        <a-cylinder position="0 1.4 0" radius="0.03" height="1.5" material="color: #5a5a5a" geometry=""></a-cylinder>
+                        <a-sphere position="0 2.1 0" radius="0.08" material="color: #ff0000; emissive: #ff0000" class="blink-light" geometry=""></a-sphere>
+                    </a-entity>
                     <a-entity light="type: point; color: #ffaa44; intensity: 0.7; distance: 10" position="0 5 2"></a-entity>
 
                     <!-- Échafaudage métallique gauche -->
@@ -1291,8 +1332,8 @@
 
                 <!-- Néons et éclairages des stacks -->
                 <a-entity id="stack-neons">
-                    <a-box position="0 3 -7.5" width="0.1" height="0.8" depth="0.05" material="color: #ff3366; emissive: #ff3366" geometry=""></a-box>
-                    <a-entity light="type: point; color: #ff3366; intensity: 0.8; distance: 10" position="0 3 -7"></a-entity>
+                    
+                    <a-entity light="type: point; color: #ffffff; intensity: 0.8; distance: 10; castShadow: true" position="3.56611 -10.00126 3.20499"></a-entity>
 
                     <a-box position="0 5 0.5" width="0.8" height="0.1" depth="0.05" material="color: #00ffaa; emissive: #00ffaa; emissiveIntensity: 0.8" geometry=""></a-box>
                     <a-entity light="type: point; color: #00ffaa; intensity: 0.6; distance: 8" position="0 5 1"></a-entity>
@@ -1719,9 +1760,9 @@
 
         <!-- AMPOULE NUE AU PLAFOND -->
         <a-entity position="0 2.35 0">
-            <a-sphere radius="0.05" material="color: #ffeecc; emissive: #ffaa66; emissiveIntensity: 0.8" geometry=""></a-sphere>
+            <a-sphere radius="0.05" material="color: #cfcbc4; emissive: #ffffff; emissiveIntensity: 0.8" geometry=""></a-sphere>
             <a-cylinder position="0 0.08 0" radius="0.015" height="0.15" material="color: #1a1a1a" geometry=""></a-cylinder>
-            <a-entity light="type: point; color: #f3e012; intensity: 1.85; distance: 3; groundColor: #e7ca08"></a-entity>
+            <a-entity light="type: point; color: #f6f5ef; intensity: 0.9; distance: 2.96; groundColor: #ffffff" visible=""></a-entity>
         </a-entity>
 
         <!-- CÂBLES AU PLAFOND -->
@@ -2200,7 +2241,7 @@
                 </a-entity>
 
                 <!-- Îlot lointain avec mansion -->
-                <a-entity position="0 12 -67.08432" visible="" id="skyhouse">
+                <a-entity position="0 12 -68.2" visible="" id="skyhouse">
 
 
                     <!-- Low Poly Mansion -->
@@ -2219,8 +2260,220 @@
                     material="opacity: 0.45; transparent: true"></a-sphere>
                 <a-sphere position="40 22 -35" radius="7" color="#FFFAFA"
                     material="opacity: 0.5; transparent: true"></a-sphere>
+            </a-entity>
 
+            <!-- ============================================ -->
+            <!-- A. SCOREBOARD READY PLAYER ONE -->
+            <!-- Style film - Hologramme géant au-dessus de la fontaine -->
+            <!-- ============================================ -->
+           <a-entity id="rpo-scoreboard" position="0 36.31827 -30.71533" rotation="16 180 0" scale="1.5 1.5 1.5" visible="">
+                <!-- Animation de flottement subtil -->
+                <a-entity id="scoreboard-container" animation="property: position; to: 0 0.3 0; dir: alternate; dur: 4000; easing: easeInOutSine; loop: true" visible="">
+                    
+                    <!-- === STRUCTURE PRINCIPALE DU SCOREBOARD === -->
+                    <!-- Cadre extérieur lumineux (style OASIS) -->
+                    <a-box position="0.02724 0 0" width="10" height="7" depth="0.1" material="color: #000820; opacity: 0.85; transparent: true; metalness: 0.9; roughness: 0.1" geometry="" visible="">
+                    </a-box>
+                    
+                    <!-- Bordure lumineuse cyan (haut) -->
+                    <a-box position="0 3.5 0.06" width="10.2" height="0.1" depth="0.05" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-box>
+                    <!-- Bordure lumineuse cyan (bas) -->
+                    <a-box position="0 -3.5 0.06" width="10.2" height="0.1" depth="0.05" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-box>
+                    <!-- Bordures verticales -->
+                    <a-box position="-5.05 0 0.06" width="0.1" height="7.2" depth="0.05" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-box>
+                    <a-box position="5.05 0 0.06" width="0.1" height="7.2" depth="0.05" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-box>
+                    
+                    <!-- === EN-TÊTE OASIS SCOREBOARD === -->
+                    <!-- Logo OASIS stylisé -->
+                    <a-entity position="0 2.8 0.1" visible="">
+                        <a-text value="✧ OASIS SCOREBOARD ✧" align="center" width="14" color="#00D4FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                    </a-entity>
+                    
+                    <!-- Sous-titre "HIGH FIVE" -->
+                    <a-text value="— THE HIGH FIVE —" position="0 2.1 0.1" align="center" width="8" color="#FFD700" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                    
+                    <!-- Ligne de séparation animée -->
+                    <a-plane position="0 1.6 0.1" width="8" height="0.03" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-plane>
+                    
+                    <!-- === LISTE DES SCORES STYLE RPO === -->
+                    
+                    <!-- 1er - PARZIVAL (avec couronne) -->
+                    <a-entity position="-0.10617 0.9 0.1" visible="">
+                        <a-text value="👑" position="-2.43493 0 0" align="center" width="3" text="" visible=""></a-text>
+                        <a-text value="1" position="-3.06761 0 0" align="center" width="5" color="#FFD700" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="PARZIVAL" position="-2.5 0 0" align="left" width="6" color="#FFFFFF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="250,000,000" position="4.5 0 0" align="right" width="5" color="#FFD700" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <!-- Barre d'XP dorée -->
+                        <a-plane position="0.84998 -0.15 0" width="3" height="0.08" material="color: #FFD700; shader: flat" geometry="" visible=""></a-plane>
+                    </a-entity>
+                    
+                    <!-- 2ème - ART3MIS -->
+                    <a-entity position="0 0.2 0.1" visible="">
+                        <a-text value="2" position="-3.2 0 0" align="center" width="5" color="#C0C0C0" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="ART3MIS" position="-2.58675 0 0" align="left" width="6" color="#FF69B4" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="248,500,000" position="4.5 0 0" align="right" width="5" color="#C0C0C0" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-plane position="0.70013 -0.09859 -0.01474" width="2.9" height="0.08" material="color: #C0C0C0; shader: flat" geometry="" visible=""></a-plane>
+                    </a-entity>
+                    
+                    <!-- 3ème - AECH -->
+                    <a-entity position="0 -0.5 0.1" visible="">
+                        <a-text value="3" position="-3.2 0 0" align="center" width="5" color="#CD7F32" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="AECH" position="-2.60536 0 0" align="left" width="6" color="#8B4513" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="245,200,000" position="4.5 0 0" align="right" width="5" color="#CD7F32" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-plane position="0.68145 -0.09341 -0.01623" width="2.85" height="0.08" material="color: #CD7F32; shader: flat" geometry="" visible=""></a-plane>
+                    </a-entity>
+                    
+                    <!-- 4ème - DAITO -->
+                    <a-entity position="0 -1.2 0.1" visible="">
+                        <a-text value="4" position="-3.2 0 0" align="center" width="5" color="#00D4FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="DAITO" position="-2.60936 0 0" align="left" width="6" color="#FF4500" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="198,750,000" position="4.5 0 0" align="right" width="5" color="#00D4FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-plane position="0.40245 -0.15 0" width="2.3" height="0.08" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-plane>
+                    </a-entity>
+                    
+                    <!-- 5ème - SHOTO -->
+                    <a-entity position="0 -1.9 0.1" visible="">
+                        <a-text value="5" position="-3.2 0 0" align="center" width="5" color="#00D4FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="SHOTO" position="-2.5941 0 0" align="left" width="6" color="#32CD32" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-text value="195,300,000" position="4.5 0 0" align="right" width="5" color="#00D4FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt" text="" visible=""></a-text>
+                        <a-plane position="0.37883 -0.15 0" width="2.25" height="0.08" material="color: #00D4FF; shader: flat" geometry="" visible=""></a-plane>
+                    </a-entity>
+                    
+                  
+                    
+                    <!-- === EFFETS HOLOGRAPHIQUES === -->
+                    <!-- Particules flottantes autour du scoreboard -->
+                    <a-sphere position="-4.5 3.474910828766469 0.5" radius="0.08" material="color: #00D4FF; shader: flat" animation="property: position; to: -4.5 3.5 0.5; dir: alternate; dur: 2000; loop: true" geometry="" visible=""></a-sphere>
+                    <a-sphere position="4.5 2.682081895399797 0.5" radius="0.06" material="color: #FFD700; shader: flat" animation="property: position; to: 4.5 3 0.5; dir: alternate; dur: 1800; loop: true" geometry="" visible=""></a-sphere>
+                    <a-sphere position="-3 -2.802870479140656 0.5" radius="0.05" material="color: #00D4FF; shader: flat" animation="property: position; to: -3 -2.5 0.5; dir: alternate; dur: 2200; loop: true" geometry="" visible=""></a-sphere>
+                    <a-sphere position="3 -2.523071367993164 0.5" radius="0.07" material="color: #00D4FF; shader: flat" animation="property: position; to: 3 -2.3 0.5; dir: alternate; dur: 1600; loop: true" geometry="" visible=""></a-sphere>
+                    
+                    <!-- Lignes de scan holographique -->
+                    <a-plane position="0 0.2642274290095945 0.12" width="9.5" height="0.05" material="color: #00D4FF; opacity: 0.3; transparent: true; shader: flat" animation="property: position; from: 0 -3.3 0.12; to: 0 3.3 0.12; dur: 3000; loop: true" geometry="" visible=""></a-plane>
+                    
+                    <!-- Lumière holographique -->
+                    <a-entity light="type: point; color: #00D4FF; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
+                    <a-entity light="type: spot; color: #00D4FF; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
+                </a-entity>
+            </a-entity>
 
+            <!-- ============================================ -->
+            <!-- B. PORTAILS DE TÉLÉPORTATION -->
+            <!-- ============================================ -->
+            
+            <!-- PORTAIL ORANGE - Planet Doom (gauche du manoir) -->
+            <a-entity id="portal-doom" position="-20 0.1 -55">
+                <!-- Anneau principal (rotation infinie) -->
+                <a-torus id="doom-ring" position="0 3 0" rotation="0 0 0" 
+                    radius="2.5" radius-tubular="0.15"
+                    material="color: #FF6600; emissive: #FF4400; emissiveIntensity: 1; shader: flat"
+                    animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+                </a-torus>
+                <!-- Anneau secondaire (contre-rotation) -->
+                <a-torus position="0 3 0" rotation="90 0 0" 
+                    radius="2.2" radius-tubular="0.08"
+                    material="color: #FFAA00; emissive: #FF8800; emissiveIntensity: 0.8; shader: flat"
+                    animation="property: rotation; to: 90 0 360; dur: 3000; easing: linear; loop: true">
+                </a-torus>
+                <!-- Disque noir central (trou de ver) -->
+                <a-circle position="0 3 0" radius="2" rotation="0 0 0"
+                    material="color: #000000; opacity: 0.85; transparent: true; side: double; shader: flat">
+                </a-circle>
+                <!-- Effet de tourbillon -->
+                <a-circle position="0 3 0.01" radius="1.8" rotation="0 0 0"
+                    material="color: #FF4400; opacity: 0.3; transparent: true; side: double; shader: flat"
+                    animation="property: rotation; to: 0 0 360; dur: 2000; easing: linear; loop: true">
+                </a-circle>
+                <!-- Label -->
+                <a-text value="PLANET DOOM" position="0 5.8 0" align="center" 
+                    width="8" color="#FF6600" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                    material="emissive: #FF4400"></a-text>
+                <!-- Lumière du portail -->
+                <a-entity light="type: point; color: #FF6600; intensity: 3; distance: 15; decay: 2" position="0 3 1"></a-entity>
+                <!-- Socle -->
+                <a-cylinder position="0 0.1 0" radius="3" height="0.2" 
+                    material="color: #333333; metalness: 0.8; roughness: 0.3"></a-cylinder>
+            </a-entity>
+
+            <!-- PORTAIL VIOLET - Ludus (droite du manoir) -->
+            <a-entity id="portal-ludus" position="20 0.1 -55">
+                <!-- Anneau principal (rotation infinie) -->
+                <a-torus id="ludus-ring" position="0 3 0" rotation="0 0 0" 
+                    radius="2.5" radius-tubular="0.15"
+                    material="color: #9900FF; emissive: #7700DD; emissiveIntensity: 1; shader: flat"
+                    animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
+                </a-torus>
+                <!-- Anneau secondaire (contre-rotation) -->
+                <a-torus position="0 3 0" rotation="90 0 0" 
+                    radius="2.2" radius-tubular="0.08"
+                    material="color: #CC66FF; emissive: #AA44DD; emissiveIntensity: 0.8; shader: flat"
+                    animation="property: rotation; to: 90 0 -360; dur: 3000; easing: linear; loop: true">
+                </a-torus>
+                <!-- Disque noir central (trou de ver) -->
+                <a-circle position="0 3 0" radius="2" rotation="0 0 0"
+                    material="color: #000000; opacity: 0.85; transparent: true; side: double; shader: flat">
+                </a-circle>
+                <!-- Effet de tourbillon -->
+                <a-circle position="0 3 0.01" radius="1.8" rotation="0 0 0"
+                    material="color: #9900FF; opacity: 0.3; transparent: true; side: double; shader: flat"
+                    animation="property: rotation; to: 0 0 -360; dur: 2000; easing: linear; loop: true">
+                </a-circle>
+                <!-- Label -->
+                <a-text value="LUDUS" position="0 5.8 0" align="center" 
+                    width="8" color="#CC66FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
+                    material="emissive: #9900FF"></a-text>
+                <!-- Lumière du portail -->
+                <a-entity light="type: point; color: #9900FF; intensity: 3; distance: 15; decay: 2" position="0 3 1"></a-entity>
+                <!-- Socle -->
+                <a-cylinder position="0 0.1 0" radius="3" height="0.2" 
+                    material="color: #333333; metalness: 0.8; roughness: 0.3"></a-cylinder>
+            </a-entity>
+
+            <!-- ============================================ -->
+            <!-- C. LOOT - PIÈCES D'OR GÉANTES -->
+            <!-- Style Mario/Sonic - Rotation continue -->
+            <!-- ============================================ -->
+            
+            <!-- Pièce d'or 1 -->
+            <a-entity id="gold-coin-1" position="-5 3 -35">
+                <a-cylinder radius="1" height="0.15" rotation="90 0 0"
+                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
+                    animation="property: rotation; to: 90 360 0; dur: 2000; easing: linear; loop: true"
+                    animation__float="property: position; to: 0 0.5 0; dir: alternate; dur: 1500; easing: easeInOutSine; loop: true">
+                    <!-- Symbole $ sur la pièce -->
+                </a-cylinder>
+                <!-- Glow effect -->
+                <a-entity light="type: point; color: #FFD700; intensity: 1; distance: 8; decay: 2"></a-entity>
+            </a-entity>
+
+            <!-- Pièce d'or 2 -->
+            <a-entity id="gold-coin-2" position="5 3.5 -40">
+                <a-cylinder radius="1" height="0.15" rotation="90 0 0"
+                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
+                    animation="property: rotation; to: 90 360 0; dur: 2200; easing: linear; loop: true"
+                    animation__float="property: position; to: 0 0.5 0; dir: alternate; dur: 1700; easing: easeInOutSine; loop: true">
+                </a-cylinder>
+                <a-entity light="type: point; color: #FFD700; intensity: 1; distance: 8; decay: 2"></a-entity>
+            </a-entity>
+
+            <!-- Pièce d'or 3 -->
+            <a-entity id="gold-coin-3" position="0 4 -45">
+                <a-cylinder radius="1.2" height="0.18" rotation="90 0 0"
+                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
+                    animation="property: rotation; to: 90 360 0; dur: 1800; easing: linear; loop: true"
+                    animation__float="property: position; to: 0 0.6 0; dir: alternate; dur: 1300; easing: easeInOutSine; loop: true">
+                </a-cylinder>
+                <a-entity light="type: point; color: #FFD700; intensity: 1.2; distance: 10; decay: 2"></a-entity>
+            </a-entity>
+
+            <!-- Pièce d'or 4 (bonus - plus grande) -->
+            <a-entity id="gold-coin-4" position="-8 2.5 -50">
+                <a-cylinder radius="0.8" height="0.12" rotation="90 0 0"
+                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
+                    animation="property: rotation; to: 90 360 0; dur: 2500; easing: linear; loop: true"
+                    animation__float="property: position; to: 0 0.4 0; dir: alternate; dur: 1900; easing: easeInOutSine; loop: true">
+                </a-cylinder>
+                <a-entity light="type: point; color: #FFD700; intensity: 0.8; distance: 6; decay: 2"></a-entity>
             </a-entity>
 
         </a-entity>
