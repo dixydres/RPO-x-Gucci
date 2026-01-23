@@ -329,9 +329,9 @@ AFRAME.registerComponent('headset-toggle', {
             if(vrNose) vrNose.setAttribute('visible', false);
             if(vrLensTint) vrLensTint.setAttribute('visible', false);
 
-            // 5. Reset Ambiance
-            scene.setAttribute('background', 'color: #a8aeb5');
-            scene.setAttribute('fog', 'type: exponential; color: #8a9098; density: 0.012');
+            // 5. Reset Ambiance - NUIT dans les Stacks
+            scene.setAttribute('background', 'color: #050510');
+            scene.setAttribute('fog', 'type: exponential; color: #0a0a15; density: 0.035');
 
             // Ouvrir les yeux
             eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
@@ -416,10 +416,13 @@ AFRAME.registerComponent('virtual-hand', {
     }
 });
 
+
 // INIT
 document.addEventListener('DOMContentLoaded', () => {
     const rig = document.getElementById('rig');
     if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+    
+
     
     // Fix texture manoir si présent
     AFRAME.registerComponent('fix-mansion-textures', {
