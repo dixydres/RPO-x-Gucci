@@ -12,6 +12,60 @@ window.oasisState = {
     originalPosition: null
 };
 
+// ============================================
+// LUMIÈRES VACILLANTES - Effet oppressant
+// ============================================
+AFRAME.registerComponent('flicker-light', {
+    schema: {
+        intensity: { type: 'number', default: 1 },
+        color: { type: 'color', default: '#ff6633' },
+        speed: { type: 'number', default: 2 }
+    },
+    init: function() {
+        this.light = this.el.querySelector('[light]');
+        this.baseIntensity = this.data.intensity;
+        this.time = Math.random() * 100; // Décalage aléatoire
+    },
+    tick: function(time, delta) {
+        if (!this.light) return;
+        this.time += delta * 0.001 * this.data.speed;
+        
+        // Effet de vacillement réaliste
+        const flicker = Math.sin(this.time * 10) * 0.1 + 
+                       Math.sin(this.time * 23) * 0.05 + 
+                       Math.sin(this.time * 47) * 0.03 +
+                       Math.random() * 0.08;
+        
+        const newIntensity = this.baseIntensity * (0.85 + flicker);
+        this.light.setAttribute('light', 'intensity', Math.max(0.1, newIntensity));
+    }
+});
+
+// ============================================
+// ANIMATION PARTICULES DE POUSSIÈRE
+// ============================================
+AFRAME.registerComponent('dust-float', {
+    schema: {
+        speed: { type: 'number', default: 0.5 },
+        range: { type: 'number', default: 0.3 }
+    },
+    init: function() {
+        this.originalPos = this.el.getAttribute('position');
+        this.offset = Math.random() * Math.PI * 2;
+    },
+    tick: function(time) {
+        if (!this.originalPos) return;
+        const t = time * 0.001 * this.data.speed + this.offset;
+        const newY = this.originalPos.y + Math.sin(t) * this.data.range;
+        const newX = this.originalPos.x + Math.sin(t * 0.7) * this.data.range * 0.5;
+        this.el.setAttribute('position', {
+            x: newX,
+            y: newY,
+            z: this.originalPos.z + Math.cos(t * 0.5) * this.data.range * 0.3
+        });
+    }
+});
+
 // --- PHYSIQUE : CHUTE AVEC REBOND ---
 function dropObject(el) {
     const worldPos = new THREE.Vector3();
@@ -136,12 +190,12 @@ AFRAME.registerComponent('vr-controller-grab', {
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
-        this.wearThreshold = 0.5; 
+        this.wearThreshold = 0.18;  // Distance réduite à 18cm pour activation plus proche
         this.camera = document.getElementById('player-camera');
         this.isLoading = false;
         this.isAnimatingOn = false;
 
-        // CORRECTION ICI : addEventListener (sans 'q')
+        // Clic pour activer le casque
         this.el.addEventListener('click', () => {
              if (!window.oasisState.isInOasis && !this.isLoading) {
                  this.animateToFace(); 
@@ -339,9 +393,9 @@ AFRAME.registerComponent('headset-toggle', {
             // 4b. Supprimer le ciel sunset
             this.removeSunsetSky();
 
-            // 5. Reset Ambiance - NUIT dans les Stacks
-            scene.setAttribute('background', 'color: #050510');
-            scene.setAttribute('fog', 'type: exponential; color: #0a0a15; density: 0.035');
+            // 5. Reset Ambiance - NUIT OPPRESSANTE dans les Stacks
+            scene.setAttribute('background', 'color: #020204');
+            scene.setAttribute('fog', 'type: exponential; color: #030305; density: 0.055');
 
             // Ouvrir les yeux
             eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
