@@ -18,7 +18,7 @@
 <body>
 
 
-    <a-scene vr-mode-ui="" fog="type: exponential; color: #030305; density: 0.055" background="color: #020204"
+    <a-scene id="fog" vr-mode-ui="" fog="type: exponential; color: #0a0a0a; density: 0.08" background="color: #010102"
         inspector="" keyboard-shortcuts="" screenshot="" device-orientation-permission-ui="">
 
         
@@ -156,6 +156,7 @@
             <!-- ============================================ -->
             <!-- SOURCES DE LUMIÈRE NOCTURNES -->
             <!-- ============================================ -->
+             <a-entity geometry="primitive: plane" rotation="-90 0 0" position="0 -10 0" scale="50 50 1" material="color:#ffcc66" id="floor-rl"></a-entity>
             <!-- Lampadaire 1 -->
             <a-entity id="streetlight-1" position="-7.84821 -10.81194 4.44824">
                 <a-cylinder radius="0.08" height="8" position="0 4 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-cylinder>
@@ -216,23 +217,7 @@
             <!-- BROUILLARD ÉPAIS ET POUSSIÈRE -->
             <!-- ============================================ -->
             <!-- Couches de brume basse au sol -->
-            <a-entity id="ground-fog">
-                <!-- Nappe de brume 1 -->
-                <a-plane position="0 0.1 0" rotation="-90 0 0" width="80" height="80" 
-                    material="color: #1a1815; opacity: 0.4; transparent: true; shader: flat"></a-plane>
-                <a-plane position="5 0.25 -10" rotation="-90 0 0" width="40" height="40" 
-                    material="color: #252220; opacity: 0.35; transparent: true; shader: flat"></a-plane>
-                <a-plane position="-8 0.15 5" rotation="-90 0 0" width="50" height="50" 
-                    material="color: #1f1c18; opacity: 0.45; transparent: true; shader: flat"></a-plane>
-                
-                <!-- Volumes de brouillard 3D -->
-                <a-box position="0 0.8 -5" width="30" height="1.5" depth="30" 
-                    material="color: #15120f; opacity: 0.15; transparent: true; shader: flat"></a-box>
-                <a-box position="-10 1.2 8" width="25" height="2" depth="20" 
-                    material="color: #1a1612; opacity: 0.12; transparent: true; shader: flat"></a-box>
-                <a-box position="12 0.6 -8" width="20" height="1" depth="25" 
-                    material="color: #12100d; opacity: 0.18; transparent: true; shader: flat"></a-box>
-            </a-entity>
+          
 
             <!-- Particules de poussière flottantes -->
             <a-entity id="dust-particles">
@@ -290,47 +275,7 @@
             <!-- ============================================ -->
             <!-- SOL DÉSERT / BIDONVILLE -->
             <!-- ============================================ -->
-            <a-entity id="desert-ground">
-                <!-- Sol principal - terre craquelée -->
-                <a-plane position="0 -0.02 0" rotation="-90 0 0" width="150" height="150" 
-                    material="color: #3d3428; roughness: 1; metalness: 0"></a-plane>
-                
-                <!-- Textures de craquelures et saleté -->
-                <a-plane position="5 -0.01 -8" rotation="-90 0 0" width="12" height="12" 
-                    material="color: #2a2318; roughness: 1; opacity: 0.8; transparent: true"></a-plane>
-                <a-plane position="-10 -0.01 5" rotation="-90 0 0" width="15" height="10" 
-                    material="color: #4a3d2d; roughness: 1; opacity: 0.7; transparent: true"></a-plane>
-                <a-plane position="8 -0.01 10" rotation="-90 0 0" width="10" height="14" 
-                    material="color: #352a1f; roughness: 1; opacity: 0.75; transparent: true"></a-plane>
-                
-                <!-- Flaques de boue/huile -->
-                <a-circle position="-3 0.01 -4" rotation="-90 0 0" radius="1.2" 
-                    material="color: #1a1510; roughness: 0.3; metalness: 0.4; opacity: 0.85; transparent: true"></a-circle>
-                <a-circle position="6 0.01 2" rotation="-90 0 0" radius="0.8" 
-                    material="color: #151210; roughness: 0.2; metalness: 0.5; opacity: 0.9; transparent: true"></a-circle>
-                <a-circle position="-8 0.01 8" rotation="-90 0 0" radius="1.5" 
-                    material="color: #1f1a12; roughness: 0.25; metalness: 0.35; opacity: 0.8; transparent: true"></a-circle>
-                
-                <!-- Débris et gravats -->
-                <a-box position="-5 0.08 -2" width="0.4" height="0.15" depth="0.3" rotation="0 25 5" 
-                    material="color: #5a4d3d; roughness: 0.95"></a-box>
-                <a-box position="7 0.06 -6" width="0.3" height="0.12" depth="0.25" rotation="0 -15 8" 
-                    material="color: #4a3d2d; roughness: 0.9"></a-box>
-                <a-box position="-2 0.05 6" width="0.5" height="0.1" depth="0.35" rotation="0 45 -3" 
-                    material="color: #6a5d4d; roughness: 0.92"></a-box>
-                <a-cylinder position="4 0.1 4" radius="0.2" height="0.2" rotation="85 0 30" 
-                    material="color: #3a3025; roughness: 0.88"></a-cylinder>
-                <a-cylinder position="-7 0.08 -5" radius="0.15" height="0.3" rotation="90 0 15" 
-                    material="color: #4d4030; roughness: 0.9"></a-cylinder>
-                
-                <!-- Tas de sable/poussière -->
-                <a-cone position="-4 0.2 3" radius-bottom="0.8" radius-top="0" height="0.4" 
-                    material="color: #5a4a35; roughness: 1"></a-cone>
-                <a-cone position="9 0.15 -3" radius-bottom="0.6" radius-top="0" height="0.3" 
-                    material="color: #4a3a28; roughness: 1"></a-cone>
-                <a-cone position="-9 0.25 -8" radius-bottom="1" radius-top="0" height="0.5" 
-                    material="color: #554530; roughness: 1"></a-cone>
-            </a-entity>
+            
 
             <!-- ============================================ -->
             <!-- AMBIANCE OPPRESSANTE - Lumières -->
@@ -952,10 +897,11 @@
                         <!-- Rampe -->
                         <a-cylinder position="-0.5 1.8 0.6" radius="0.02" height="2" rotation="29.999999999999996 0 0" material="color: #5a5a5a; metalness: 0.5" geometry=""></a-cylinder>
                     </a-entity>
-                </a-entity><a-entity id="stack-9" position="0 -5.43364 4.77175">
+                </a-entity>
+                <a-entity id="stack-9" position="0 -5.43364 4.77175">
                     <!-- Caravane 1 base - Grande blanche -->
                     <a-entity position="0 1.5 0">
-                        <a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
+                        <a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box><a-box width="4.2" height="2.5" depth="2.4" material="color: #d0ccc8; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
                         
                         <a-plane position="-1.4 0.4 1.21" width="0.6" height="0.4" material="color: #88ffaa; emissive: #44ff66; emissiveIntensity: 0.5" geometry=""></a-plane>
                         <a-plane position="0 0.4 1.21" width="0.5" height="0.4" material="color: #3a4a5a; roughness: 0.2" geometry=""></a-plane>
@@ -1038,7 +984,8 @@
 
                     <!-- Échafaudage droit avec échelle -->
 
-                </a-entity><a-entity id="stack-10" position="-0.55967 2.25606 0.74879">
+                </a-entity>
+                <a-entity id="stack-10" position="-0.55967 2.25606 0.74879">
                     <!-- Caravane 1 (base) - Blanche sale typique -->
                     <a-entity position="0 1.5 0">
                         <a-box width="3.8" height="2.4" depth="2.2" material="color: #c8c4c0; roughness: 0.9; metalness: 0.15" geometry=""></a-box>
