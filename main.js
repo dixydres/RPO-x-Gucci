@@ -597,44 +597,81 @@ AFRAME.registerComponent('virtual-hand', {
 });
 
 
-// INIT
-document.addEventListener('DOMContentLoaded', () => {
-    const rig = document.getElementById('rig');
-    if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
-    
-
-    
-    // Fix texture manoir si présent
-    AFRAME.registerComponent('fix-mansion-textures', {
-        init: function() {
-            this.el.addEventListener('model-loaded', () => {
-                const mesh = this.el.getObject3D('mesh');
-                if(!mesh) return;
-                const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
-                tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
-                mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
-            });
-        }
-    });
-
-    // Fix textures du casque (sRGB + matériaux)
-    AFRAME.registerComponent('fix-headset-textures', {
-        init: function() {
-            this.el.addEventListener('model-loaded', () => {
-                const mesh = this.el.getObject3D('mesh');
-                if (!mesh) return;
-                mesh.traverse(node => {
-                    if (node.isMesh && node.material) {
-                        const materials = Array.isArray(node.material) ? node.material : [node.material];
-                        materials.forEach(mat => {
-                            if (mat.map) { mat.map.encoding = THREE.sRGBEncoding; mat.map.needsUpdate = true; }
-                            if (mat.emissiveMap) { mat.emissiveMap.encoding = THREE.sRGBEncoding; mat.emissiveMap.needsUpdate = true; }
-                            if (typeof mat.metalness === 'number' && mat.metalness > 0.6) { mat.metalness = 0.2; mat.roughness = 0.7; }
-                            mat.needsUpdate = true;
-                        });
-                    }
-                });
-            });
-        }
-    });
+// INIT - Enregistrer les composants AVANT le chargement complet
+AFRAME.registerComponent('fix-mansion-textures', {
+    init: function() {
+        this.el.addEventListener('model-loaded', () => {
+            const mesh = this.el.getObject3D('mesh');
+            if(!mesh) return;
+            const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
+            tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
+            mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
+        });
+    }
 });
+
+// Fix textures du casque (sRGB + matériaux)
+AFRAME.registerComponent('fix-headset-textures', {
+    init: function() {
+        this.el.addEventListener('model-loaded', () => {
+            const mesh = this.el.getObject3D('mesh');
+            if (!mesh) return;
+            mesh.traverse(node => {
+                if (node.isMesh && node.material) {
+                    const materials = Array.isArray(node.material) ? node.material : [node.material];
+                    materials.forEach(mat => {
+                        if (mat.map) { mat.map.encoding = THREE.sRGBEncoding; mat.map.needsUpdate = true; }
+                        if (mat.emissiveMap) { mat.emissiveMap.encoding = THREE.sRGBEncoding; mat.emissiveMap.needsUpdate = true; }
+                        if (typeof mat.metalness === 'number' && mat.metalness > 0.6) { mat.metalness = 0.2; mat.roughness = 0.7; }
+                        mat.needsUpdate = true;
+                    });
+                }
+            });
+        });
+    }
+});
+
+// Initialiser après le chargement de la scène A-Frame
+document.addEventListener('DOMContentLoaded', () => {
+    const scene = document.querySelector('a-scene');
+    if(!scene) return;
+    
+    const init = () => {
+        const rig = document.getElementById('rig');
+        if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+    };
+    
+    // Si la scène est déjà chargée
+    if(scene.hasLoaded) {
+        init();
+    } else {
+        // Sinon, attendre le chargement
+        scene.addEventListener('loaded', init);
+    }
+});
+
+// Fallback: initialiser aussi via le load du script module
+if(document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', () => {
+        const scene = document.querySelector('a-scene');
+        if(scene && !scene.hasLoaded) {
+            scene.addEventListener('loaded', () => {
+                const rig = document.getElementById('rig');
+                if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+            });
+        }
+    });
+} else {
+    const scene = document.querySelector('a-scene');
+    if(scene) {
+        if(scene.hasLoaded) {
+            const rig = document.getElementById('rig');
+            if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+        } else {
+            scene.addEventListener('loaded', () => {
+                const rig = document.getElementById('rig');
+                if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+            });
+        }
+    }
+}
