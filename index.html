@@ -2376,6 +2376,14 @@
                     ctx.fillRect(0,0,w,h);
                 }
 
+                // Ensure hands are always visible in VR world
+                function ensureHandsVisible(){
+                    const leftHand = document.getElementById('left-hand');
+                    const rightHand = document.getElementById('right-hand');
+                    if(leftHand) leftHand.setAttribute('visible', true);
+                    if(rightHand) rightHand.setAttribute('visible', true);
+                }
+
                 // show/hide VR sky and apply palette when vr-world toggles
                 function handleVrVisibility(isVisible){
                     const root = document.getElementById('vr-world');
@@ -2384,6 +2392,7 @@
                         applyVrPalette();
                         createVrSkyTexture();
                         if(sky) sky.setAttribute('visible', true);
+                        ensureHandsVisible();
                     } else {
                         if(sky) sky.setAttribute('visible', false);
                     }
@@ -2418,6 +2427,20 @@
                     const v0 = vr.getAttribute('visible');
                     const initiallyVisible = (v0 === 'true' || v0 === '' || v0 === true);
                     if(initiallyVisible) handleVrVisibility(true);
+                    
+                    // Also watch hand visibility and restore if they get hidden
+                    const leftHand = document.getElementById('left-hand');
+                    const rightHand = document.getElementById('right-hand');
+                    if(leftHand){
+                        const handObs = new MutationObserver(()=>{
+                            const vrVisible = vr.getAttribute('visible');
+                            if(vrVisible === 'true' || vrVisible === '' || vrVisible === true){
+                                ensureHandsVisible();
+                            }
+                        });
+                        handObs.observe(leftHand, { attributes: true });
+                        handObs.observe(rightHand, { attributes: true });
+                    }
                 }
             })();
         </script>
