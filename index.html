@@ -1716,8 +1716,19 @@
             <!-- LE CASQUE OASIS - Pièce maîtresse (modèle texturé) -->
             <!-- ============================================ -->
             <a-entity id="oasis-headset" class="clickable" headset-toggle="" gltf-model="./models/vr_headset/scene.gltf" position="-0.85269 0.82 -1.19678" rotation="0 156 0" scale="0.2 0.2 0.2" fix-headset-textures="" shadow="">
-                <!-- VR Indication: grab the headset -->
-                <a-entity position="0 0.25 0" text="value: Grab the headset to enter the OASIS; align: center; color: #FFD700; width: 2.5" visible=""></a-entity>
+                <!-- VR Indication removed; add sparkling light instead -->
+                <a-entity id="headsetlight" position="0 0.18 0">
+                    <a-entity light="type: point; color: #FFD700; intensity: 0.6; distance: 1.2"
+                              animation="property: light.intensity; from: 0.15; to: 1.2; dur: 420; dir: alternate; loop: true; easing: easeInOutSine">
+                    </a-entity>
+                    <a-sphere radius="0.02" material="color: #FFD700; emissive: #FFD700; emissiveIntensity: 1; transparent: true; opacity: 0.9"
+                              animation="property: scale; from: 0.7 0.7 0.7; to: 1.25 1.25 1.25; dur: 560; dir: alternate; loop: true; easing: easeInOutSine">
+                    </a-sphere>
+                    <a-entity geometry="primitive: ring; radiusInner: 0.03; radiusOuter: 0.05" material="color: #fff; opacity: 0.15; side: double"
+                              rotation="-90 0 0" position="0 -0.02 0"
+                              animation="property: rotation; to: -90 0 360; dur: 3200; easing: linear; loop: true">
+                    </a-entity>
+                </a-entity>
             </a-entity>
             <!-- Casque VR principal -->
             <a-entity rotation="0 -29.999999999999996 0">
@@ -1900,9 +1911,6 @@
                 <!-- ===== MER DE NUAGES - ILLUSION DE FLOTTER ===== -->
                 <!-- Couche principale de nuages en dessous -->
                 <a-entity id="cloud-sea" opacity="0.6">
-                    <!-- Sol nuageux principal -->
-                    <a-plane position="0 -2 0" rotation="-90 0 0" width="500" height="500" color="#FFFFFF"
-                        material="opacity: 0.95; transparent: true; roughness: 1" geometry=""></a-plane>
 
                     <!-- Nuages volumétriques autour (niveau bas) -->
                     <a-sphere position="-15 -1 -30" radius="8" color="#FFFFFF"
@@ -2069,7 +2077,7 @@
                     <!-- Fronton triangulaire -->
                     <a-entity position="0 8 0">
                         <a-box position="0 0.5 0" width="16" height="0.4" depth="1.8" color="#FFFAF0" material=""
-                            geometry=""></a-box>
+                            geometry=""></a-box> 
                         <a-cone position="0 1.5 0" radius-bottom="8" radius-top="0" height="2" rotation="90 0 0"
                             segments-radial="3" color="#FFF8DC" material="roughness: 0.6; side: double"
                             geometry=""></a-cone>
@@ -2174,170 +2182,15 @@
                         material="" geometry=""></a-cone>
                 </a-entity>
 
-                <!-- ===== FLEURS MÉDITERRANÉENNES ===== -->
-                <a-entity id="mediterranean-flowers">
-                    <!-- Bougainvilliers roses -->
-                    <a-entity position="-8 0 5">
-                        <a-cylinder position="0 1 0" radius="0.08" height="2" color="#8B4513" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 2.2 0" radius="1.2" color="#FF1493" material="" geometry=""></a-sphere>
-                        <a-sphere position="0.5 2 0.3" radius="0.8" color="#FF69B4" material="" geometry=""></a-sphere>
-                        <a-sphere position="-0.4 2.3 -0.2" radius="0.9" color="#DB7093" material=""
-                            geometry=""></a-sphere>
-                    </a-entity>
-                    <a-entity position="8 0 5">
-                        <a-cylinder position="0 1 0" radius="0.08" height="2" color="#8B4513" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 2.2 0" radius="1.2" color="#FF1493" material="" geometry=""></a-sphere>
-                        <a-sphere position="0.5 2 0.3" radius="0.8" color="#FF69B4" material="" geometry=""></a-sphere>
-                    </a-entity>
 
-                    <!-- Lavande -->
-                    <a-entity position="-5 0 3">
-                        <a-cylinder position="0 0.4 0" radius="0.03" height="0.8" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-cone position="0 0.9 0" radius-bottom="0.15" radius-top="0.05" height="0.4" color="#9370DB"
-                            material="" geometry=""></a-cone>
-                    </a-entity>
-                    <a-entity position="-4.7 0 3.2">
-                        <a-cylinder position="0 0.35 0" radius="0.03" height="0.7" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-cone position="0 0.8 0" radius-bottom="0.12" radius-top="0.04" height="0.35" color="#8A2BE2"
-                            material="" geometry=""></a-cone>
-                    </a-entity>
-                    <a-entity position="-5.3 0 2.8">
-                        <a-cylinder position="0 0.38 0" radius="0.03" height="0.75" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-cone position="0 0.85 0" radius-bottom="0.13" radius-top="0.04" height="0.38" color="#9932CC"
-                            material="" geometry=""></a-cone>
-                    </a-entity>
-
-                    <!-- Roses -->
-                    <a-entity position="5 0 2">
-                        <a-cylinder position="0 0.5 0" radius="0.04" height="1" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 1.1 0" radius="0.25" color="#FF0000" material="" geometry=""></a-sphere>
-                    </a-entity>
-                    <a-entity position="5.4 0 2.3">
-                        <a-cylinder position="0 0.45 0" radius="0.04" height="0.9" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 1 0" radius="0.22" color="#DC143C" material="" geometry=""></a-sphere>
-                    </a-entity>
-                    <a-entity position="4.8 0 2.5">
-                        <a-cylinder position="0 0.55 0" radius="0.04" height="1.1" color="#228B22" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 1.2 0" radius="0.28" color="#FFB6C1" material="" geometry=""></a-sphere>
-                    </a-entity>
-                </a-entity>
-
-                <!-- ===== STATUES CLASSIQUES ===== -->
-                <a-entity id="statues">
-                    <!-- Statue sur piédestal gauche -->
-                    <a-entity position="-6 0 -18">
-                        <a-box position="0 0.5 0" width="1.2" height="1" depth="1.2" color="#D3D3D3" material=""
-                            geometry=""></a-box>
-                        <a-box position="0 1.2 0" width="1" height="0.4" depth="1" color="#E8E8E8" material=""
-                            geometry=""></a-box>
-                        <a-cylinder position="0 2 0" radius="0.25" height="1.2" color="#F5F5F5" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 2.9 0" radius="0.2" color="#F5F5F5" material="" geometry=""></a-sphere>
-                    </a-entity>
-
-                    <!-- Statue sur piédestal droite -->
-                    <a-entity position="6 0 -18">
-                        <a-box position="0 0.5 0" width="1.2" height="1" depth="1.2" color="#D3D3D3" material=""
-                            geometry=""></a-box>
-                        <a-box position="0 1.2 0" width="1" height="0.4" depth="1" color="#E8E8E8" material=""
-                            geometry=""></a-box>
-                        <a-cylinder position="0 2 0" radius="0.25" height="1.2" color="#F5F5F5" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 2.9 0" radius="0.2" color="#F5F5F5" material="" geometry=""></a-sphere>
-                    </a-entity>
-
-                    <!-- Vases décoratifs -->
-                    <a-entity position="-3 0 -5">
-                        <a-cylinder position="0 0.3 0" radius="0.4" height="0.6" color="#CD853F" material=""
-                            geometry=""></a-cylinder>
-                        <a-cylinder position="0 0.7 0" radius="0.25" height="0.3" color="#D2691E" material=""
-                            geometry=""></a-cylinder>
-                        <!-- Plante dans le vase -->
-                        <a-sphere position="0 1 0" radius="0.5" color="#228B22" material="" geometry=""></a-sphere>
-                        <a-sphere position="0.2 1.3 0.1" radius="0.3" color="#32CD32" material=""
-                            geometry=""></a-sphere>
-                    </a-entity>
-                    <a-entity position="3 0 -5">
-                        <a-cylinder position="0 0.3 0" radius="0.4" height="0.6" color="#CD853F" material=""
-                            geometry=""></a-cylinder>
-                        <a-cylinder position="0 0.7 0" radius="0.25" height="0.3" color="#D2691E" material=""
-                            geometry=""></a-cylinder>
-                        <a-sphere position="0 1 0" radius="0.5" color="#228B22" material="" geometry=""></a-sphere>
-                        <a-sphere position="-0.15 1.25 0.1" radius="0.35" color="#2E8B57" material=""
-                            geometry=""></a-sphere>
-                    </a-entity>
-                </a-entity>
-
-                <!-- ===== PETITS OISEAUX / PARTICULES CÉLESTES ===== -->
-                <a-entity id="celestial-particles">
-                    <!-- Lueurs dorées flottantes -->
-                    <a-sphere position="3 3 -15" radius="0.1" color="#FFD700"
-                        material="emissive: #FFD700; emissiveIntensity: 0.8" geometry=""></a-sphere>
-                    <a-sphere position="-5 4 -20" radius="0.08" color="#FFA500"
-                        material="emissive: #FFA500; emissiveIntensity: 0.7" geometry=""></a-sphere>
-                    <a-sphere position="8 2.5 -12" radius="0.12" color="#FFFF00"
-                        material="emissive: #FFFF00; emissiveIntensity: 0.6" geometry=""></a-sphere>
-                    <a-sphere position="-2 5 -25" radius="0.15" color="#FFD700"
-                        material="emissive: #FFD700; emissiveIntensity: 0.9" geometry=""></a-sphere>
-                    <a-sphere position="10 3.5 -18" radius="0.1" color="#FFF8DC"
-                        material="emissive: #FFF8DC; emissiveIntensity: 0.7" geometry=""></a-sphere>
-                    <a-sphere position="-8 6 -30" radius="0.2" color="#FFD700" material="emissive: #FFD700"
-                        geometry=""></a-sphere>
-
-                    <!-- Pétales flottants (simulés par petites sphères roses) -->
-                    <a-sphere position="2 1.5 -8" radius="0.06" color="#FFB6C1"
-                        material="opacity: 0.8; transparent: true" geometry=""></a-sphere>
-                    <a-sphere position="-1 2 -10" radius="0.05" color="#FFC0CB"
-                        material="opacity: 0.7; transparent: true" geometry=""></a-sphere>
-                    <a-sphere position="4 1.8 -6" radius="0.07" color="#FF69B4"
-                        material="opacity: 0.6; transparent: true" geometry=""></a-sphere>
-                </a-entity>
+                    
             </a-entity>
 
-            <!-- ===== ÎLOTS FLOTTANTS DISTANTS ===== -->
-            <a-entity id="distant-islands">
-                <!-- Îlot avec ruine à gauche -->
-                <a-entity position="-50 5 -60">
-                    <a-cylinder position="" radius="8" height="2" color="#6B5344"
-                        material="opacity: 0.9; transparent: true" geometry=""></a-cylinder>
-                    <a-cylinder position="0 1.2 0" radius="7" height="0.5" color="#228B22" material=""
-                        geometry=""></a-cylinder>
-                    <!-- Colonne en ruine -->
-                    <a-cylinder position="0 3 0" radius="0.5" height="4" color="#D3D3D3" material=""
-                        geometry=""></a-cylinder>
-                    <a-cylinder position="2 2 -1" radius="0.4" height="2.5" color="#C0C0C0" material=""
-                        geometry=""></a-cylinder>
-                </a-entity>
-
-                <!-- Îlot avec arbre à droite -->
-                <a-entity position="55 8 -70">
-                    <a-cylinder position="" radius="6" height="1.5" color="#5D4037"
-                        material="opacity: 0.85; transparent: true" geometry=""></a-cylinder>
-                    <a-cylinder position="0 1 0" radius="5.5" height="0.3" color="#32CD32" material=""
-                        geometry=""></a-cylinder>
-                    <!-- Pin -->
-                    <a-cylinder position="0 3 0" radius="0.3" height="5" color="#8B4513" material=""
-                        geometry=""></a-cylinder>
-                    <a-sphere position="0 6 0" radius="3" scale="1.5 0.5 1.5" color="#228B22" material=""
-                        geometry=""></a-sphere>
-                </a-entity>
-
-                <!-- Îlot lointain avec mansion -->
-                <a-entity position="0 12 -68.2" visible="" id="skyhouse">
 
 
-                    <!-- Low Poly Mansion -->
-                    <a-entity gltf-model="#mansionModel" fix-mansion-textures position="0.297 1.989 -6.570"
-                        scale="0.5 0.5 0.5" rotation="" shadow="cast: true; receive: true"></a-entity>
-                </a-entity>
+
+
+                
             </a-entity>
 
             <!-- ===== NUAGES EN HAUTEUR ===== -->
@@ -2442,129 +2295,12 @@
                     <a-plane position="0 0.2642274290095945 0.12" width="9.5" height="0.05" material="color: #00D4FF; opacity: 0.3; transparent: true; shader: flat" animation="property: position; from: 0 -3.3 0.12; to: 0 3.3 0.12; dur: 3000; loop: true" geometry="" visible=""></a-plane>
                     
                     <!-- Lumière holographique -->
-                    <a-entity light="type: point; color: #00D4FF; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
-                    <a-entity light="type: spot; color: #00D4FF; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
+                    <a-entity light="type: point; color: #yellow; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
+                    <a-entity light="type: spot; color: #yellow; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
                 </a-entity>
             </a-entity>
 
-            <!-- ============================================ -->
-            <!-- B. PORTAILS DE TÉLÉPORTATION -->
-            <!-- ============================================ -->
-            
-            <!-- PORTAIL ORANGE - Planet Doom (gauche du manoir) -->
-            <a-entity id="portal-doom" position="-20 0.1 -55">
-                <!-- Anneau principal (rotation infinie) -->
-                <a-torus id="doom-ring" position="0 3 0" rotation="0 0 0" 
-                    radius="2.5" radius-tubular="0.15"
-                    material="color: #FF6600; emissive: #FF4400; emissiveIntensity: 1; shader: flat"
-                    animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
-                </a-torus>
-                <!-- Anneau secondaire (contre-rotation) -->
-                <a-torus position="0 3 0" rotation="90 0 0" 
-                    radius="2.2" radius-tubular="0.08"
-                    material="color: #FFAA00; emissive: #FF8800; emissiveIntensity: 0.8; shader: flat"
-                    animation="property: rotation; to: 90 0 360; dur: 3000; easing: linear; loop: true">
-                </a-torus>
-                <!-- Disque noir central (trou de ver) -->
-                <a-circle position="0 3 0" radius="2" rotation="0 0 0"
-                    material="color: #000000; opacity: 0.85; transparent: true; side: double; shader: flat">
-                </a-circle>
-                <!-- Effet de tourbillon -->
-                <a-circle position="0 3 0.01" radius="1.8" rotation="0 0 0"
-                    material="color: #FF4400; opacity: 0.3; transparent: true; side: double; shader: flat"
-                    animation="property: rotation; to: 0 0 360; dur: 2000; easing: linear; loop: true">
-                </a-circle>
-                <!-- Label -->
-                <a-text value="PLANET DOOM" position="0 5.8 0" align="center" 
-                    width="8" color="#FF6600" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                    material="emissive: #FF4400"></a-text>
-                <!-- Lumière du portail -->
-                <a-entity light="type: point; color: #FF6600; intensity: 3; distance: 15; decay: 2" position="0 3 1"></a-entity>
-                <!-- Socle -->
-                <a-cylinder position="0 0.1 0" radius="3" height="0.2" 
-                    material="color: #333333; metalness: 0.8; roughness: 0.3"></a-cylinder>
-            </a-entity>
-
-            <!-- PORTAIL VIOLET - Ludus (droite du manoir) -->
-            <a-entity id="portal-ludus" position="20 0.1 -55">
-                <!-- Anneau principal (rotation infinie) -->
-                <a-torus id="ludus-ring" position="0 3 0" rotation="0 0 0" 
-                    radius="2.5" radius-tubular="0.15"
-                    material="color: #9900FF; emissive: #7700DD; emissiveIntensity: 1; shader: flat"
-                    animation="property: rotation; to: 0 360 0; dur: 4000; easing: linear; loop: true">
-                </a-torus>
-                <!-- Anneau secondaire (contre-rotation) -->
-                <a-torus position="0 3 0" rotation="90 0 0" 
-                    radius="2.2" radius-tubular="0.08"
-                    material="color: #CC66FF; emissive: #AA44DD; emissiveIntensity: 0.8; shader: flat"
-                    animation="property: rotation; to: 90 0 -360; dur: 3000; easing: linear; loop: true">
-                </a-torus>
-                <!-- Disque noir central (trou de ver) -->
-                <a-circle position="0 3 0" radius="2" rotation="0 0 0"
-                    material="color: #000000; opacity: 0.85; transparent: true; side: double; shader: flat">
-                </a-circle>
-                <!-- Effet de tourbillon -->
-                <a-circle position="0 3 0.01" radius="1.8" rotation="0 0 0"
-                    material="color: #9900FF; opacity: 0.3; transparent: true; side: double; shader: flat"
-                    animation="property: rotation; to: 0 0 -360; dur: 2000; easing: linear; loop: true">
-                </a-circle>
-                <!-- Label -->
-                <a-text value="LUDUS" position="0 5.8 0" align="center" 
-                    width="8" color="#CC66FF" font="https://cdn.aframe.io/fonts/Exo2Bold.fnt"
-                    material="emissive: #9900FF"></a-text>
-                <!-- Lumière du portail -->
-                <a-entity light="type: point; color: #9900FF; intensity: 3; distance: 15; decay: 2" position="0 3 1"></a-entity>
-                <!-- Socle -->
-                <a-cylinder position="0 0.1 0" radius="3" height="0.2" 
-                    material="color: #333333; metalness: 0.8; roughness: 0.3"></a-cylinder>
-            </a-entity>
-
-            <!-- ============================================ -->
-            <!-- C. LOOT - PIÈCES D'OR GÉANTES -->
-            <!-- Style Mario/Sonic - Rotation continue -->
-            <!-- ============================================ -->
-            
-            <!-- Pièce d'or 1 -->
-            <a-entity id="gold-coin-1" position="-5 3 -35">
-                <a-cylinder radius="1" height="0.15" rotation="90 0 0"
-                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
-                    animation="property: rotation; to: 90 360 0; dur: 2000; easing: linear; loop: true"
-                    animation__float="property: position; to: 0 0.5 0; dir: alternate; dur: 1500; easing: easeInOutSine; loop: true">
-                    <!-- Symbole $ sur la pièce -->
-                </a-cylinder>
-                <!-- Glow effect -->
-                <a-entity light="type: point; color: #FFD700; intensity: 1; distance: 8; decay: 2"></a-entity>
-            </a-entity>
-
-            <!-- Pièce d'or 2 -->
-            <a-entity id="gold-coin-2" position="5 3.5 -40">
-                <a-cylinder radius="1" height="0.15" rotation="90 0 0"
-                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
-                    animation="property: rotation; to: 90 360 0; dur: 2200; easing: linear; loop: true"
-                    animation__float="property: position; to: 0 0.5 0; dir: alternate; dur: 1700; easing: easeInOutSine; loop: true">
-                </a-cylinder>
-                <a-entity light="type: point; color: #FFD700; intensity: 1; distance: 8; decay: 2"></a-entity>
-            </a-entity>
-
-            <!-- Pièce d'or 3 -->
-            <a-entity id="gold-coin-3" position="0 4 -45">
-                <a-cylinder radius="1.2" height="0.18" rotation="90 0 0"
-                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
-                    animation="property: rotation; to: 90 360 0; dur: 1800; easing: linear; loop: true"
-                    animation__float="property: position; to: 0 0.6 0; dir: alternate; dur: 1300; easing: easeInOutSine; loop: true">
-                </a-cylinder>
-                <a-entity light="type: point; color: #FFD700; intensity: 1.2; distance: 10; decay: 2"></a-entity>
-            </a-entity>
-
-            <!-- Pièce d'or 4 (bonus - plus grande) -->
-            <a-entity id="gold-coin-4" position="-8 2.5 -50">
-                <a-cylinder radius="0.8" height="0.12" rotation="90 0 0"
-                    material="color: #FFD700; metalness: 0.9; roughness: 0.2; emissive: #CC9900; emissiveIntensity: 0.3"
-                    animation="property: rotation; to: 90 360 0; dur: 2500; easing: linear; loop: true"
-                    animation__float="property: position; to: 0 0.4 0; dir: alternate; dur: 1900; easing: easeInOutSine; loop: true">
-                </a-cylinder>
-                <a-entity light="type: point; color: #FFD700; intensity: 0.8; distance: 6; decay: 2"></a-entity>
-            </a-entity>
+          
 
         </a-entity>
     </a-scene>
