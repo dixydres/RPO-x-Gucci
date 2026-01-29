@@ -304,13 +304,19 @@ AFRAME.registerComponent('headset-toggle', {
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
 
-        // Cacher monde réel
-        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera), a-box:not(#oasis-headset), a-plane, a-cylinder');
+        // Cacher monde réel (mais garder les mains visibles!)
+        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera):not(#left-hand):not(#right-hand), a-box:not(#oasis-headset), a-plane, a-cylinder');
         objects.forEach(obj => {
-            if (!obj.closest('#vr-world') && obj.id !== 'vr-world') {
+            if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && !obj.hasAttribute('hand-controls')) {
                obj.setAttribute('visible', false);
             }
         });
+        
+        // Afficher les mains de manière explicite
+        const leftHand = document.getElementById('left-hand');
+        const rightHand = document.getElementById('right-hand');
+        if(leftHand) leftHand.setAttribute('visible', true);
+        if(rightHand) rightHand.setAttribute('visible', true);
         
         // Afficher monde VR et corriger lumières
         const vrWorld = document.getElementById('vr-world');
@@ -365,7 +371,7 @@ AFRAME.registerComponent('headset-toggle', {
             const vrWorld = document.getElementById('vr-world');
             if(vrWorld) vrWorld.setAttribute('visible', false);
             
-            // 2. Montrer Réel
+            // 2. Montrer Réel (garder les mains visibles)
             const scene = document.querySelector('a-scene');
             const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder');
             objects.forEach(obj => {
@@ -373,6 +379,12 @@ AFRAME.registerComponent('headset-toggle', {
                     obj.setAttribute('visible', true);
                 }
             });
+            
+            // Garder les mains visibles aussi en mode réel
+            const leftHand = document.getElementById('left-hand');
+            const rightHand = document.getElementById('right-hand');
+            if(leftHand) leftHand.setAttribute('visible', true);
+            if(rightHand) rightHand.setAttribute('visible', true);
 
             // 3. Remettre le casque physique
             this.el.setAttribute('visible', true);
