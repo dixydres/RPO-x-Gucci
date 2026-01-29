@@ -110,13 +110,31 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     onGrab: function () {
-        // GESTE DE RETRAIT DU CASQUE
+        // GESTE DE RETRAIT DU CASQUE EN MODE VR
         if (window.oasisState.isInOasis) {
+            // Vérifier si on grab le casque pour l'enlever
+            const headset = document.getElementById('oasis-headset');
+            if (headset) {
+                const handPos = new THREE.Vector3();
+                const headsetPos = new THREE.Vector3();
+                this.el.object3D.getWorldPosition(handPos);
+                headset.object3D.getWorldPosition(headsetPos);
+                
+                // Si la main est près du casque (<40cm), l'enlever
+                if (handPos.distanceTo(headsetPos) < 0.4) {
+                    if (headset.components['headset-toggle']) {
+                        headset.components['headset-toggle'].exitOasisSequence();
+                    }
+                    return;
+                }
+            }
+            
+            // Sinon, geste de retrait classique (main près de la tête)
             this.checkRemoveGesture();
             return;
         }
 
-        // GRAB CLASSIQUE
+        // GRAB CLASSIQUE (mode réel)
         const intersectedEls = this.el.components.raycaster.intersectedEls;
         if (intersectedEls.length > 0) {
             const hitEl = intersectedEls[0];
