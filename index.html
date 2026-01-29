@@ -1881,6 +1881,10 @@
         <!-- MONDE VR - L'OASIS -->
         <!-- ============================================ -->
         <a-entity id="vr-world" visible="false" position="0 -15.649 58.457">
+            <!-- Canvas texture for VR sky gradient -->
+            <canvas id="vrSkyCanvas" width="2048" height="1024" style="display:none"></canvas>
+            <!-- Sky for VR world (texture comes from the canvas gradient) -->
+            <a-sky id="vr-sky" radius="500" src="#vrSkyCanvas" visible="false"></a-sky>
 
             <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0">
                 <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
@@ -2303,7 +2307,121 @@
           
 
         </a-entity>
-    </a-scene>
+        </a-scene>
+
+        <!-- Script: apply VR color palette and VR sky gradient when VR world is activated -->
+        <script>
+            (function(){
+                const palette = { gold: '#E8C449', teal: '#276761', ivory: '#FFFDFF' };
+                const remap = {
+                    '#228B22': palette.teal,
+                    '#2E8B57': palette.teal,
+                    '#32CD32': palette.teal,
+                    '#006400': palette.teal,
+                    '#87CEEB': palette.ivory,
+                    '#ADD8E6': palette.ivory,
+                    '#B0E0E6': palette.ivory,
+                    '#D2B48C': palette.gold,
+                    '#C4A67C': palette.gold,
+                    '#F5F5DC': palette.gold,
+                    '#FAF0E6': palette.gold,
+                    '#FFFAF0': palette.gold,
+                    '#FFF8DC': palette.gold
+                };
+
+                function applyVrPalette(){
+                    const root = document.getElementById('vr-world');
+                    if(!root) return;
+                    root.querySelectorAll('[color]').forEach(el=>{
+                        const c = el.getAttribute('color');
+                        if(c && remap[c]) el.setAttribute('color', remap[c]);
+                    });
+                    root.querySelectorAll('[material]').forEach(el=>{
+                        const mat = el.getAttribute('material');
+                        if(!mat || typeof mat !== 'string') return;
+                        const m = mat.match(/color:\s*(#[0-9a-fA-F]{3,6})/);
+                        if(m && remap[m[1]]){
+                            const newMat = mat.replace(m[1], remap[m[1]]);
+                            el.setAttribute('material', newMat);
+                        }
+                    });
+                    root.querySelectorAll('[light]').forEach(el=>{
+                        const light = el.getAttribute('light');
+                        if(!light || typeof light !== 'string') return;
+                        const g = light.match(/groundColor:\s*(#[0-9a-fA-F]{3,6})/);
+                        if(g && remap[g[1]]){
+                            const newLight = light.replace(g[1], remap[g[1]]);
+                            el.setAttribute('light', newLight);
+                        }
+                    });
+                }
+
+                // Draw gradient onto the canvas used by the VR sky
+                function createVrSkyTexture(){
+                    const canvas = document.getElementById('vrSkyCanvas');
+                    if(!canvas) return;
+                    const ctx = canvas.getContext('2d');
+                    const w = canvas.width; const h = canvas.height;
+                    // vertical gradient: top green -> bottom yellow
+                    const g = ctx.createLinearGradient(0,0,0,h);
+                    g.addColorStop(0, palette.teal); // top
+                    g.addColorStop(1, palette.gold); // horizon
+                    ctx.fillStyle = g;
+                    ctx.fillRect(0,0,w,h);
+                    // subtle radial vignette for depth
+                    const rg = ctx.createRadialGradient(w/2, h/3, h/8, w/2, h/2, h);
+                    rg.addColorStop(0, 'rgba(255,255,255,0)');
+                    rg.addColorStop(1, 'rgba(0,0,0,0.12)');
+                    ctx.fillStyle = rg;
+                    ctx.fillRect(0,0,w,h);
+                }
+
+                // show/hide VR sky and apply palette when vr-world toggles
+                function handleVrVisibility(isVisible){
+                    const root = document.getElementById('vr-world');
+                    const sky = document.getElementById('vr-sky');
+                    if(isVisible){
+                        applyVrPalette();
+                        createVrSkyTexture();
+                        if(sky) sky.setAttribute('visible', true);
+                    } else {
+                        if(sky) sky.setAttribute('visible', false);
+                    }
+                }
+
+                // expose a test function to programmatically remove the headset
+                window.testRemoveHeadset = function(){
+                    try{
+                        const el = document.getElementById('oasis-headset');
+                        if(!el) return { ok:false, reason:'oasis-headset not found' };
+                        const comp = el.components && el.components['headset-toggle'];
+                        if(!comp || typeof comp.removeHeadset !== 'function') return { ok:false, reason:'removeHeadset not available' };
+                        comp.removeHeadset();
+                        return { ok:true };
+                    }catch(err){
+                        return { ok:false, reason: err.message };
+                    }
+                };
+
+                const vr = document.getElementById('vr-world');
+                if(vr){
+                    const obs = new MutationObserver(muts=>{
+                        muts.forEach(m=>{
+                            if(m.attributeName === 'visible'){
+                                const v = vr.getAttribute('visible');
+                                const isVisible = (v === 'true' || v === '' || v === true);
+                                handleVrVisibility(isVisible);
+                            }
+                        });
+                    });
+                    obs.observe(vr, { attributes: true });
+                    const v0 = vr.getAttribute('visible');
+                    const initiallyVisible = (v0 === 'true' || v0 === '' || v0 === true);
+                    if(initiallyVisible) handleVrVisibility(true);
+                }
+            })();
+        </script>
+
 </body>
 
 </html>
