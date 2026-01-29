@@ -110,31 +110,13 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     onGrab: function () {
-        // GESTE DE RETRAIT DU CASQUE EN MODE VR
+        // GESTE DE RETRAIT DU CASQUE
         if (window.oasisState.isInOasis) {
-            // Vérifier si on grab le casque pour l'enlever
-            const headset = document.getElementById('oasis-headset');
-            if (headset) {
-                const handPos = new THREE.Vector3();
-                const headsetPos = new THREE.Vector3();
-                this.el.object3D.getWorldPosition(handPos);
-                headset.object3D.getWorldPosition(headsetPos);
-                
-                // Si la main est près du casque (<40cm), l'enlever
-                if (handPos.distanceTo(headsetPos) < 0.4) {
-                    if (headset.components['headset-toggle']) {
-                        headset.components['headset-toggle'].exitOasisSequence();
-                    }
-                    return;
-                }
-            }
-            
-            // Sinon, geste de retrait classique (main près de la tête)
             this.checkRemoveGesture();
             return;
         }
 
-        // GRAB CLASSIQUE (mode réel)
+        // GRAB CLASSIQUE
         const intersectedEls = this.el.components.raycaster.intersectedEls;
         if (intersectedEls.length > 0) {
             const hitEl = intersectedEls[0];
@@ -597,81 +579,44 @@ AFRAME.registerComponent('virtual-hand', {
 });
 
 
-// INIT - Enregistrer les composants AVANT le chargement complet
-AFRAME.registerComponent('fix-mansion-textures', {
-    init: function() {
-        this.el.addEventListener('model-loaded', () => {
-            const mesh = this.el.getObject3D('mesh');
-            if(!mesh) return;
-            const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
-            tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
-            mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
-        });
-    }
-});
-
-// Fix textures du casque (sRGB + matériaux)
-AFRAME.registerComponent('fix-headset-textures', {
-    init: function() {
-        this.el.addEventListener('model-loaded', () => {
-            const mesh = this.el.getObject3D('mesh');
-            if (!mesh) return;
-            mesh.traverse(node => {
-                if (node.isMesh && node.material) {
-                    const materials = Array.isArray(node.material) ? node.material : [node.material];
-                    materials.forEach(mat => {
-                        if (mat.map) { mat.map.encoding = THREE.sRGBEncoding; mat.map.needsUpdate = true; }
-                        if (mat.emissiveMap) { mat.emissiveMap.encoding = THREE.sRGBEncoding; mat.emissiveMap.needsUpdate = true; }
-                        if (typeof mat.metalness === 'number' && mat.metalness > 0.6) { mat.metalness = 0.2; mat.roughness = 0.7; }
-                        mat.needsUpdate = true;
-                    });
-                }
-            });
-        });
-    }
-});
-
-// Initialiser après le chargement de la scène A-Frame
+// INIT
 document.addEventListener('DOMContentLoaded', () => {
-    const scene = document.querySelector('a-scene');
-    if(!scene) return;
+    const rig = document.getElementById('rig');
+    if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
     
-    const init = () => {
-        const rig = document.getElementById('rig');
-        if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
-    };
-    
-    // Si la scène est déjà chargée
-    if(scene.hasLoaded) {
-        init();
-    } else {
-        // Sinon, attendre le chargement
-        scene.addEventListener('loaded', init);
-    }
-});
 
-// Fallback: initialiser aussi via le load du script module
-if(document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', () => {
-        const scene = document.querySelector('a-scene');
-        if(scene && !scene.hasLoaded) {
-            scene.addEventListener('loaded', () => {
-                const rig = document.getElementById('rig');
-                if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+    
+    // Fix texture manoir si présent
+    AFRAME.registerComponent('fix-mansion-textures', {
+        init: function() {
+            this.el.addEventListener('model-loaded', () => {
+                const mesh = this.el.getObject3D('mesh');
+                if(!mesh) return;
+                const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
+                tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
+                mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
             });
         }
     });
-} else {
-    const scene = document.querySelector('a-scene');
-    if(scene) {
-        if(scene.hasLoaded) {
-            const rig = document.getElementById('rig');
-            if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
-        } else {
-            scene.addEventListener('loaded', () => {
-                const rig = document.getElementById('rig');
-                if (rig && !rig.hasAttribute('virtual-hand')) rig.setAttribute('virtual-hand', '');
+
+    // Fix textures du casque (sRGB + matériaux)
+    AFRAME.registerComponent('fix-headset-textures', {
+        init: function() {
+            this.el.addEventListener('model-loaded', () => {
+                const mesh = this.el.getObject3D('mesh');
+                if (!mesh) return;
+                mesh.traverse(node => {
+                    if (node.isMesh && node.material) {
+                        const materials = Array.isArray(node.material) ? node.material : [node.material];
+                        materials.forEach(mat => {
+                            if (mat.map) { mat.map.encoding = THREE.sRGBEncoding; mat.map.needsUpdate = true; }
+                            if (mat.emissiveMap) { mat.emissiveMap.encoding = THREE.sRGBEncoding; mat.emissiveMap.needsUpdate = true; }
+                            if (typeof mat.metalness === 'number' && mat.metalness > 0.6) { mat.metalness = 0.2; mat.roughness = 0.7; }
+                            mat.needsUpdate = true;
+                        });
+                    }
+                });
             });
         }
-    }
-}
+    });
+});
