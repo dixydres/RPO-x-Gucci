@@ -127,14 +127,15 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     checkRemoveGesture: function() {
-        // Permettre le retrait du casque dès qu'une main est proche de la tête en VR
         const camera = document.getElementById('player-camera');
         const handPos = new THREE.Vector3();
         const headPos = new THREE.Vector3();
+        
         this.el.object3D.getWorldPosition(handPos);
         camera.object3D.getWorldPosition(headPos);
-        // Distance plus tolérante (50cm)
-        if (handPos.distanceTo(headPos) < 0.5) {
+        
+        // Si la main est à moins de 35cm de la tête
+        if (handPos.distanceTo(headPos) < 0.35) {
             const headset = document.getElementById('oasis-headset');
             if (headset && headset.components['headset-toggle']) {
                 headset.components['headset-toggle'].exitOasisSequence();
@@ -299,15 +300,17 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isInOasis = true;
         this.isLoading = false;
 
-        // Play entry sound
+        // Play entry sound (volume boost)
         const entrySound = document.getElementById('entry-oasis-sound');
         if (entrySound && entrySound.components && entrySound.components.sound) {
+            entrySound.components.sound.setVolume(0.8);
             entrySound.components.sound.playSound();
         }
 
         // Pause IRL ambient sound and wind sound when entering VR
         const irlSound = document.getElementById('sound-irl-entity');
         if (irlSound && irlSound.components && irlSound.components.sound) {
+            irlSound.components.sound.setVolume(0.5);
             irlSound.components.sound.pauseSound();
         }
         // Pause wind sound
@@ -411,6 +414,7 @@ AFRAME.registerComponent('headset-toggle', {
             // Resume IRL ambient sound and wind sound when exiting VR
             const irlSound = document.getElementById('sound-irl-entity');
             if (irlSound && irlSound.components && irlSound.components.sound) {
+                irlSound.components.sound.setVolume(0.25);
                 irlSound.components.sound.playSound();
             }
             // Resume wind sound
