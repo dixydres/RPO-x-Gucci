@@ -300,17 +300,15 @@ AFRAME.registerComponent('headset-toggle', {
         window.oasisState.isInOasis = true;
         this.isLoading = false;
 
-        // Play entry sound (volume boost)
+        // Play entry sound
         const entrySound = document.getElementById('entry-oasis-sound');
         if (entrySound && entrySound.components && entrySound.components.sound) {
-            entrySound.components.sound.setVolume(0.8);
             entrySound.components.sound.playSound();
         }
 
         // Pause IRL ambient sound and wind sound when entering VR
         const irlSound = document.getElementById('sound-irl-entity');
         if (irlSound && irlSound.components && irlSound.components.sound) {
-            irlSound.components.sound.setVolume(0.5);
             irlSound.components.sound.pauseSound();
         }
         // Pause wind sound
@@ -414,7 +412,6 @@ AFRAME.registerComponent('headset-toggle', {
             // Resume IRL ambient sound and wind sound when exiting VR
             const irlSound = document.getElementById('sound-irl-entity');
             if (irlSound && irlSound.components && irlSound.components.sound) {
-                irlSound.components.sound.setVolume(0.25);
                 irlSound.components.sound.playSound();
             }
             // Resume wind sound

@@ -103,13 +103,10 @@
             <a-asset-item id="couch" src="./models/Damaged Couch.glb"></a-asset-item>
             <a-asset-item id="trees" src="./models/Dead Trees.glb"></a-asset-item>
             <a-asset-item id="rug" src="./models/Round Rug.glb"></a-asset-item>
-                <audio id="entry-oasis-audio" src="./sound/entry_oasis.mp3" preload="auto"></audio>
-                <audio id="sound_irl" src="./sound/sound_irl.mp3" preload="auto"></audio>
-                <img id="hudP" src="./hud3DP.png">
 
-            <audio id="entry-oasis-audio" src="public/sound/entry_oasis.mp3" preload="auto"></audio>
-            <audio id="sound_irl" src="./public/sound/sound_irl.mp3" preload="auto"></audio>
-            <img id="hudP" src="./public/hud3DP.png">
+            <audio id="entry-oasis-audio" src="/sound/entry_oasis.mp3" preload="auto"></audio>
+            <audio id="sound_irl" src="/sound/sound_irl.mp3" preload="auto"></audio>
+            <img id="hudP" src="/hud3DP.png">
             
         </a-assets>
 
@@ -119,12 +116,10 @@
          
          <a-entity id="real-world" position="">
             <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 0.02" position="0 1.2 0"></a-entity>
-                <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 0.25" position="0 1.2 0"></a-entity>
                 <!-- Effet de vent devant la fenêtre (vagues fines animées) -->
                 <a-entity id="window-wind-effect" rotation="0 90 0" position="-2.5 0 0">
                     <!-- Ambiance sonore de vent devant la fenêtre -->
-                    <a-sound id="window-wind-sound" src="./public/sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="0.01" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
-                        <a-sound id="window-wind-sound" src="./sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="0.15" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
+                    <a-sound id="window-wind-sound" src="/sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="0.01" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
                     <!-- Swirl 1 -->
                     <a-image src="data:image/svg+xml;utf8,&lt;svg width='200' height='40' viewBox='0 0 200 40' fill='none' xmlns='http://www.w3.org/2000/svg'&gt;&lt;path d='M10 30 Q60 10 110 30 Q160 50 190 10' stroke='%23E8F6FF' stroke-width='6' stroke-linecap='round' opacity='0.7' fill='none'/&gt;&lt;/svg&gt;" width="1.2" height="0.18" position="0.49983184385316104 1.2005695067868931 0.05" transparent="true" opacity="0.127762689094019" animation="property: position; from: 2.2 1.22 0.05; to: -1.3 1.18 0.05; dur: 3200; loop: true; easing: easeInOutSine" animation__fade="property: opacity; from: 0.18; to: 0.05; dir: alternate; dur: 1800; loop: true" material="" geometry="">
                     </a-image>
@@ -144,13 +139,11 @@
           
              <a-entity geometry="primitive: plane" rotation="-90 0 0" position="0 -10 0" scale="50 50 1" material="color: #ffcc66" id="floor-rl"></a-entity>
              <a-entity id="rug" gltf-model="./models/Round Rug.glb" position="0 0.035 0" scale="" rotation="0 180 0" visible=""></a-entity>
-                         <a-entity id="rug" gltf-model="./models/Round Rug.glb" position="0 0.035 0" scale="" rotation="0 180 0" visible=""></a-entity>
              <!-- Dead Trees - Arbres morts sur le sol -->
              <a-entity id="dead-trees-1" gltf-model="./models/Dead Trees.glb" position="-16.01799 -10.48187 12.05539" scale="0.5 0.5 0.5" rotation="0 45 0" visible=""></a-entity>
              <a-entity id="dead-trees-2" gltf-model="./models/Dead Trees.glb" position="8 0 -20" scale="1.2 1.2 1.2" rotation="0 -29.999999999999996 0" visible=""></a-entity>
              <a-entity id="dead-trees-3" gltf-model="./models/Dead Trees.glb" position="-15 0 5" scale="1.8 1.8 1.8" rotation="0 119.99999999999999 0" visible=""></a-entity>
              <a-entity id="dead-trees-4" gltf-model="./models/Dead Trees.glb" position="12 0 10" scale="1.3 1.3 1.3" rotation="0 -90 0" visible=""></a-entity>
-                    <img id="hudP" src="./hud3DP.png">
         
             <!-- Lampadaire 1 -->
             <a-entity id="streetlight-1" position="-7.84821 -10.81194 4.44824">
@@ -1889,12 +1882,12 @@
             <a-ring position="0 18.98307 -39.9" rotation="-90 0 0" radius-inner="1.2" radius-outer="2.2" material="color: #E8C449; opacity: 0.45; transparent: true; shader: flat" geometry="" visible=""></a-ring>
 
             <!-- DELOREAN dans le monde VR -->
-            <a-entity id="delorean" gltf-model="./public/models/de_lorean_dmc/scene.gltf" position="0.54293 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            <a-entity id="delorean" gltf-model="/models/de_lorean_dmc/scene.gltf" position="0.54293 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
             </a-entity>
             </a-entity>
                 <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
                 <!-- Soleil couchant - boule visible dans le ciel -->
-                 <a-entity id="entry-oasis-sound" sound="src: public/sound/entry_oasis.mp3; volume: 0.2" visible=""></a-entity>
+                 <a-entity id="entry-oasis-sound" sound="src: /sound/entry_oasis.mp3; volume: 0.2" visible=""></a-entity>
                 <a-sphere id="sunset-sun" position="0 18 -85" radius="4" color="#FFB347" material="shader: flat; opacity: 0.95" light="type: point; color: #FF8C42; intensity: 3.5; distance: 80; decay: 1.5" geometry="" visible=""></a-sphere>
 
                 <!-- Lumière directionnelle principale du coucher de soleil -->
@@ -1952,7 +1945,7 @@
                     <a-sphere position="3 -2.8 8" radius="2.5" color="#778899" material="" geometry="" visible=""></a-sphere>
 
                     <!-- Sol du jardin - Patchs d'herbe 3D -->
-                    <a-entity gltf-model="./public/models/vr/Grass Patch.glb" position="0 0.05 0" scale="10 1 10" visible=""></a-entity>
+                    <a-entity gltf-model="/models/vr/Grass Patch.glb" position="0 0.05 0" scale="10 1 10" visible=""></a-entity>
                     <a-cylinder position="-0.00219 0.01 0.59514" rotation="" radius="24" height="0.02" color="#276761" material="roughness: 0.9" geometry="" visible=""></a-cylinder>
 
                     <!-- Allées en pierre (style Villa d'Este) -->
@@ -1974,7 +1967,7 @@
                         <!-- Chapiteau corinthien simplifié -->
                         <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./public/models/vr/Vines.glb" position="0.5 0 0.3" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="0.5 0 0.3" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Colonne 2 -->
@@ -1992,7 +1985,7 @@
                         <a-cylinder position="0 7.2 0" radius="0.95" height="0.5" color="#E8C449" material="" geometry="" visible=""></a-cylinder>
                         <a-box position="0 7.6 0" width="1.6" height="0.4" depth="1.6" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./public/models/vr/Vines.glb" position="-0.4 0 0.5" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="-0.4 0 0.5" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Colonne 4 -->
@@ -2010,7 +2003,7 @@
                         <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#E8C449" material="" geometry="" visible=""></a-cylinder>
                         <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./public/models/vr/Vines.glb" position="-0.5 0 -0.3" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="-0.5 0 -0.3" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Entablement (poutre horizontale sur les colonnes) -->
@@ -2023,69 +2016,69 @@
                 </a-entity>
 
                 <!-- ===== BASSIN CENTRAL (Fontaine 3D) ===== -->
-                <a-entity gltf-model="./public/models/vr/Fountain.glb" position="0.48013 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
+                <a-entity gltf-model="/models/vr/Fountain.glb" position="0.48013 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
 
                 <!-- ===== PINS MÉDITERRANÉENS (Style Amalfi/Ravello) ===== -->
                 <!-- Pin parasol 1 -->
-                <a-entity gltf-model="./public/models/vr/arbres.glb" position="-12 0 -5" scale="6 6 6" visible="" id="tree2"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-12 0 -5" scale="6 6 6" visible="" id="tree2"></a-entity>
 
                 <!-- Pin parasol 2 -->
-                <a-entity gltf-model="./public/models/vr/arbres.glb" position="13.77296 0.50833 -8.95475" scale="4 4 4" visible="" id="tree"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="13.77296 0.50833 -8.95475" scale="4 4 4" visible="" id="tree"></a-entity>
 
                 <!-- ===== CYPRÈS ITALIENS ===== -->
-                <a-entity gltf-model="./public/models/vr/arbres.glb" position="-18 0 -20" scale="1.2 1.2 1.2" visible="" id="tree3"></a-entity>
-                <a-entity gltf-model="./public/models/vr/arbres.glb" position="-20 0 -18" scale="" visible="" id="tree4"></a-entity>
-                <a-entity gltf-model="./public/models/vr/arbres.glb" position="9.96845 0 3.30342" scale="5 5 5" visible="" id="tree5"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-18 0 -20" scale="1.2 1.2 1.2" visible="" id="tree3"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-20 0 -18" scale="" visible="" id="tree4"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="9.96845 0 3.30342" scale="5 5 5" visible="" id="tree5"></a-entity>
 
                 <!-- ===== HAIES SCULPTÉES (Topiaire Renaissance) ===== -->
               <a-entity id="topiary" position="0 0 -10">
                     <!-- Haies à gauche -->
                     <a-entity id="left">
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.82 0 10" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.82 0 10" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
                     </a-entity>
 
                     <!-- Haies à droite (Symétrie) -->
                     <a-entity id="right">
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.82 0 10" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./public/models/vr/Hedge.glb" position="1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.82 0 10" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
                     </a-entity>
 
                     <!-- Fleurs et végétation 3D -->
-                    <a-entity gltf-model="./public/models/vr/Daffodil.glb" position="-10 0 12.35813" scale="0.02 0.02 0.02" visible="" id="bush3"></a-entity>
-                    <a-entity gltf-model="./public/models/vr/Daffodil.glb" position="10 0 8" scale="0.02 0.02 0.02" visible="" id="bush"></a-entity>
-                    <a-entity gltf-model="./public/models/vr/Daffodil.glb" position="-10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush4"></a-entity>
-                    <a-entity gltf-model="./public/models/vr/Daffodil.glb" position="10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush2"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="-10 0 12.35813" scale="0.02 0.02 0.02" visible="" id="bush3"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="10 0 8" scale="0.02 0.02 0.02" visible="" id="bush"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="-10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush4"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush2"></a-entity>
 
                     <!-- Topiaires remplacés par Arbres -->
-                    <a-entity gltf-model="./public/models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
-                    <a-entity gltf-model="./public/models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
+                    <a-entity gltf-model="/models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
+                    <a-entity gltf-model="/models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="/models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="/models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
                 </a-entity>
                 
                     
