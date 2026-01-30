@@ -193,13 +193,7 @@ AFRAME.registerComponent('headset-toggle', {
         this.camera = document.getElementById('player-camera');
         this.isLoading = false;
         this.isAnimatingOn = false;
-
-        // Clic pour activer le casque
-        this.el.addEventListener('click', () => {
-             if (!window.oasisState.isInOasis && !this.isLoading) {
-                 this.animateToFace(); 
-             }
-        });
+        // Suppression de l'écouteur 'click' : activation uniquement par proximité physique !
     },
 
     tick: function() {
