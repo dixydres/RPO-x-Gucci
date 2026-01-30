@@ -450,8 +450,18 @@ AFRAME.registerComponent('headset-toggle', {
             scene.setAttribute('fog', 'type: exponential; color: #0a0a0a; density: 0.08');
 
             // Ouvrir les yeux
-            eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
-            setTimeout(() => { loadingScreen.classList.remove('active'); loadingScreen.style.display = 'none'; }, 1000);
+            const eclipseOverlay = document.getElementById('eclipse-overlay');
+            const loadingScreen = document.getElementById('oasis-loading-screen');
+            if (eclipseOverlay) {
+                eclipseOverlay.classList.remove('closing');
+                eclipseOverlay.classList.add('opening');
+            }
+            setTimeout(() => { 
+                if (loadingScreen) {
+                    loadingScreen.classList.remove('active'); 
+                    loadingScreen.style.display = 'none'; 
+                }
+            }, 1000);
 
         }, 1500);
     },
