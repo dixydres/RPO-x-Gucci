@@ -60,12 +60,13 @@
 
             </a-camera>
 
+
             <a-entity id="left-hand" hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac"
-                vr-controller-grab raycaster="objects: .clickable; far: 0.1; showLine: false">
+                vr-controller-grab raycaster="objects: .clickable; far: 1.5; showLine: false">
             </a-entity>
 
             <a-entity id="right-hand" hand-controls="hand: right; handModelStyle: lowPoly; color: #ffdbac"
-                vr-controller-grab raycaster="objects: .clickable; far: 0.1; showLine: false">
+                vr-controller-grab raycaster="objects: .clickable; far: 1.5; showLine: false">
             </a-entity>
 
         </a-entity>
@@ -2057,7 +2058,7 @@
 
                     <!-- Topiaires remplacés par Arbres -->
                     <a-entity gltf-model="./models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
-                    <a-entity gltf-model="./models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
+                    <a-entity gltf-model="./models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="./models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="./models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
                 </a-entity>
                 
                     
@@ -2172,8 +2173,8 @@
                     <a-plane position="0 0.2642274290095945 0.12" width="9.5" height="0.05" material="color: #00D4FF; opacity: 0.3; transparent: true; shader: flat" animation="property: position; from: 0 -3.3 0.12; to: 0 3.3 0.12; dur: 3000; loop: true" geometry="" visible=""></a-plane>
                     
                     <!-- Lumière holographique -->
-                    <a-entity light="type: point; color: #yellow; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
-                    <a-entity light="type: spot; color: #yellow; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
+                    <a-entity light="type: point; color: yellow; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
+                    <a-entity light="type: spot; color: yellow; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
                 </a-entity>
             </a-entity>
 
