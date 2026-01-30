@@ -115,11 +115,11 @@
                 <!-- ============================================ -->
          
          <a-entity id="real-world" position="">
-            <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 0.02" position="0 1.2 0"></a-entity>
+            <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 1.0" position="0 1.2 0"></a-entity>
                 <!-- Effet de vent devant la fenêtre (vagues fines animées) -->
                 <a-entity id="window-wind-effect" rotation="0 90 0" position="-2.5 0 0">
                     <!-- Ambiance sonore de vent devant la fenêtre -->
-                    <a-sound id="window-wind-sound" src="./public/sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="0.01" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
+                    <a-sound id="window-wind-sound" src="./public/sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="1.0" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
                     <!-- Swirl 1 -->
                     <a-image src="data:image/svg+xml;utf8,&lt;svg width='200' height='40' viewBox='0 0 200 40' fill='none' xmlns='http://www.w3.org/2000/svg'&gt;&lt;path d='M10 30 Q60 10 110 30 Q160 50 190 10' stroke='%23E8F6FF' stroke-width='6' stroke-linecap='round' opacity='0.7' fill='none'/&gt;&lt;/svg&gt;" width="1.2" height="0.18" position="0.49983184385316104 1.2005695067868931 0.05" transparent="true" opacity="0.127762689094019" animation="property: position; from: 2.2 1.22 0.05; to: -1.3 1.18 0.05; dur: 3200; loop: true; easing: easeInOutSine" animation__fade="property: opacity; from: 0.18; to: 0.05; dir: alternate; dur: 1800; loop: true" material="" geometry="">
                     </a-image>
@@ -150,7 +150,7 @@
                 <a-cylinder radius="0.08" height="8" position="0 4 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-cylinder>
                 <a-box width="1.5" height="0.1" depth="0.1" position="0.75 7.8 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-box>
                 <a-sphere radius="0.2" position="1.4 7.6 0" material="color: #ffcc66; emissive: #ffaa33" geometry=""></a-sphere>
-                <a-entity light="type: point; color: #ffffff; intensity: 0.11; distance: 15; decay: 0; shadowMapWidth: 511.91; shadowRadius: 0.76; castShadow: true" position="2.84 29.119 -8.702" id="sky-light"></a-entity>   </a-entity>
+                <a-entity light="type: point; color: #ffffff; intensity: 0.11; distance: 15; decay: 0;" position="2.84 29.119 -8.702" id="sky-light"></a-entity>   </a-entity>
 
             <!-- Lampadaire 2 -->
             <a-entity id="streetlight-2" position="-1.17662 -12.17708 -1.06868">
@@ -284,7 +284,7 @@
             <!-- Deuxième feu de baril plus loin -->
             <a-entity id="barrel-fire-2" position="-11.12755 0.16796 -7.92911">
                 
-                <a-entity light="type: point; color: #ffffff; intensity: 0.666; distance: 18.85; decay: 1.25; castShadow: true; shadowCameraVisible: true" position="11.942 12.983 10.886"></a-entity>
+                <a-entity light="type: point; color: #ffffff; intensity: 0.666; distance: 18.85; decay: 1.25;" position="11.942 12.983 10.886"></a-entity>
                 
             </a-entity>
 
@@ -1406,7 +1406,7 @@
                 <!-- Néons et éclairages des stacks -->
                 <a-entity id="stack-neons">
                     
-                    <a-entity light="type: point; color: #ffffff; intensity: 0.8; distance: 10; castShadow: true" position="3.56611 -10.00126 3.20499"></a-entity>
+                    <a-entity light="type: point; color: #ffffff; intensity: 0.8; distance: 10;" position="3.56611 -10.00126 3.20499"></a-entity>
 
                     <a-box position="0 5 0.5" width="0.8" height="0.1" depth="0.05" material="color: #00ffaa; emissive: #00ffaa; emissiveIntensity: 0.8" geometry=""></a-box>
                     <a-entity light="type: point; color: #00ffaa; intensity: 0.6; distance: 8" position="0 5 1"></a-entity>
@@ -1690,7 +1690,7 @@
             <!-- ============================================ -->
             <!-- LE CASQUE OASIS - Pièce maîtresse (modèle texturé) -->
             <!-- ============================================ -->
-            <a-entity id="oasis-headset" class="clickable" headset-toggle="" gltf-model="./models/vr_headset/scene.gltf" position="-0.85269 0.82 -1.19678" rotation="0 156 0" scale="0.2 0.2 0.2" fix-headset-textures="" shadow="">
+            <a-entity id="oasis-headset" class="clickable" headset-toggle="" gltf-model="./models/vr_headset/scene.gltf" position="-0.85269 0.82 -1.19678" rotation="0 156 0" scale="0.2 0.2 0.2" fix-headset-textures="">
                 <!-- VR Indication removed; add sparkling light instead -->
                 <a-entity id="headsetlight" position="0 0.18 0">
                     <a-entity light="type: point; color: #FFD700; intensity: 0.6; distance: 1.2"
@@ -1862,32 +1862,11 @@
         <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0" visible="">
                 
 
-            <!-- Tapis luxe type tapis rouge vers la DeLorean -->
-            <a-entity id="vr-carpet" position="0 -18.66692 35.50599" visible="">
-            <a-plane id="luxury-carpet" position="0 18.92837 -30" rotation="-90 0 0" width="2.5" height="12" material="color: #fffdff; shader: flat; side: double; opacity: 0.95; transparent: true" geometry="" visible=""></a-plane>
-            <!-- Bordures du tapis (ivoire) -->
-            <a-plane position="1.25 18.802 -30" rotation="-90 0 0" width="0.15" height="12" material="color: #FFFDFF; shader: flat; opacity: 0.85; transparent: true" geometry="" visible=""></a-plane>
-            <a-plane position="-1.25 18.802 -30" rotation="-90 0 0" width="0.15" height="12" material="color: #FFFDFF; shader: flat; opacity: 0.85; transparent: true" geometry="" visible=""></a-plane>
-
-            <!-- Sol principal ivoire luxe -->
+            <!-- Zone centrale simplifiée -->
             <a-cylinder position="0 18.8 -39.55037" radius="18" height="0.2" color="#FFFDFF" material="color: #E8C449; shader: flat; side: double; opacity: 0.95; transparent: true" geometry="" visible=""></a-cylinder>
-
-            <!-- Quelques colonnes bleu nuit et or -->
-            <a-cylinder position="-8 21.8 -39.9" radius="0.7" height="7" color="#276761" material="metalness: 0.7; roughness: 0.2" geometry="" visible=""></a-cylinder>
-            <a-cylinder position="8 21.8 -39.9" radius="0.7" height="7" color="#276761" material="metalness: 0.7; roughness: 0.2" geometry="" visible=""></a-cylinder>
-            <a-cylinder position="-8 25.3 -39.9" radius="0.8" height="0.5" color="#E8C449" material="metalness: 1; roughness: 0.1" geometry="" visible=""></a-cylinder>
-            <a-cylinder position="8 25.3 -39.9" radius="0.8" height="0.5" color="#E8C449" material="metalness: 1; roughness: 0.1" geometry="" visible=""></a-cylinder>
-
-            <!-- Halo doré sous la DeLorean -->
-            <a-ring position="0 18.98307 -39.9" rotation="-90 0 0" radius-inner="1.2" radius-outer="2.2" material="color: #E8C449; opacity: 0.45; transparent: true; shader: flat" geometry="" visible=""></a-ring>
-
-            <!-- DELOREAN dans le monde VR -->
-            <a-entity id="delorean" gltf-model="./public/models/de_lorean_dmc/scene.gltf" position="0.54293 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
-            </a-entity>
-            </a-entity>
                 <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
                 <!-- Soleil couchant - boule visible dans le ciel -->
-                 <a-entity id="entry-oasis-sound" sound="src: public/sound/entry_oasis.mp3; volume: 0.2" visible=""></a-entity>
+                 <a-entity id="entry-oasis-sound" sound="src: public/sound/entry_oasis.mp3; volume: 1.0" visible=""></a-entity>
                 <a-sphere id="sunset-sun" position="0 18 -85" radius="4" color="#FFB347" material="shader: flat; opacity: 0.95" light="type: point; color: #FF8C42; intensity: 3.5; distance: 80; decay: 1.5" geometry="" visible=""></a-sphere>
 
                 <!-- Lumière directionnelle principale du coucher de soleil -->
