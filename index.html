@@ -1860,7 +1860,7 @@
             <!-- Sky luxe bleu nuit profond -->
             <a-sky color="#276761"></a-sky>
 
-         <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0" visible="">
+        <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0" visible="">
                 
 
             <!-- Tapis luxe type tapis rouge vers la DeLorean -->
@@ -1883,7 +1883,7 @@
             <a-ring position="0 18.98307 -39.9" rotation="-90 0 0" radius-inner="1.2" radius-outer="2.2" material="color: #E8C449; opacity: 0.45; transparent: true; shader: flat" geometry="" visible=""></a-ring>
 
             <!-- DELOREAN dans le monde VR -->
-            <a-entity id="delorean" gltf-model="./public/models/de_lorean_dmc/scene.gltf" position="0 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            <a-entity id="delorean" gltf-model="./public/models/de_lorean_dmc/scene.gltf" position="0.54293 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
             </a-entity>
             </a-entity>
                 <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
@@ -1942,7 +1942,7 @@
                     <a-cylinder position="0 -2 0" radius="18" height="1" color="#5D4037" material="roughness: 1" geometry="" visible=""></a-cylinder>
                     <!-- Rochers sous l'île -->
                     <a-sphere position="-8 -2.5 5" radius="3" color="#696969" material="" geometry="" visible=""></a-sphere>
-                    <a-sphere position="10 -3 -3" radius="4" color="#808080" material="" geometry="" visible=""></a-sphere>
+                    <a-sphere position="10 -3.56551 -3" radius="4" color="#808080" material="" geometry="" visible=""></a-sphere>
                     <a-sphere position="3 -2.8 8" radius="2.5" color="#778899" material="" geometry="" visible=""></a-sphere>
 
                     <!-- Sol du jardin - Patchs d'herbe 3D -->
@@ -2017,7 +2017,7 @@
                 </a-entity>
 
                 <!-- ===== BASSIN CENTRAL (Fontaine 3D) ===== -->
-                <a-entity gltf-model="./public/models/vr/Fountain.glb" position="0 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
+                <a-entity gltf-model="./public/models/vr/Fountain.glb" position="0.48013 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
 
                 <!-- ===== PINS MÉDITERRANÉENS (Style Amalfi/Ravello) ===== -->
                 <!-- Pin parasol 1 -->
@@ -2032,10 +2032,12 @@
                 <a-entity gltf-model="./public/models/vr/arbres.glb" position="9.96845 0 3.30342" scale="5 5 5" visible="" id="tree5"></a-entity>
 
                 <!-- ===== HAIES SCULPTÉES (Topiaire Renaissance) ===== -->
-                <a-entity id="topiary" position="0 0 -10" visible="">
-                    <!-- Haies 3D -->
+              <a-entity id="topiary" position="0 0 -10" visible="">
+                    <a-entity id="left" visible="">
                     <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.82538 0 10.01121" scale="" visible="" rotation="0.0005729577951308233 90 0.0005729577951308233"></a-entity>
-                    <a-entity id="hedges" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 11.55013" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity>
+                    <a-entity id="hedges" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 11.24928" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-2" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 11.76655" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-3" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 12.44528" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-4" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 13.13419" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-5" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 13.83762" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-6" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 14.56284" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-7" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 15.29653" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-8" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 15.95382" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-9" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 16.67765" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-11" gltf-model="./public/models/vr/Hedge.glb" position="-1.86751 0.03282 17.43561" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-12" gltf-model="./public/models/vr/Hedge.glb" position="-2.10451 -0.0284 18.22968" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-13" gltf-model="./public/models/vr/Hedge.glb" position="-2.00573 0.03282 18.78532" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-14" gltf-model="./public/models/vr/Hedge.glb" position="-2.03154 -0.03812 19.52275" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-15" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 20.29242" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity> </a-entity><a-entity id="left-2" visible="" rotation="0 180 0">
+                    <a-entity gltf-model="./public/models/vr/Hedge.glb" position="-1.82538 0 10.01121" scale="" visible="" rotation="0.0005729577951308233 90 0.0005729577951308233"></a-entity>
+                    <a-entity id="hedges" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 11.24928" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-2" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 11.76655" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-3" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 12.44528" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-4" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 13.13419" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-5" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 13.83762" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-6" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 14.56284" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-7" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 15.29653" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-8" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 15.95382" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-9" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 16.67765" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-11" gltf-model="./public/models/vr/Hedge.glb" position="-1.86751 0.03282 17.43561" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-12" gltf-model="./public/models/vr/Hedge.glb" position="-2.10451 -0.0284 18.22968" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-13" gltf-model="./public/models/vr/Hedge.glb" position="-2.00573 0.03282 18.78532" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-14" gltf-model="./public/models/vr/Hedge.glb" position="-2.03154 -0.03812 19.52275" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity><a-entity id="hedges-15" gltf-model="./public/models/vr/Hedge.glb" position="-1.85958 0.03282 20.29242" scale="0.9687 0.9687 0.89083" visible="" rotation="0 -90 0"></a-entity> </a-entity>
 
                     <!-- Fleurs et végétation 3D -->
                     <a-entity gltf-model="./public/models/vr/Daffodil.glb" position="-10 0 12.35813" scale="0.02 0.02 0.02" visible="" id="bush3"></a-entity>
@@ -2045,10 +2047,9 @@
 
                     <!-- Topiaires remplacés par Arbres -->
                     <a-entity gltf-model="./public/models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
-                    <a-entity gltf-model="./public/models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity>
+                    <a-entity gltf-model="./public/models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="./public/models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
                 </a-entity>
-
-
+                
                     
             </a-entity>
 
