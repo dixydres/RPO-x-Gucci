@@ -193,6 +193,7 @@ AFRAME.registerComponent('vr-controller-grab', {
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
+        console.log('[headset-toggle] Initialisation réussie pour:', this.el.id);
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
         this.wearThreshold = 0.18;  // Distance réduite à 18cm pour activation plus proche
         this.camera = document.getElementById('player-camera');
@@ -201,9 +202,10 @@ AFRAME.registerComponent('headset-toggle', {
 
         // Clic pour activer le casque
         this.el.addEventListener('click', () => {
-             if (!window.oasisState.isInOasis && !this.isLoading) {
-                 this.animateToFace(); 
-             }
+            console.log('[headset-toggle] Casque cliqué:', this.el.id);
+            if (!window.oasisState.isInOasis && !this.isLoading) {
+                this.animateToFace(); 
+            }
         });
     },
 
