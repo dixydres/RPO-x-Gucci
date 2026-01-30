@@ -127,14 +127,15 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     checkRemoveGesture: function() {
-        // Permettre le retrait du casque dès qu'une main est proche de la tête en VR
         const camera = document.getElementById('player-camera');
         const handPos = new THREE.Vector3();
         const headPos = new THREE.Vector3();
+        
         this.el.object3D.getWorldPosition(handPos);
         camera.object3D.getWorldPosition(headPos);
-        // Distance plus tolérante (50cm)
-        if (handPos.distanceTo(headPos) < 0.5) {
+        
+        // Si la main est à moins de 35cm de la tête
+        if (handPos.distanceTo(headPos) < 0.35) {
             const headset = document.getElementById('oasis-headset');
             if (headset && headset.components['headset-toggle']) {
                 headset.components['headset-toggle'].exitOasisSequence();
@@ -193,7 +194,13 @@ AFRAME.registerComponent('headset-toggle', {
         this.camera = document.getElementById('player-camera');
         this.isLoading = false;
         this.isAnimatingOn = false;
-        // Suppression de l'écouteur 'click' : activation uniquement par proximité physique !
+
+        // Clic pour activer le casque
+        this.el.addEventListener('click', () => {
+             if (!window.oasisState.isInOasis && !this.isLoading) {
+                 this.animateToFace(); 
+             }
+        });
     },
 
     tick: function() {

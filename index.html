@@ -1,4 +1,4 @@
-﻿﻿<!DOCTYPE html>
+﻿﻿﻿<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -60,13 +60,12 @@
 
             </a-camera>
 
-
             <a-entity id="left-hand" hand-controls="hand: left; handModelStyle: lowPoly; color: #ffdbac"
-                vr-controller-grab raycaster="objects: .clickable; far: 1.5; showLine: false">
+                vr-controller-grab raycaster="objects: .clickable; far: 0.1; showLine: false">
             </a-entity>
 
             <a-entity id="right-hand" hand-controls="hand: right; handModelStyle: lowPoly; color: #ffdbac"
-                vr-controller-grab raycaster="objects: .clickable; far: 1.5; showLine: false">
+                vr-controller-grab raycaster="objects: .clickable; far: 0.1; showLine: false">
             </a-entity>
 
         </a-entity>
@@ -105,9 +104,9 @@
             <a-asset-item id="trees" src="./models/Dead Trees.glb"></a-asset-item>
             <a-asset-item id="rug" src="./models/Round Rug.glb"></a-asset-item>
 
-            <audio id="entry-oasis-audio" src="./sound/entry_oasis.mp3" preload="auto"></audio>
-            <audio id="sound_irl" src="./sound/sound_irl.mp3" preload="auto"></audio>
-            <img id="hudP" src="./hud3DP.png">
+            <audio id="entry-oasis-audio" src="/sound/entry_oasis.mp3" preload="auto"></audio>
+            <audio id="sound_irl" src="/sound/sound_irl.mp3" preload="auto"></audio>
+            <img id="hudP" src="/hud3DP.png">
             
         </a-assets>
 
@@ -116,11 +115,11 @@
                 <!-- ============================================ -->
          
          <a-entity id="real-world" position="">
-            <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 1.0" position="0 1.2 0"></a-entity>
+            <a-entity id="sound-irl-entity" sound="src: #sound_irl; autoplay: true; loop: true; volume: 0.02" position="0 1.2 0"></a-entity>
                 <!-- Effet de vent devant la fenêtre (vagues fines animées) -->
                 <a-entity id="window-wind-effect" rotation="0 90 0" position="-2.5 0 0">
                     <!-- Ambiance sonore de vent devant la fenêtre -->
-                    <a-sound id="window-wind-sound" src="./sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="1.0" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
+                    <a-sound id="window-wind-sound" src="/sound/drafty-windows-wind-321701.mp3" autoplay="true" loop="true" volume="0.01" positional="true" refdistance="0.1" rollofffactor="1" position="0 0.4 0" sound=""></a-sound>
                     <!-- Swirl 1 -->
                     <a-image src="data:image/svg+xml;utf8,&lt;svg width='200' height='40' viewBox='0 0 200 40' fill='none' xmlns='http://www.w3.org/2000/svg'&gt;&lt;path d='M10 30 Q60 10 110 30 Q160 50 190 10' stroke='%23E8F6FF' stroke-width='6' stroke-linecap='round' opacity='0.7' fill='none'/&gt;&lt;/svg&gt;" width="1.2" height="0.18" position="0.49983184385316104 1.2005695067868931 0.05" transparent="true" opacity="0.127762689094019" animation="property: position; from: 2.2 1.22 0.05; to: -1.3 1.18 0.05; dur: 3200; loop: true; easing: easeInOutSine" animation__fade="property: opacity; from: 0.18; to: 0.05; dir: alternate; dur: 1800; loop: true" material="" geometry="">
                     </a-image>
@@ -151,7 +150,7 @@
                 <a-cylinder radius="0.08" height="8" position="0 4 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-cylinder>
                 <a-box width="1.5" height="0.1" depth="0.1" position="0.75 7.8 0" material="color: #3a3a3a; metalness: 0.6" geometry=""></a-box>
                 <a-sphere radius="0.2" position="1.4 7.6 0" material="color: #ffcc66; emissive: #ffaa33" geometry=""></a-sphere>
-                <a-entity light="type: point; color: #ffffff; intensity: 0.11; distance: 15; decay: 0;" position="2.84 29.119 -8.702" id="sky-light"></a-entity>   </a-entity>
+                <a-entity light="type: point; color: #ffffff; intensity: 0.11; distance: 15; decay: 0; shadowMapWidth: 511.91; shadowRadius: 0.76; castShadow: true" position="2.84 29.119 -8.702" id="sky-light"></a-entity>   </a-entity>
 
             <!-- Lampadaire 2 -->
             <a-entity id="streetlight-2" position="-1.17662 -12.17708 -1.06868">
@@ -285,7 +284,7 @@
             <!-- Deuxième feu de baril plus loin -->
             <a-entity id="barrel-fire-2" position="-11.12755 0.16796 -7.92911">
                 
-                <a-entity light="type: point; color: #ffffff; intensity: 0.666; distance: 18.85; decay: 1.25;" position="11.942 12.983 10.886"></a-entity>
+                <a-entity light="type: point; color: #ffffff; intensity: 0.666; distance: 18.85; decay: 1.25; castShadow: true; shadowCameraVisible: true" position="11.942 12.983 10.886"></a-entity>
                 
             </a-entity>
 
@@ -1407,7 +1406,7 @@
                 <!-- Néons et éclairages des stacks -->
                 <a-entity id="stack-neons">
                     
-                    <a-entity light="type: point; color: #ffffff; intensity: 0.8; distance: 10;" position="3.56611 -10.00126 3.20499"></a-entity>
+                    <a-entity light="type: point; color: #ffffff; intensity: 0.8; distance: 10; castShadow: true" position="3.56611 -10.00126 3.20499"></a-entity>
 
                     <a-box position="0 5 0.5" width="0.8" height="0.1" depth="0.05" material="color: #00ffaa; emissive: #00ffaa; emissiveIntensity: 0.8" geometry=""></a-box>
                     <a-entity light="type: point; color: #00ffaa; intensity: 0.6; distance: 8" position="0 5 1"></a-entity>
@@ -1691,7 +1690,7 @@
             <!-- ============================================ -->
             <!-- LE CASQUE OASIS - Pièce maîtresse (modèle texturé) -->
             <!-- ============================================ -->
-            <a-entity id="oasis-headset" class="clickable" headset-toggle="" gltf-model="./models/vr_headset/scene.gltf" position="-0.85269 0.82 -1.19678" rotation="0 156 0" scale="0.2 0.2 0.2" fix-headset-textures="">
+            <a-entity id="oasis-headset" class="clickable" headset-toggle="" gltf-model="./models/vr_headset/scene.gltf" position="-0.85269 0.82 -1.19678" rotation="0 156 0" scale="0.2 0.2 0.2" fix-headset-textures="" shadow="">
                 <!-- VR Indication removed; add sparkling light instead -->
                 <a-entity id="headsetlight" position="0 0.18 0">
                     <a-entity light="type: point; color: #FFD700; intensity: 0.6; distance: 1.2"
@@ -1863,11 +1862,32 @@
         <a-entity id="vr-environment" position="0 15.527 -50" rotation="0 180 0" visible="">
                 
 
-            <!-- Zone centrale simplifiée -->
+            <!-- Tapis luxe type tapis rouge vers la DeLorean -->
+            <a-entity id="vr-carpet" position="0 -18.66692 35.50599" visible="">
+            <a-plane id="luxury-carpet" position="0 18.92837 -30" rotation="-90 0 0" width="2.5" height="12" material="color: #fffdff; shader: flat; side: double; opacity: 0.95; transparent: true" geometry="" visible=""></a-plane>
+            <!-- Bordures du tapis (ivoire) -->
+            <a-plane position="1.25 18.802 -30" rotation="-90 0 0" width="0.15" height="12" material="color: #FFFDFF; shader: flat; opacity: 0.85; transparent: true" geometry="" visible=""></a-plane>
+            <a-plane position="-1.25 18.802 -30" rotation="-90 0 0" width="0.15" height="12" material="color: #FFFDFF; shader: flat; opacity: 0.85; transparent: true" geometry="" visible=""></a-plane>
+
+            <!-- Sol principal ivoire luxe -->
             <a-cylinder position="0 18.8 -39.55037" radius="18" height="0.2" color="#FFFDFF" material="color: #E8C449; shader: flat; side: double; opacity: 0.95; transparent: true" geometry="" visible=""></a-cylinder>
+
+            <!-- Quelques colonnes bleu nuit et or -->
+            <a-cylinder position="-8 21.8 -39.9" radius="0.7" height="7" color="#276761" material="metalness: 0.7; roughness: 0.2" geometry="" visible=""></a-cylinder>
+            <a-cylinder position="8 21.8 -39.9" radius="0.7" height="7" color="#276761" material="metalness: 0.7; roughness: 0.2" geometry="" visible=""></a-cylinder>
+            <a-cylinder position="-8 25.3 -39.9" radius="0.8" height="0.5" color="#E8C449" material="metalness: 1; roughness: 0.1" geometry="" visible=""></a-cylinder>
+            <a-cylinder position="8 25.3 -39.9" radius="0.8" height="0.5" color="#E8C449" material="metalness: 1; roughness: 0.1" geometry="" visible=""></a-cylinder>
+
+            <!-- Halo doré sous la DeLorean -->
+            <a-ring position="0 18.98307 -39.9" rotation="-90 0 0" radius-inner="1.2" radius-outer="2.2" material="color: #E8C449; opacity: 0.45; transparent: true; shader: flat" geometry="" visible=""></a-ring>
+
+            <!-- DELOREAN dans le monde VR -->
+            <a-entity id="delorean" gltf-model="/models/de_lorean_dmc/scene.gltf" position="0.54293 18.806 -39.895" scale="1.2 1.2 1.2" visible="" animation="property: rotation; to: 0 360 0; loop: true; dur: 8000; easing: linear">
+            </a-entity>
+            </a-entity>
                 <!-- ===== ÉCLAIRAGE CÉLESTE - COUCHER DE SOLEIL ===== -->
                 <!-- Soleil couchant - boule visible dans le ciel -->
-                 <a-entity id="entry-oasis-sound" sound="src: ./sound/entry_oasis.mp3; volume: 1.0" visible=""></a-entity>
+                 <a-entity id="entry-oasis-sound" sound="src: /sound/entry_oasis.mp3; volume: 0.2" visible=""></a-entity>
                 <a-sphere id="sunset-sun" position="0 18 -85" radius="4" color="#FFB347" material="shader: flat; opacity: 0.95" light="type: point; color: #FF8C42; intensity: 3.5; distance: 80; decay: 1.5" geometry="" visible=""></a-sphere>
 
                 <!-- Lumière directionnelle principale du coucher de soleil -->
@@ -1925,7 +1945,7 @@
                     <a-sphere position="3 -2.8 8" radius="2.5" color="#778899" material="" geometry="" visible=""></a-sphere>
 
                     <!-- Sol du jardin - Patchs d'herbe 3D -->
-                    <a-entity gltf-model="./models/vr/Grass Patch.glb" position="0 0.05 0" scale="10 1 10" visible=""></a-entity>
+                    <a-entity gltf-model="/models/vr/Grass Patch.glb" position="0 0.05 0" scale="10 1 10" visible=""></a-entity>
                     <a-cylinder position="-0.00219 0.01 0.59514" rotation="" radius="24" height="0.02" color="#276761" material="roughness: 0.9" geometry="" visible=""></a-cylinder>
 
                     <!-- Allées en pierre (style Villa d'Este) -->
@@ -1947,7 +1967,7 @@
                         <!-- Chapiteau corinthien simplifié -->
                         <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./models/vr/Vines.glb" position="0.5 0 0.3" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="0.5 0 0.3" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Colonne 2 -->
@@ -1965,7 +1985,7 @@
                         <a-cylinder position="0 7.2 0" radius="0.95" height="0.5" color="#E8C449" material="" geometry="" visible=""></a-cylinder>
                         <a-box position="0 7.6 0" width="1.6" height="0.4" depth="1.6" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./models/vr/Vines.glb" position="-0.4 0 0.5" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="-0.4 0 0.5" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Colonne 4 -->
@@ -1983,7 +2003,7 @@
                         <a-cylinder position="0 6.2 0" radius="0.85" height="0.5" color="#E8C449" material="" geometry="" visible=""></a-cylinder>
                         <a-box position="0 6.6 0" width="1.4" height="0.3" depth="1.4" color="#E8C449" material="" geometry="" visible=""></a-box>
                         <!-- Vines 3D grimpantes -->
-                        <a-entity gltf-model="./models/vr/Vines.glb" position="-0.5 0 -0.3" scale="" visible=""></a-entity>
+                        <a-entity gltf-model="/models/vr/Vines.glb" position="-0.5 0 -0.3" scale="" visible=""></a-entity>
                     </a-entity>
 
                     <!-- Entablement (poutre horizontale sur les colonnes) -->
@@ -1996,69 +2016,69 @@
                 </a-entity>
 
                 <!-- ===== BASSIN CENTRAL (Fontaine 3D) ===== -->
-                <a-entity gltf-model="./models/vr/Fountain.glb" position="0.48013 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
+                <a-entity gltf-model="/models/vr/Fountain.glb" position="0.48013 4.25405 -16.89192" scale="5 5 5" visible=""></a-entity>
 
                 <!-- ===== PINS MÉDITERRANÉENS (Style Amalfi/Ravello) ===== -->
                 <!-- Pin parasol 1 -->
-                <a-entity gltf-model="./models/vr/arbres.glb" position="-12 0 -5" scale="6 6 6" visible="" id="tree2"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-12 0 -5" scale="6 6 6" visible="" id="tree2"></a-entity>
 
                 <!-- Pin parasol 2 -->
-                <a-entity gltf-model="./models/vr/arbres.glb" position="13.77296 0.50833 -8.95475" scale="4 4 4" visible="" id="tree"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="13.77296 0.50833 -8.95475" scale="4 4 4" visible="" id="tree"></a-entity>
 
                 <!-- ===== CYPRÈS ITALIENS ===== -->
-                <a-entity gltf-model="./models/vr/arbres.glb" position="-18 0 -20" scale="1.2 1.2 1.2" visible="" id="tree3"></a-entity>
-                <a-entity gltf-model="./models/vr/arbres.glb" position="-20 0 -18" scale="" visible="" id="tree4"></a-entity>
-                <a-entity gltf-model="./models/vr/arbres.glb" position="9.96845 0 3.30342" scale="5 5 5" visible="" id="tree5"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-18 0 -20" scale="1.2 1.2 1.2" visible="" id="tree3"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="-20 0 -18" scale="" visible="" id="tree4"></a-entity>
+                <a-entity gltf-model="/models/vr/arbres.glb" position="9.96845 0 3.30342" scale="5 5 5" visible="" id="tree5"></a-entity>
 
                 <!-- ===== HAIES SCULPTÉES (Topiaire Renaissance) ===== -->
               <a-entity id="topiary" position="0 0 -10">
                     <!-- Haies à gauche -->
                     <a-entity id="left">
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.82 0 10" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="-1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.82 0 10" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="-1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 -90 0"></a-entity>
                     </a-entity>
 
                     <!-- Haies à droite (Symétrie) -->
                     <a-entity id="right">
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.82 0 10" rotation="0 -90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
-                        <a-entity gltf-model="./models/vr/Hedge.glb" position="1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.82 0 10" rotation="0 -90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 11.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 11.75" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 12.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 13.15" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 13.85" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 14.55" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 15.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 16.00" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 16.70" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 17.45" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 18.25" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 18.80" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 19.50" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
+                        <a-entity gltf-model="/models/vr/Hedge.glb" position="1.85 0.03 20.30" scale="0.97 0.97 0.89" rotation="0 90 0"></a-entity>
                     </a-entity>
 
                     <!-- Fleurs et végétation 3D -->
-                    <a-entity gltf-model="./models/vr/Daffodil.glb" position="-10 0 12.35813" scale="0.02 0.02 0.02" visible="" id="bush3"></a-entity>
-                    <a-entity gltf-model="./models/vr/Daffodil.glb" position="10 0 8" scale="0.02 0.02 0.02" visible="" id="bush"></a-entity>
-                    <a-entity gltf-model="./models/vr/Daffodil.glb" position="-10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush4"></a-entity>
-                    <a-entity gltf-model="./models/vr/Daffodil.glb" position="10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush2"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="-10 0 12.35813" scale="0.02 0.02 0.02" visible="" id="bush3"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="10 0 8" scale="0.02 0.02 0.02" visible="" id="bush"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="-10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush4"></a-entity>
+                    <a-entity gltf-model="/models/vr/Daffodil.glb" position="10 0 -5" scale="0.02 0.02 0.02" visible="" id="bush2"></a-entity>
 
                     <!-- Topiaires remplacés par Arbres -->
-                    <a-entity gltf-model="./models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
-                    <a-entity gltf-model="./models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="./models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="./models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
+                    <a-entity gltf-model="/models/vr/arbres.glb" position="5.82042 0 1.26234" scale="7 7 7" visible="" id="trees8"></a-entity>
+                    <a-entity gltf-model="/models/vr/arbres.glb" position="0.37624 -0.90776 23.33497" scale="5 5 5" visible="" id="trees6"></a-entity><a-entity gltf-model="/models/vr/arbres.glb" position="-9.82436 -0.90776 16.83075" scale="5 5 5" visible="" id="trees6-3"></a-entity><a-entity gltf-model="/models/vr/arbres.glb" position="6.00493 0.33853 18.12257" scale="3.08813 3.08813 3.08813" visible="" id="trees6-2"></a-entity>
                 </a-entity>
                 
                     
@@ -2173,8 +2193,8 @@
                     <a-plane position="0 0.2642274290095945 0.12" width="9.5" height="0.05" material="color: #00D4FF; opacity: 0.3; transparent: true; shader: flat" animation="property: position; from: 0 -3.3 0.12; to: 0 3.3 0.12; dur: 3000; loop: true" geometry="" visible=""></a-plane>
                     
                     <!-- Lumière holographique -->
-                    <a-entity light="type: point; color: yellow; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
-                    <a-entity light="type: spot; color: yellow; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
+                    <a-entity light="type: point; color: #yellow; intensity: 3; distance: 25; decay: 2" position="0 0 2" visible=""></a-entity>
+                    <a-entity light="type: spot; color: #yellow; intensity: 2; angle: 45; distance: 20" position="0 5 3" rotation="-29.999999999999996 0 0" visible=""></a-entity>
                 </a-entity>
             </a-entity>
 
