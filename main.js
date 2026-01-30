@@ -371,16 +371,8 @@ AFRAME.registerComponent('headset-toggle', {
         // Fin UI
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
-        if (eclipseOverlay) {
-            eclipseOverlay.classList.remove('closing');
-            eclipseOverlay.classList.add('opening');
-        }
-        if (loadingScreen) {
-            setTimeout(() => {
-                loadingScreen.classList.remove('active');
-                loadingScreen.style.display = 'none';
-            }, 1000);
-        }
+        eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
+        setTimeout(() => { loadingScreen.classList.remove('active'); loadingScreen.style.display = 'none'; }, 1000);
     },
 
     // --- SORTIE DE L'OASIS ---
