@@ -1,0 +1,11 @@
+Model Information:
+* title:	De Lorean DMC
+* source:	https://sketchfab.com/3d-models/de-lorean-dmc-9db90e2de832470ebe41fffa9f541759
+* author:	hartwelkisaka (https://sketchfab.com/hartwelkisaka)
+
+Model License:
+* license type:	CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)
+* requirements:	Author must be credited. Commercial use is allowed.
+
+If you use this 3D model in your project be sure to copy paste this credit wherever you share it:
+This work is based on "De Lorean DMC" (https://sketchfab.com/3d-models/de-lorean-dmc-9db90e2de832470ebe41fffa9f541759) by hartwelkisaka (https://sketchfab.com/hartwelkisaka) licensed under CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)

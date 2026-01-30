@@ -299,7 +299,28 @@ AFRAME.registerComponent('headset-toggle', {
         console.log('[OASIS] Entrée dans le monde VR...');
         window.oasisState.isInOasis = true;
         this.isLoading = false;
-        
+
+        // Play entry sound
+        const entrySound = document.getElementById('entry-oasis-sound');
+        if (entrySound && entrySound.components && entrySound.components.sound) {
+            entrySound.components.sound.playSound();
+        }
+
+        // Pause IRL ambient sound and wind sound when entering VR
+        const irlSound = document.getElementById('sound-irl-entity');
+        if (irlSound && irlSound.components && irlSound.components.sound) {
+            irlSound.components.sound.pauseSound();
+        }
+        // Pause wind sound
+        const windSound = document.getElementById('window-wind-sound');
+        if (windSound && windSound.components && windSound.components.sound) {
+            windSound.components.sound.pauseSound();
+        }
+
+        // Afficher le HUDP
+        const hudp = document.getElementById('hudp');
+        if (hudp) hudp.setAttribute('visible', true);
+
         const scene = document.querySelector('a-scene');
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
@@ -379,6 +400,21 @@ AFRAME.registerComponent('headset-toggle', {
                     obj.setAttribute('visible', true);
                 }
             });
+
+            // Cacher le HUDP
+            const hudp = document.getElementById('hudp');
+            if (hudp) hudp.setAttribute('visible', false);
+
+            // Resume IRL ambient sound and wind sound when exiting VR
+            const irlSound = document.getElementById('sound-irl-entity');
+            if (irlSound && irlSound.components && irlSound.components.sound) {
+                irlSound.components.sound.playSound();
+            }
+            // Resume wind sound
+            const windSound = document.getElementById('window-wind-sound');
+            if (windSound && windSound.components && windSound.components.sound) {
+                windSound.components.sound.playSound();
+            }
             
             // Garder les mains visibles aussi en mode réel
             const leftHand = document.getElementById('left-hand');
@@ -458,60 +494,35 @@ AFRAME.registerComponent('headset-toggle', {
         blueSky.innerHTML = `
             <!-- Dôme principal - Ciel bleu clair -->
             <a-sky color="#87CEEB"></a-sky>
-            
             <!-- Couche horizon bleu clair/blanc -->
-            <a-cylinder position="0 -30 0" radius="300" height="80" open-ended="true" 
-                material="color: #E0F4FF; opacity: 0.5; transparent: true; shader: flat; side: back">
-            </a-cylinder>
-            
+            <a-cylinder  position="0 -30 0" radius="300" height="80" open-ended="true" 
+                material="color: #E0F4FF; opacity: 0.5; transparent: true; shader: flat; side: back"></a-cylinder>
             <!-- Couche intermédiaire bleu azur -->
             <a-cylinder position="0 20 0" radius="295" height="120" open-ended="true" 
-                material="color: #00BFFF; opacity: 0.3; transparent: true; shader: flat; side: back">
+                material="color: #00BFFF; opacity: 0.3; transparent: true; shader: flat; side: back"></a-cylinder>
+            <!-- Couche haute bleu profond + Banner Gucci -->
+            <a-cylinder id="banner-gucci" position="0 90 0" radius="120" height="20" open-ended="true"
+                material="src: url(./public/guccibanner.png); repeat: 20 1; transparent: true; opacity: 0.95; shader: flat; side: double; npot: true;" 
+                    animation="property: rotation; to: 0 -360 0; loop: true; dur: 40000; easing: linear">
             </a-cylinder>
-            
-            <!-- Couche haute bleu profond -->
-            <a-cylinder position="0 80 0" radius="290" height="100" open-ended="true" 
-                material="color: #4169E1; opacity: 0.25; transparent: true; shader: flat; side: back">
-            </a-cylinder>
-            
             <!-- Soleil brillant -->
             <a-entity id="oasis-sun" position="50 120 -100">
-                <!-- Halo externe -->
-                <a-sphere radius="35" 
-                    material="color: #FFFACD; opacity: 0.15; transparent: true; shader: flat"></a-sphere>
-                <!-- Halo moyen -->
-                <a-sphere radius="20" 
-                    material="color: #FFD700; opacity: 0.3; transparent: true; shader: flat"></a-sphere>
-                <!-- Soleil principal -->
-                <a-sphere radius="10" 
-                    material="color: #FFFFFF; emissive: #FFFACD; emissiveIntensity: 2; shader: flat"></a-sphere>
-                <!-- Lumière du soleil -->
+                <a-sphere radius="35" material="color: #FFFACD; opacity: 0.15; transparent: true; shader: flat"></a-sphere>
+                <a-sphere radius="20" material="color: #FFD700; opacity: 0.3; transparent: true; shader: flat"></a-sphere>
+                <a-sphere radius="10" material="color: #FFFFFF; emissive: #FFFACD; emissiveIntensity: 2; shader: flat"></a-sphere>
                 <a-entity light="type: directional; color: #FFFAF0; intensity: 1.5; castShadow: true"></a-entity>
             </a-entity>
-            
             <!-- Nuages blancs cotonneux -->
             <a-entity id="fluffy-clouds">
-                <a-sphere position="-80 60 -120" radius="20" scale="4 1 2"
-                    material="color: #FFFFFF; opacity: 0.9; transparent: true"></a-sphere>
-                <a-sphere position="-70 58 -115" radius="15" scale="3 0.8 1.5"
-                    material="color: #FFFFFF; opacity: 0.85; transparent: true"></a-sphere>
-                <a-sphere position="-90 62 -125" radius="18" scale="3.5 0.9 1.8"
-                    material="color: #F8F8FF; opacity: 0.88; transparent: true"></a-sphere>
-                    
-                <a-sphere position="60 70 -130" radius="22" scale="4.5 1.2 2.2"
-                    material="color: #FFFFFF; opacity: 0.9; transparent: true"></a-sphere>
-                <a-sphere position="75 68 -125" radius="16" scale="3 0.9 1.6"
-                    material="color: #FFFAFA; opacity: 0.87; transparent: true"></a-sphere>
-                    
-                <a-sphere position="-30 80 -100" radius="25" scale="5 1.3 2.5"
-                    material="color: #FFFFFF; opacity: 0.85; transparent: true"></a-sphere>
-                <a-sphere position="-15 78 -95" radius="18" scale="3.5 1 1.8"
-                    material="color: #F5F5F5; opacity: 0.82; transparent: true"></a-sphere>
-                    
-                <a-sphere position="100 55 -110" radius="20" scale="4 1.1 2"
-                    material="color: #FFFFFF; opacity: 0.88; transparent: true"></a-sphere>
-                <a-sphere position="120 58 -115" radius="24" scale="4.5 1.2 2.3"
-                    material="color: #FFFAFA; opacity: 0.9; transparent: true"></a-sphere>
+                <a-sphere position="-80 60 -120" radius="20" scale="4 1 2" material="color: #FFFFFF; opacity: 0.9; transparent: true"></a-sphere>
+                <a-sphere position="-70 58 -115" radius="15" scale="3 0.8 1.5" material="color: #FFFFFF; opacity: 0.85; transparent: true"></a-sphere>
+                <a-sphere position="-90 62 -125" radius="18" scale="3.5 0.9 1.8" material="color: #F8F8FF; opacity: 0.88; transparent: true"></a-sphere>
+                <a-sphere position="60 70 -130" radius="22" scale="4.5 1.2 2.2" material="color: #FFFFFF; opacity: 0.9; transparent: true"></a-sphere>
+                <a-sphere position="75 68 -125" radius="16" scale="3 0.9 1.6" material="color: #FFFAFA; opacity: 0.87; transparent: true"></a-sphere>
+                <a-sphere position="-30 80 -100" radius="25" scale="5 1.3 2.5" material="color: #FFFFFF; opacity: 0.85; transparent: true"></a-sphere>
+                <a-sphere position="-15 78 -95" radius="18" scale="3.5 1 1.8" material="color: #F5F5F5; opacity: 0.82; transparent: true"></a-sphere>
+                <a-sphere position="100 55 -110" radius="20" scale="4 1.1 2" material="color: #FFFFFF; opacity: 0.88; transparent: true"></a-sphere>
+                <a-sphere position="120 58 -115" radius="24" scale="4.5 1.2 2.3" material="color: #FFFAFA; opacity: 0.9; transparent: true"></a-sphere>
             </a-entity>
         `;
         
