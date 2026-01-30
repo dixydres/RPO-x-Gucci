@@ -127,15 +127,14 @@ AFRAME.registerComponent('vr-controller-grab', {
     },
 
     checkRemoveGesture: function() {
+        // Permettre le retrait du casque dès qu'une main est proche de la tête en VR
         const camera = document.getElementById('player-camera');
         const handPos = new THREE.Vector3();
         const headPos = new THREE.Vector3();
-        
         this.el.object3D.getWorldPosition(handPos);
         camera.object3D.getWorldPosition(headPos);
-        
-        // Si la main est à moins de 35cm de la tête
-        if (handPos.distanceTo(headPos) < 0.35) {
+        // Distance plus tolérante (50cm)
+        if (handPos.distanceTo(headPos) < 0.5) {
             const headset = document.getElementById('oasis-headset');
             if (headset && headset.components['headset-toggle']) {
                 headset.components['headset-toggle'].exitOasisSequence();
@@ -325,19 +324,25 @@ AFRAME.registerComponent('headset-toggle', {
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
 
-        // Cacher monde réel (mais garder les mains visibles!)
-        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera):not(#left-hand):not(#right-hand), a-box:not(#oasis-headset), a-plane, a-cylinder');
+        // Cacher monde réel (mais garder les mains et le HUD visibles!)
+        const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder, a-sphere, a-gltf-model');
         objects.forEach(obj => {
-            if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && !obj.hasAttribute('hand-controls')) {
-               obj.setAttribute('visible', false);
+            // Ne pas cacher le contenu VR, le rig (joueur/mains) ou les éléments de base
+            if (obj.closest('#vr-world') || obj.closest('#rig') || 
+                obj.id === 'vr-world' || obj.id === 'rig' ||
+                ['a-assets', 'a-light', 'a-sky', 'a-camera'].includes(obj.tagName.toLowerCase())) {
+                return;
+            }
+            
+            // Cacher le reste
+            if (obj.getAttribute('visible') !== false) {
+                obj.setAttribute('visible', false);
+                obj.classList.add('hidden-by-oasis');
             }
         });
         
-        // Afficher les mains de manière explicite
-        const leftHand = document.getElementById('left-hand');
-        const rightHand = document.getElementById('right-hand');
-        if(leftHand) leftHand.setAttribute('visible', true);
-        if(rightHand) rightHand.setAttribute('visible', true);
+        // S'assurer que le HUD est bien visible
+        if (hudp) hudp.setAttribute('visible', true);
         
         // Afficher monde VR et corriger lumières
         const vrWorld = document.getElementById('vr-world');
@@ -392,13 +397,11 @@ AFRAME.registerComponent('headset-toggle', {
             const vrWorld = document.getElementById('vr-world');
             if(vrWorld) vrWorld.setAttribute('visible', false);
             
-            // 2. Montrer Réel (garder les mains visibles)
-            const scene = document.querySelector('a-scene');
-            const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder');
-            objects.forEach(obj => {
-                if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && obj.id !== 'vr-loading-screen') {
-                    obj.setAttribute('visible', true);
-                }
+            // 2. Montrer Réel
+            const hiddenObjects = scene.querySelectorAll('.hidden-by-oasis');
+            hiddenObjects.forEach(obj => {
+                obj.setAttribute('visible', true);
+                obj.classList.remove('hidden-by-oasis');
             });
 
             // Cacher le HUDP
