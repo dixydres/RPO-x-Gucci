@@ -120,9 +120,13 @@ AFRAME.registerComponent('vr-controller-grab', {
         const intersectedEls = this.el.components.raycaster.intersectedEls;
         if (intersectedEls.length > 0) {
             const hitEl = intersectedEls[0];
+            console.log('Raycaster intersected elements:', intersectedEls);
+            console.log('Hit element:', hitEl.id, 'Classes:', hitEl.classList);
             if (hitEl.classList.contains('clickable')) {
                 this.grabObject(hitEl);
             }
+        } else {
+            console.log('Aucun élément intersecté par le raycaster.');
         }
     },
 
@@ -189,6 +193,7 @@ AFRAME.registerComponent('vr-controller-grab', {
 // ============================================
 AFRAME.registerComponent('headset-toggle', {
     init: function() {
+        console.log('[headset-toggle] Initialisation réussie pour:', this.el.id);
         window.oasisState.originalHeadsetPos = this.el.getAttribute('position');
         this.wearThreshold = 0.18;  // Distance réduite à 18cm pour activation plus proche
         this.camera = document.getElementById('player-camera');
@@ -197,9 +202,10 @@ AFRAME.registerComponent('headset-toggle', {
 
         // Clic pour activer le casque
         this.el.addEventListener('click', () => {
-             if (!window.oasisState.isInOasis && !this.isLoading) {
-                 this.animateToFace(); 
-             }
+            console.log('[headset-toggle] Casque cliqué:', this.el.id);
+            if (!window.oasisState.isInOasis && !this.isLoading) {
+                this.animateToFace(); 
+            }
         });
     },
 
@@ -325,25 +331,19 @@ AFRAME.registerComponent('headset-toggle', {
         const vrLoadingScreen = document.getElementById('vr-loading-screen');
         if(vrLoadingScreen) vrLoadingScreen.setAttribute('visible', false);
 
-        // Cacher monde réel (mais garder les mains et le HUD visibles!)
-        const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder, a-sphere, a-gltf-model');
+        // Cacher monde réel (mais garder les mains visibles!)
+        const objects = scene.querySelectorAll('a-entity:not(#rig):not(#vr-world):not(#player-camera):not(#left-hand):not(#right-hand), a-box:not(#oasis-headset), a-plane, a-cylinder');
         objects.forEach(obj => {
-            // Ne pas cacher le contenu VR, le rig (joueur/mains) ou les éléments de base
-            if (obj.closest('#vr-world') || obj.closest('#rig') || 
-                obj.id === 'vr-world' || obj.id === 'rig' ||
-                ['a-assets', 'a-light', 'a-sky', 'a-camera'].includes(obj.tagName.toLowerCase())) {
-                return;
-            }
-            
-            // Cacher le reste
-            if (obj.getAttribute('visible') !== false) {
-                obj.setAttribute('visible', false);
-                obj.classList.add('hidden-by-oasis');
+            if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && !obj.hasAttribute('hand-controls')) {
+               obj.setAttribute('visible', false);
             }
         });
         
-        // S'assurer que le HUD est bien visible
-        if (hudp) hudp.setAttribute('visible', true);
+        // Afficher les mains de manière explicite
+        const leftHand = document.getElementById('left-hand');
+        const rightHand = document.getElementById('right-hand');
+        if(leftHand) leftHand.setAttribute('visible', true);
+        if(rightHand) rightHand.setAttribute('visible', true);
         
         // Afficher monde VR et corriger lumières
         const vrWorld = document.getElementById('vr-world');
@@ -377,8 +377,16 @@ AFRAME.registerComponent('headset-toggle', {
         // Fin UI
         const loadingScreen = document.getElementById('oasis-loading-screen');
         const eclipseOverlay = document.getElementById('eclipse-overlay');
-        eclipseOverlay.classList.remove('closing'); eclipseOverlay.classList.add('opening');
-        setTimeout(() => { loadingScreen.classList.remove('active'); loadingScreen.style.display = 'none'; }, 1000);
+        if (eclipseOverlay) {
+            eclipseOverlay.classList.remove('closing');
+            eclipseOverlay.classList.add('opening');
+        }
+        if (loadingScreen) {
+            setTimeout(() => {
+                loadingScreen.classList.remove('active');
+                loadingScreen.style.display = 'none';
+            }, 1000);
+        }
     },
 
     // --- SORTIE DE L'OASIS ---
@@ -398,11 +406,13 @@ AFRAME.registerComponent('headset-toggle', {
             const vrWorld = document.getElementById('vr-world');
             if(vrWorld) vrWorld.setAttribute('visible', false);
             
-            // 2. Montrer Réel
-            const hiddenObjects = scene.querySelectorAll('.hidden-by-oasis');
-            hiddenObjects.forEach(obj => {
-                obj.setAttribute('visible', true);
-                obj.classList.remove('hidden-by-oasis');
+            // 2. Montrer Réel (garder les mains visibles)
+            const scene = document.querySelector('a-scene');
+            const objects = scene.querySelectorAll('a-entity, a-box, a-plane, a-cylinder');
+            objects.forEach(obj => {
+                if (!obj.closest('#vr-world') && obj.id !== 'vr-world' && obj.id !== 'vr-loading-screen') {
+                    obj.setAttribute('visible', true);
+                }
             });
 
             // Cacher le HUDP
@@ -506,7 +516,7 @@ AFRAME.registerComponent('headset-toggle', {
                 material="color: #00BFFF; opacity: 0.3; transparent: true; shader: flat; side: back"></a-cylinder>
             <!-- Couche haute bleu profond + Banner Gucci -->
             <a-cylinder id="banner-gucci" position="0 90 0" radius="120" height="20" open-ended="true"
-                material="src: url(./public/guccibanner.png); repeat: 20 1; transparent: true; opacity: 0.95; shader: flat; side: double; npot: true;" 
+                material="src: url(/RPO-x-Gucci/guccibanner.png); repeat: 20 1; transparent: true; opacity: 0.95; shader: flat; side: double; npot: true;" 
                     animation="property: rotation; to: 0 -360 0; loop: true; dur: 40000; easing: linear">
             </a-cylinder>
             <!-- Soleil brillant -->
@@ -607,7 +617,7 @@ document.addEventListener('DOMContentLoaded', () => {
             this.el.addEventListener('model-loaded', () => {
                 const mesh = this.el.getObject3D('mesh');
                 if(!mesh) return;
-                const tex = new THREE.TextureLoader().load('./models/low_poly_mansion/textures/Main_diffuse.png');
+                const tex = new THREE.TextureLoader().load('/RPO-x-Gucci/models/low_poly_mansion/textures/Main_diffuse.png');
                 tex.encoding = THREE.sRGBEncoding; tex.flipY = false;
                 mesh.traverse(n => { if(n.isMesh) { n.material.map = tex; n.material.needsUpdate = true; } });
             });
